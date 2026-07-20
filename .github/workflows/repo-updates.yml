@@ -40,4 +40,4 @@ jobs:
           ZULIP_BOT_API_KEY: ${{ secrets.ZULIP_BOT_API_KEY }}
           ZULIP_STREAM: ${{ secrets.ZULIP_STREAM }}
           ZULIP_TOPIC: "Reviewer load report"
-        run: python3 scripts/reviewer_report.py
+        run: python3 scripts/repo-updates-script.py
