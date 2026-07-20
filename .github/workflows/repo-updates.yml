@@ -1,0 +1,43 @@
+name: Reviewer load report
+
+on:
+  schedule:
+    # Runs daily at 08:00 UTC. Adjust to taste.
+    - cron: "0 8 * * *"
+  workflow_dispatch: {}
+
+permissions:
+  contents: read
+  pull-requests: read
+
+jobs:
+  report:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repo
+        uses: actions/checkout@v4
+
+      - name: Send reviewer report to Zulip
+        env:
+          # Default token works for reading PRs/review requests on this repo.
+          # If you want team-request expansion or collaborator listing on a
+          # repo where the default token lacks access, create a PAT with
+          # `repo` + `read:org` scopes, store it as the GH_TOKEN secret below,
+          # and it will be used instead.
+          GH_TOKEN: ${{ secrets.GH_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
+
+          WINDOW_DAYS: "30"
+          BUSY_THRESHOLD: "3"
+          # Optional: comma-separated usernames to force the roster instead
+          # of auto-deriving it. Uncomment and set as a repo variable if you
+          # want a fixed reviewer list.
+          # REVIEWERS_LIST: ${{ vars.REVIEWERS_LIST }}
+
+          ZULIP_SITE: ${{ secrets.ZULIP_SITE }}
+          ZULIP_BOT_EMAIL: ${{ secrets.ZULIP_BOT_EMAIL }}
+          ZULIP_BOT_API_KEY: ${{ secrets.ZULIP_BOT_API_KEY }}
+          ZULIP_STREAM: ${{ secrets.ZULIP_STREAM }}
+          ZULIP_TOPIC: "Reviewer load report"
+        run: python3 scripts/reviewer_report.py
