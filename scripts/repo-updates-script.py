@@ -160,7 +160,7 @@ def fetch_collaborators():
 # get all the important values needed for the message
 def build_report():
     now = datetime.datetime.now(datetime.timezone.utc)
-    prs = fetch_open_prs_in_window
+    prs = fetch_open_prs_in_window()
 
     pending_counts = {}
     pending_prs = {}  # reviewer -> list of (number, title, url)
