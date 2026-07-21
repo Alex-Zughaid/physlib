@@ -81,10 +81,7 @@ def fetch_pr_lines_changed(number):
 def fetch_recently_merged_prs():
     """Return PRs whose merged_at timestamp falls in the previous UTC calendar day."""
     now = datetime.datetime.now(datetime.timezone.utc)
-    yesterday_start = (now - datetime.timedelta(days=1)).replace(
-        hour=0, minute=0, second=0, microsecond=0
-    )
-    yesterday_end = yesterday_start.replace(hour=23, minute=59, second=59)
+    cutoff = now - datetime.timedelta(hours=24)
 
     prs = gh_paginate(
         f"/repos/{OWNER}/{REPO_NAME}/pulls",
@@ -97,14 +94,30 @@ def fetch_recently_merged_prs():
         merged_at = datetime.datetime.strptime(
             pr["merged_at"], "%Y-%m-%dT%H:%M:%SZ"
         ).replace(tzinfo=datetime.timezone.utc)
-        if merged_at < yesterday_start:
-            # sorted newest-first by updated_at; once merged_at is before
-            # yesterday we can't guarantee order, so keep scanning briefly
-            # but stop after 200 non-matching closed PRs to avoid huge pages.
+        if merged_at < cutoff:
             break
-        if yesterday_start <= merged_at <= yesterday_end:
-            merged.append(pr)
+        merged.append(pr)
     return merged
+
+
+def fetch_recently_opened_prs():
+    """Return PRs created in the last 24 hours."""
+    now = datetime.datetime.now(datetime.timezone.utc)
+    cutoff = now - datetime.timedelta(hours=24)
+
+    prs = gh_paginate(
+        f"/repos/{OWNER}/{REPO_NAME}/pulls",
+        {"state": "all", "sort": "created", "direction": "desc"},
+    )
+    opened = []
+    for pr in prs:
+        created_at = datetime.datetime.strptime(
+            pr["created_at"], "%Y-%m-%dT%H:%M:%SZ"
+        ).replace(tzinfo=datetime.timezone.utc)
+        if created_at < cutoff:
+            break
+        opened.append(pr)
+    return opened
 
 # gets people who arent assigned as a reviewer, but have pushed to the repo in the past
 # needed to find people currently assigned to 0 reviews
@@ -143,7 +156,8 @@ def build_report():
                 (pr["number"], pr["title"], pr["html_url"])
             )
 
-    merged_yesterday = fetch_recently_merged_prs()
+    merged_recently = fetch_recently_merged_prs()
+    opened_recently = fetch_recently_opened_prs()
 
 
     roster = set(fetch_collaborators()) | set(pending_counts.keys())
@@ -172,9 +186,13 @@ def build_report():
         "quiet": quiet,
         "pending_prs": pending_prs,
         "unreviewed_prs": unreviewed_prs,
-        "merged_yesterday": [
+        "merged_recently": [
             (pr["number"], pr["title"], pr["html_url"], pr["user"]["login"])
-            for pr in merged_yesterday
+            for pr in merged_recently
+        ],
+        "opened_recently": [
+            (pr["number"], pr["title"], pr["html_url"], pr["user"]["login"])
+            for pr in opened_recently
         ],
     }
 
@@ -220,9 +238,18 @@ def format_message(report):
     section("🟡 Moderate", report["moderate"])
     section("🟢 Quiet (0 pending reviews)", report["quiet"])
 
-    # PRs merged yesterday
-    merged = report["merged_yesterday"]
-    lines.append(f"**✅ Merged yesterday** ({len(merged)})")
+    # PRs opened in the last 24h
+    opened = report["opened_recently"]
+    lines.append(f"**🟤 Opened in the last 24h** ({len(opened)})")
+    if not opened:
+        lines.append("- _none_")
+    for number, title_, url, author in opened:
+        lines.append(f"- [#{number} {title_}]({url}) by @**{author}**")
+    lines.append("")
+
+    # PRs merged in the last 24h
+    merged = report["merged_recently"]
+    lines.append(f"**✅ Merged in the last 24h** ({len(merged)})")
     if not merged:
         lines.append("- _none_")
     for number, title_, url, author in merged:
