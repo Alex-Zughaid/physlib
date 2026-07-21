@@ -28,7 +28,6 @@ GITHUB_TOKEN = os.environ.get("GH_TOKEN") or os.environ.get("GITHUB_TOKEN")
 REPO = os.environ["GITHUB_REPOSITORY"]  # "owner/repo", set automatically in Actions
 OWNER, REPO_NAME = REPO.split("/")
 
-WINDOW_DAYS = int(os.environ.get("WINDOW_DAYS", "30"))
 BUSY_THRESHOLD = int(os.environ.get("BUSY_THRESHOLD", "3"))
 MAX_PRS_LISTED = int(os.environ.get("MAX_PRS_LISTED", "3"))
 
@@ -86,7 +85,7 @@ def gh_paginate(path, params=None):
     return results
 
 
-def fetch_open_prs_in_window(cutoff):
+def fetch_open_prs_in_window():
     prs = gh_paginate(
         f"/repos/{OWNER}/{REPO_NAME}/pulls",
         {"state": "open", "sort": "created", "direction": "desc"},
@@ -96,12 +95,8 @@ def fetch_open_prs_in_window(cutoff):
         created_at = datetime.datetime.strptime(
             pr["created_at"], "%Y-%m-%dT%H:%M:%SZ"
         ).replace(tzinfo=datetime.timezone.utc)
-        if created_at >= cutoff:
-            qualifying.append(pr)
-        else:
-            # PRs are sorted newest-first, so once we're past the window
-            # everything after is also out of range.
-            break
+        qualifying.append(pr)
+
     return qualifying
 
 
@@ -162,16 +157,10 @@ def fetch_collaborators():
         )
         return []
 
-
-# ---------------------------------------------------------------------------
-# Core logic
-# ---------------------------------------------------------------------------
-
+# get all the important values needed for the message
 def build_report():
     now = datetime.datetime.now(datetime.timezone.utc)
-    cutoff = now - datetime.timedelta(days=WINDOW_DAYS)
-
-    prs = fetch_open_prs_in_window(cutoff)
+    prs = fetch_open_prs_in_window
 
     pending_counts = {}
     pending_prs = {}  # reviewer -> list of (number, title, url)
@@ -193,7 +182,7 @@ def build_report():
 
     merged_yesterday = fetch_recently_merged_prs()
 
-    # Build roster: explicit override > collaborators ∪ requested reviewers
+
     if REVIEWERS_LIST.strip():
         roster = [r.strip() for r in REVIEWERS_LIST.split(",") if r.strip()]
     else:
@@ -215,7 +204,6 @@ def build_report():
     quiet.sort(key=lambda x: x[0].lower())
 
     return {
-        "window_days": WINDOW_DAYS,
         "busy_threshold": BUSY_THRESHOLD,
         "pr_count": len(prs),
         "busy": busy,
@@ -230,12 +218,11 @@ def build_report():
     }
 
 
+# make the message string
 def format_message(report):
     lines = []
     lines.append(
-        f"**Reviewer load report** — {REPO} "
-        f"(open PRs from the last {report['window_days']} days, "
-        f"{report['pr_count']} PR(s) considered)"
+        "Summary of PRs that need attention and available reviewers"
     )
     lines.append("")
 
@@ -253,7 +240,7 @@ def format_message(report):
                     lines.append(f"    - [#{number} {title_}]({url})")
         lines.append("")
 
-    # --- unreviewed open PRs ---
+    # unreviewed open PRs
     unreviewed = report["unreviewed_prs"]
     lines.append(f"**⚪ Open PRs with no reviewer assigned** ({len(unreviewed)})")
     if not unreviewed:
@@ -270,7 +257,7 @@ def format_message(report):
     section("🟡 Moderate", report["moderate"])
     section("🟢 Quiet (0 pending reviews)", report["quiet"])
 
-    # --- merged yesterday ---
+    # PRs merged yesterday
     merged = report["merged_yesterday"]
     lines.append(f"**✅ Merged yesterday** ({len(merged)})")
     if not merged:
@@ -281,7 +268,7 @@ def format_message(report):
 
     return "\n".join(lines)
 
-
+# use the Zulip bot to post to the thread
 def post_to_zulip(content):
     data = urllib.parse.urlencode(
         {
