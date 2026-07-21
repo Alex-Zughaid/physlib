@@ -300,7 +300,6 @@ def post_to_zulip(content):
             print("Zulip response:", resp.read().decode())
     except urllib.error.HTTPError as e:
         print("Zulip API error:", e.code, e.read().decode(), file=sys.stderr)
-        raise
 
 
 def main():
