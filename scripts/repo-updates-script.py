@@ -270,22 +270,23 @@ def format_message(report):
 
 
 def post_to_zulip(content):
-   # uncomment this to post to thread
-   ''' data = urllib.parse.urlencode(
+
+    # uncomment this to post to thread
+    #data = urllib.parse.urlencode(
+    #    {
+    #       "type": "stream",
+    #      "to": ZULIP_STREAM,
+    #     "topic": ZULIP_TOPIC,
+    #        "content": content,
+    #    }
+    #).encode()
+    data = urllib.parse.urlencode(
         {
-            "type": "stream",
-            "to": ZULIP_STREAM,
-            "topic": ZULIP_TOPIC,
-            "content": content,
-        }
-    ).encode()'''
-   data = urllib.parse.urlencode(
-       {
-           "type": "private",
+            "type": "private",
             "to": json.dumps(['alexander@zughaid.co.uk']),
             "content": content,
-       }
-   )
+        }
+    ).encode()
 
     req = urllib.request.Request(f"{ZULIP_SITE}/api/v1/messages", data=data)
     credentials = f"{ZULIP_EMAIL}:{ZULIP_API_KEY}"
