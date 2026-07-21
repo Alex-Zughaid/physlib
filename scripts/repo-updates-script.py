@@ -100,6 +100,11 @@ def fetch_open_prs_in_window():
     return qualifying
 
 
+def fetch_pr_lines_changed(number):
+    data, _ = gh_request(f"/repos/{OWNER}/{REPO_NAME}/pulls/{number}")
+    return data.get("additions", 0) + data.get("deletions", 0)
+
+
 def expand_team_members(team_slug):
     """Best-effort: only works if the token has org read access."""
     try:
@@ -172,7 +177,9 @@ def build_report():
             reviewers.extend(expand_team_members(team["slug"]))
 
         if not reviewers:
-            unreviewed_prs.append((pr["number"], pr["title"], pr["html_url"]))
+            labels = [lbl["name"] for lbl in pr.get("labels", [])]
+            lines_changed = fetch_pr_lines_changed(pr["number"])
+            unreviewed_prs.append((pr["number"], pr["title"], pr["html_url"], labels, lines_changed))
         for login in reviewers:
             pending_counts[login] = pending_counts.get(login, 0) + 1
             pending_prs.setdefault(login, []).append(
@@ -245,8 +252,9 @@ def format_message(report):
     lines.append(f"**⚪ Open PRs with no reviewer assigned** ({len(unreviewed)})")
     if not unreviewed:
         lines.append("- _none_")
-    for number, title_, url in unreviewed:
-        lines.append(f"- [#{number} {title_}]({url})")
+    for number, title_, url, labels, lines_changed in unreviewed:
+        tag_str = " " + " ".join(f"`{l}`" for l in labels) if labels else ""
+        lines.append(f"- [#{number} {title_}]({url}){tag_str} — {lines_changed} lines changed")
     lines.append("")
 
     section(
