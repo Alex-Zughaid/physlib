@@ -283,7 +283,7 @@ def post_to_zulip(content):
     data = urllib.parse.urlencode(
         {
             "type": "private",
-            "to": json.dumps(['alexander@zughaid.co.uk']),
+            "to": json.dumps([1175816]),
             "content": content,
         }
     ).encode()
