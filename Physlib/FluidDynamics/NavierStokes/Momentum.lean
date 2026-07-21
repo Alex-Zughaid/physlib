@@ -251,5 +251,23 @@ theorem momentumEquation_iff_convectiveMomentumEquation
   exact ⟨fun h t x => (conservative_eq_convective_lhs t x).symm.trans (h t x),
     fun h t x => (conservative_eq_convective_lhs t x).trans (h t x)⟩
 
+/-!
+
+## E. Basic properties of momentum fields
+
+-/
+
+/-- The momentum density vanishes wherever the mass density is zero. -/
+lemma momentumDensity_zero_of_rho_zero (d : ℕ) (fluid : FluidState d)
+    (t : Time) (x : Space d) (h : fluid.rho t x = 0) :
+    momentumDensity d fluid t x = 0 := by
+  simp [momentumDensity, h]
+
+/-- The momentum flux vanishes wherever the mass density is zero. -/
+lemma momentumFlux_zero_of_rho_zero (d : ℕ) (fluid : FluidState d)
+    (t : Time) (x : Space d) (h : fluid.rho t x = 0) :
+    momentumFlux d fluid t x = 0 := by
+  simp [momentumFlux, h]
+
 end NavierStokes
 end FluidDynamics
