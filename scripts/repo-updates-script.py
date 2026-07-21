@@ -5,6 +5,7 @@ import datetime
 import urllib.request
 import urllib.error
 import urllib.parse
+import base64
 
 # Constants
 GITHUB_API = "https://api.github.com"
@@ -95,7 +96,7 @@ def fetch_recently_merged_prs():
             pr["merged_at"], "%Y-%m-%dT%H:%M:%SZ"
         ).replace(tzinfo=datetime.timezone.utc)
         if merged_at < cutoff:
-            break
+            continue
         merged.append(pr)
     return merged
 
@@ -279,7 +280,6 @@ def post_to_zulip(content):
 
     req = urllib.request.Request(f"{ZULIP_SITE}/api/v1/messages", data=data)
     credentials = f"{ZULIP_EMAIL}:{ZULIP_API_KEY}"
-    import base64
 
     req.add_header(
         "Authorization", "Basic " + base64.b64encode(credentials.encode()).decode()

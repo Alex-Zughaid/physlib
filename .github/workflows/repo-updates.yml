@@ -24,8 +24,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GITHUB_REPOSITORY: ${{ github.repository }}
 
-          # Number of days in the past to check
-          WINDOW_DAYS: "30"
+          # Number of reviews to consider 'busy'
           BUSY_THRESHOLD: "3"
 
           # These Zulip secrets are configured in the repo settings
