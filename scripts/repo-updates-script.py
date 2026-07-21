@@ -173,7 +173,6 @@ def build_report():
 
         if not reviewers:
             unreviewed_prs.append((pr["number"], pr["title"], pr["html_url"]))
-
         for login in reviewers:
             pending_counts[login] = pending_counts.get(login, 0) + 1
             pending_prs.setdefault(login, []).append(
@@ -230,14 +229,15 @@ def format_message(report):
         lines.append(f"**{title}** ({len(entries)})")
         if not entries:
             lines.append("- _none_")
-        for login, count in entries:
-            suffix = f" — {count} pending review(s)" if count else ""
-            lines.append(f"- @**{login}**{suffix}")
-            if show_prs:
-                for number, title_, url in report["pending_prs"].get(login, [])[
-                    :MAX_PRS_LISTED
-                ]:
-                    lines.append(f"    - [#{number} {title_}]({url})")
+        else:
+            for login, count in entries:
+                suffix = f" — {count} pending review(s)" if count else ""
+                lines.append(f"- @**{login}**{suffix}")
+                if show_prs:
+                    for number, title_, url in report["pending_prs"].get(login, [])[
+                        :MAX_PRS_LISTED
+                    ]:
+                        lines.append(f"    - [#{number} {title_}]({url})")
         lines.append("")
 
     # unreviewed open PRs
@@ -268,16 +268,24 @@ def format_message(report):
 
     return "\n".join(lines)
 
-# use the Zulip bot to post to the thread
+
 def post_to_zulip(content):
-    data = urllib.parse.urlencode(
+   # uncomment this to post to thread
+   ''' data = urllib.parse.urlencode(
         {
             "type": "stream",
             "to": ZULIP_STREAM,
             "topic": ZULIP_TOPIC,
             "content": content,
         }
-    ).encode()
+    ).encode()'''
+   data = urllib.parse.urlencode(
+       {
+           "type": "private",
+            "to": json.dumps(['alexander@zughaid.co.uk']),
+            "content": content,
+       }
+   )
 
     req = urllib.request.Request(f"{ZULIP_SITE}/api/v1/messages", data=data)
     credentials = f"{ZULIP_EMAIL}:{ZULIP_API_KEY}"
