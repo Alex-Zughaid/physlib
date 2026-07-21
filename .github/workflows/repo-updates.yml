@@ -27,10 +27,6 @@ jobs:
           # Number of days in the past to check
           WINDOW_DAYS: "30"
           BUSY_THRESHOLD: "3"
-          # Optional: comma-separated usernames to force the roster instead
-          # of auto-deriving it. Uncomment and set as a repo variable if you
-          # want a fixed reviewer list.
-          # REVIEWERS_LIST: ${{ vars.REVIEWERS_LIST }}
 
           # These Zulip secrets are configured in the repo settings
           # (Physlib -> Settings -> Secrets and variables -> Actions)

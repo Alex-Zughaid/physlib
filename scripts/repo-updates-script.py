@@ -1,15 +1,3 @@
-#!/usr/bin/env python3
-"""
-Reviewer busy/quiet report.
-
-Looks at all open pull requests opened in the last N days on a GitHub repo,
-counts how many currently have a pending (not-yet-completed) review request
-against each reviewer, classifies reviewers as busy / moderate / quiet, and
-posts a summary message to a Zulip stream.
-
-Configuration is entirely via environment variables (see README.md).
-"""
-
 import os
 import sys
 import json
@@ -18,10 +6,7 @@ import urllib.request
 import urllib.error
 import urllib.parse
 
-# ---------------------------------------------------------------------------
-# Config
-# ---------------------------------------------------------------------------
-
+# Constants
 GITHUB_API = "https://api.github.com"
 
 GITHUB_TOKEN = os.environ.get("GH_TOKEN") or os.environ.get("GITHUB_TOKEN")
@@ -31,22 +16,12 @@ OWNER, REPO_NAME = REPO.split("/")
 BUSY_THRESHOLD = int(os.environ.get("BUSY_THRESHOLD", "3"))
 MAX_PRS_LISTED = int(os.environ.get("MAX_PRS_LISTED", "3"))
 
-# Optional explicit roster override, comma-separated GitHub usernames.
-# If unset, the script derives the roster from everyone who currently
-# appears as a requested reviewer on a qualifying PR, plus (if reachable)
-# the repo's collaborator list.
-REVIEWERS_LIST = os.environ.get("REVIEWERS_LIST", "")
-
 ZULIP_SITE = os.environ["ZULIP_SITE"].rstrip("/")
 ZULIP_EMAIL = os.environ["ZULIP_BOT_EMAIL"]
 ZULIP_API_KEY = os.environ["ZULIP_BOT_API_KEY"]
 ZULIP_STREAM = os.environ["ZULIP_STREAM"]
 ZULIP_TOPIC = os.environ.get("ZULIP_TOPIC", "Reviewer load report")
 
-
-# ---------------------------------------------------------------------------
-# GitHub helpers
-# ---------------------------------------------------------------------------
 
 def gh_request(path, params=None):
     url = f"{GITHUB_API}{path}"
@@ -68,6 +43,7 @@ def gh_request(path, params=None):
         raise
 
 
+# this function makes the results of multiple github pages into a single list
 def gh_paginate(path, params=None):
     params = dict(params or {})
     params.setdefault("per_page", 100)
@@ -84,39 +60,22 @@ def gh_paginate(path, params=None):
         page += 1
     return results
 
-
+# get a list of open PRs
 def fetch_open_prs_in_window():
     prs = gh_paginate(
         f"/repos/{OWNER}/{REPO_NAME}/pulls",
         {"state": "open", "sort": "created", "direction": "desc"},
     )
-    qualifying = []
+    result = []
     for pr in prs:
-        created_at = datetime.datetime.strptime(
-            pr["created_at"], "%Y-%m-%dT%H:%M:%SZ"
-        ).replace(tzinfo=datetime.timezone.utc)
-        qualifying.append(pr)
+        result.append(pr)
 
-    return qualifying
+    return result
 
-
+# get the number of lines changed in the PR to estimate the size
 def fetch_pr_lines_changed(number):
     data, _ = gh_request(f"/repos/{OWNER}/{REPO_NAME}/pulls/{number}")
     return data.get("additions", 0) + data.get("deletions", 0)
-
-
-def expand_team_members(team_slug):
-    """Best-effort: only works if the token has org read access."""
-    try:
-        members = gh_paginate(f"/orgs/{OWNER}/teams/{team_slug}/members")
-        return [m["login"] for m in members]
-    except Exception:
-        print(
-            f"Warning: could not expand team '{team_slug}' "
-            f"(likely needs a token with read:org scope). Skipping.",
-            file=sys.stderr,
-        )
-        return []
 
 
 def fetch_recently_merged_prs():
@@ -147,7 +106,8 @@ def fetch_recently_merged_prs():
             merged.append(pr)
     return merged
 
-
+# gets people who arent assigned as a reviewer, but have pushed to the repo in the past
+# needed to find people currently assigned to 0 reviews
 def fetch_collaborators():
     try:
         collabs = gh_paginate(
@@ -164,7 +124,6 @@ def fetch_collaborators():
 
 # get all the important values needed for the message
 def build_report():
-    now = datetime.datetime.now(datetime.timezone.utc)
     prs = fetch_open_prs_in_window()
 
     pending_counts = {}
@@ -173,8 +132,6 @@ def build_report():
 
     for pr in prs:
         reviewers = [r["login"] for r in pr.get("requested_reviewers", [])]
-        for team in pr.get("requested_teams", []):
-            reviewers.extend(expand_team_members(team["slug"]))
 
         if not reviewers:
             labels = [lbl["name"] for lbl in pr.get("labels", [])]
@@ -189,12 +146,10 @@ def build_report():
     merged_yesterday = fetch_recently_merged_prs()
 
 
-    if REVIEWERS_LIST.strip():
-        roster = [r.strip() for r in REVIEWERS_LIST.split(",") if r.strip()]
-    else:
-        roster = set(fetch_collaborators()) | set(pending_counts.keys())
-        roster = sorted(roster)
+    roster = set(fetch_collaborators()) | set(pending_counts.keys())
+    roster = sorted(roster)
 
+    # sort into 3 groups
     busy, moderate, quiet = [], [], []
     for login in roster:
         count = pending_counts.get(login, 0)
@@ -278,23 +233,22 @@ def format_message(report):
 
 
 def post_to_zulip(content):
-
-    # uncomment this to post to thread
-    #data = urllib.parse.urlencode(
-    #    {
-    #       "type": "stream",
-    #      "to": ZULIP_STREAM,
-    #     "topic": ZULIP_TOPIC,
-    #        "content": content,
-    #    }
-    #).encode()
     data = urllib.parse.urlencode(
+        {
+           "type": "stream",
+          "to": ZULIP_STREAM,
+         "topic": ZULIP_TOPIC,
+            "content": content,
+        }
+    ).encode()
+    # send a DM (Testing only)
+    '''data = urllib.parse.urlencode(
         {
             "type": "private",
             "to": json.dumps([1175816]),
             "content": content,
         }
-    ).encode()
+    ).encode()'''
 
     req = urllib.request.Request(f"{ZULIP_SITE}/api/v1/messages", data=data)
     credentials = f"{ZULIP_EMAIL}:{ZULIP_API_KEY}"
