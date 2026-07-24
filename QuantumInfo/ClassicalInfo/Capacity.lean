@@ -5,9 +5,7 @@ Authors: Alex Meiburg
 -/
 module
 
-public import QuantumInfo.ClassicalInfo.Entropy
-public import Mathlib.Data.Finset.Fin
-public import Mathlib.Data.Fintype.Fin
+public import Mathlib.Data.Fin.Basic
 
 @[expose] public section
 

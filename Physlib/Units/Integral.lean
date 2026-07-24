@@ -69,7 +69,7 @@ fun (μ : DimSet (MeasureTheory.Measure M) d)
     (f : DimSet (M → G) (CarriesDimension.d G * d⁻¹)) ↦ ∫ x, f.1 x ∂μ.1
 ```
   is dimensionally correct. -/
-lemma integral_isDimensionallyCorrect (d : Dimension) :
+lemma integral_isDimensionallyCorrect (d : Dimension LTMCTDimensionBase) :
     IsDimensionallyCorrect (fun (μ : DimSet (MeasureTheory.Measure M) d)
       (f : DimSet (M → G) (dim G * d⁻¹)) ↦ ∫ x, f.1 x ∂μ.1) := by
   intro u1 u2

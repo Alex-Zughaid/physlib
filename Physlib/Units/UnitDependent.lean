@@ -197,7 +197,7 @@ lemma UnitChoices.scaleUnit_apply_fst (u1 u2 : UnitChoices) :
     ChargeUnit.div_eq_val, TemperatureUnit.div_eq_val, toReal]
 
 @[simp]
-lemma UnitChoices.dimScale_scaleUnit {u1 u2 u : UnitChoices} (d : Dimension) :
+lemma UnitChoices.dimScale_scaleUnit {u1 u2 u : UnitChoices} (d : Dimension LTMCTDimensionBase) :
     u.dimScale (scaleUnit u1 u2 u) d = u1.dimScale u2 d := by
   simp [dimScale, scaleUnit]
   simp [LengthUnit.div_eq_val, TimeUnit.div_eq_val, MassUnit.div_eq_val, ChargeUnit.div_eq_val,
@@ -472,10 +472,11 @@ lemma DMul.hMul_scaleUnit {M1 M2 M3 : Type} [CarriesDimension M1] [CarriesDimens
 
 /-- Given a type `M` that depends on units, e.g. the function type `M1 → M2` between two types
   carrying a dimension, the subtype of `M` which scales according to the dimension `d`. -/
-def DimSet (M : Type) [MulAction ℝ≥0 M] [MulUnitDependent M] (d : Dimension) : Set M :=
+def DimSet (M : Type) [MulAction ℝ≥0 M] [MulUnitDependent M] (d : Dimension LTMCTDimensionBase) :
+    Set M :=
   {m : M | ∀ u1 u2, scaleUnit u1 u2 m = (UnitChoices.dimScale u1 u2 d) • m}
 
-instance (M : Type) [MulAction ℝ≥0 M] [MulUnitDependent M] (d : Dimension) :
+instance (M : Type) [MulAction ℝ≥0 M] [MulUnitDependent M] (d : Dimension LTMCTDimensionBase) :
     MulAction ℝ≥0 (DimSet M d) where
   smul a f := ⟨a • f.1, fun u1 u2 => by
     rw [smul_comm, ← f.2]
@@ -489,14 +490,15 @@ instance (M : Type) [MulAction ℝ≥0 M] [MulUnitDependent M] (d : Dimension) :
     change (a * b) • f.1 = a • (b • f.1)
     rw [smul_smul]
 
-instance (M : Type) [MulAction ℝ≥0 M] [MulUnitDependent M] (d : Dimension) :
+instance (M : Type) [MulAction ℝ≥0 M] [MulUnitDependent M] (d : Dimension LTMCTDimensionBase) :
     CarriesDimension (DimSet M d) where
   d := d
 
 @[simp]
-lemma scaleUnit_dimSet_val {M : Type} [MulAction ℝ≥0 M] [MulUnitDependent M] (d : Dimension)
-    (m : DimSet M d) (u1 u2 : UnitChoices) :
+lemma scaleUnit_dimSet_val {M : Type} [MulAction ℝ≥0 M] [MulUnitDependent M]
+    (d : Dimension LTMCTDimensionBase) (m : DimSet M d) (u1 u2 : UnitChoices) :
     (scaleUnit u1 u2 m).1 = scaleUnit u1 u2 m.1 := (m.2 u1 u2).symm
 
-lemma DimSet.mem_iff {M : Type} [MulAction ℝ≥0 M] [MulUnitDependent M] (d : Dimension) (m : M) :
+lemma DimSet.mem_iff {M : Type} [MulAction ℝ≥0 M] [MulUnitDependent M]
+    (d : Dimension LTMCTDimensionBase) (m : M) :
     m ∈ DimSet M d ↔ ∀ u1 u2, scaleUnit u1 u2 m = (UnitChoices.dimScale u1 u2 d) • m := by rfl

@@ -10,7 +10,7 @@ public import Physlib.SpaceAndTime.Space.LengthUnit
 public import Physlib.ClassicalMechanics.Mass.MassUnit
 public import Physlib.Electromagnetism.Charge.ChargeUnit
 public import Physlib.Thermodynamics.Temperature.TemperatureUnits
-public import Physlib.Units.Dimension
+public import Physlib.Units.LTMCTDimensionBase
 public import Physlib.Meta.TODO.Basic
 public import Mathlib.Analysis.SpecialFunctions.Pow.NNReal
 /-!
@@ -98,7 +98,7 @@ namespace UnitChoices
 /-- Given two choices of units `u1` and `u2` and a dimension `d`, the
   element of `ℝ≥0` corresponding to the scaling (by definition) of a quantity of dimension `d`
   when changing from units `u1` to `u2`. -/
-noncomputable def dimScale (u1 u2 : UnitChoices) :Dimension →* ℝ≥0 where
+noncomputable def dimScale (u1 u2 : UnitChoices) :Dimension LTMCTDimensionBase →* ℝ≥0 where
   toFun d :=
     (u1.length / u2.length) ^ (d.length : ℝ) *
     (u1.time / u2.time) ^ (d.time : ℝ) *
@@ -115,7 +115,7 @@ noncomputable def dimScale (u1 u2 : UnitChoices) :Dimension →* ℝ≥0 where
     all_goals
       simp
 
-lemma dimScale_apply (u1 u2 : UnitChoices) (d : Dimension) :
+lemma dimScale_apply (u1 u2 : UnitChoices) (d : Dimension LTMCTDimensionBase) :
     dimScale u1 u2 d =
       (u1.length / u2.length) ^ (d.length : ℝ) *
       (u1.time / u2.time) ^ (d.time : ℝ) *
@@ -124,7 +124,7 @@ lemma dimScale_apply (u1 u2 : UnitChoices) (d : Dimension) :
       (u1.temperature / u2.temperature) ^ (d.temperature : ℝ) := rfl
 
 @[simp]
-lemma dimScale_self (u : UnitChoices) (d : Dimension) :
+lemma dimScale_self (u : UnitChoices) (d : Dimension LTMCTDimensionBase) :
     dimScale u u d = 1 := by
   simp [dimScale]
 
@@ -133,7 +133,7 @@ lemma dimScale_one (u1 u2 : UnitChoices) :
     dimScale u1 u2 1 = 1 := by
   simp [dimScale]
 
-lemma dimScale_transitive (u1 u2 u3 : UnitChoices) (d : Dimension) :
+lemma dimScale_transitive (u1 u2 u3 : UnitChoices) (d : Dimension LTMCTDimensionBase) :
     dimScale u1 u2 d * dimScale u2 u3 d = dimScale u1 u3 d := by
   simp [dimScale]
   trans ((u1.length / u2.length) ^ (d.length : ℝ) * (u2.length / u3.length) ^ (d.length : ℝ)) *
@@ -151,23 +151,23 @@ lemma dimScale_transitive (u1 u2 u3 : UnitChoices) (d : Dimension) :
   field_simp
 
 @[simp]
-lemma dimScale_mul_symm (u1 u2 : UnitChoices) (d : Dimension) :
+lemma dimScale_mul_symm (u1 u2 : UnitChoices) (d : Dimension LTMCTDimensionBase) :
     dimScale u1 u2 d * dimScale u2 u1 d = 1 := by
   rw [dimScale_transitive, dimScale_self]
 
 @[simp]
-lemma dimScale_coe_mul_symm (u1 u2 : UnitChoices) (d : Dimension) :
+lemma dimScale_coe_mul_symm (u1 u2 : UnitChoices) (d : Dimension LTMCTDimensionBase) :
     (toReal (dimScale u1 u2 d)) * (toReal (dimScale u2 u1 d)) = 1 := by
   trans toReal (dimScale u1 u2 d * dimScale u2 u1 d)
   · rw [NNReal.coe_mul]
   simp
 
 @[simp]
-lemma dimScale_ne_zero (u1 u2 : UnitChoices) (d : Dimension) :
+lemma dimScale_ne_zero (u1 u2 : UnitChoices) (d : Dimension LTMCTDimensionBase) :
     dimScale u1 u2 d ≠ 0 := by
   simp [dimScale]
 
-lemma dimScale_symm (u1 u2 : UnitChoices) (d : Dimension) :
+lemma dimScale_symm (u1 u2 : UnitChoices) (d : Dimension LTMCTDimensionBase) :
     dimScale u1 u2 d = (dimScale u2 u1 d)⁻¹ := by
   simp only [dimScale_apply, mul_inv]
   congr
@@ -177,14 +177,14 @@ lemma dimScale_symm (u1 u2 : UnitChoices) (d : Dimension) :
   · rw [ChargeUnit.div_symm, inv_rpow]
   · rw [TemperatureUnit.div_symm, inv_rpow]
 
-lemma dimScale_of_inv_eq_swap (u1 u2 : UnitChoices) (d : Dimension) :
+lemma dimScale_of_inv_eq_swap (u1 u2 : UnitChoices) (d : Dimension LTMCTDimensionBase) :
     dimScale u1 u2 d⁻¹ = dimScale u2 u1 d := by
   simp only [map_inv]
   conv_rhs => rw[dimScale_symm]
 
 @[simp]
-lemma smul_dimScale_injective {M : Type} [MulAction ℝ≥0 M] (u1 u2 : UnitChoices) (d : Dimension)
-    (m1 m2 : M) :
+lemma smul_dimScale_injective {M : Type} [MulAction ℝ≥0 M] (u1 u2 : UnitChoices)
+    (d : Dimension LTMCTDimensionBase) (m1 m2 : M) :
     (u1.dimScale u2 d) • m1 = (u1.dimScale u2 d) • m2 ↔ m1 = m2:= by
   refine IsUnit.smul_left_cancel ?_
   refine isUnit_iff_exists_inv.mpr ?_
@@ -192,7 +192,7 @@ lemma smul_dimScale_injective {M : Type} [MulAction ℝ≥0 M] (u1 u2 : UnitChoi
   simp
 
 @[simp]
-lemma dimScale_pos (u1 u2 : UnitChoices) (d : Dimension) :
+lemma dimScale_pos (u1 u2 : UnitChoices) (d : Dimension LTMCTDimensionBase) :
     0 < (dimScale u1 u2 d) := by
   apply lt_of_le_of_ne
   · simp
@@ -241,7 +241,7 @@ noncomputable def SIPrimed : UnitChoices where
   temperature := TemperatureUnit.scale 11 TemperatureUnit.kelvin
 
 @[simp]
-lemma dimScale_SI_SIPrimed (d : Dimension) :
+lemma dimScale_SI_SIPrimed (d : Dimension LTMCTDimensionBase) :
     dimScale SI SIPrimed d =
       (2⁻¹ : ℝ≥0) ^ (d.length : ℝ) *
       (3⁻¹ : ℝ≥0) ^ (d.time : ℝ) *
@@ -252,7 +252,7 @@ lemma dimScale_SI_SIPrimed (d : Dimension) :
   rfl
 
 @[simp]
-lemma dimScale_SIPrimed_SI (d : Dimension) :
+lemma dimScale_SIPrimed_SI (d : Dimension LTMCTDimensionBase) :
     dimScale SIPrimed SI d =
       (2 : ℝ≥0) ^ (d.length : ℝ) *
       (3 : ℝ≥0) ^ (d.time : ℝ) *
@@ -279,7 +279,7 @@ Dimensions are assigned to types with the following type-classes
   associated with the type `M`. -/
 class HasDim (M : Type) where
   /-- The dimension associated with a type `M`. -/
-  d : Dimension
+  d : Dimension LTMCTDimensionBase
 
 alias dim := HasDim.d
 

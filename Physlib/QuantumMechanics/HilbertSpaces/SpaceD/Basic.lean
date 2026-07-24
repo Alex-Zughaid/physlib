@@ -1,10 +1,12 @@
 /-
 Copyright (c) 2026 Gregory J. Loges. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
-Authors: Gregory J. Loges
+Authors: Adam Bornemann, Gregory J. Loges
 -/
 module
 
+public import Mathlib.Analysis.Distribution.SchwartzSpace.Basic
+public import Mathlib.Analysis.Distribution.Sobolev
 public import Mathlib.Analysis.InnerProductSpace.Dual
 public import Mathlib.MeasureTheory.Function.L2Space
 public import Physlib.SpaceAndTime.Space.Module
@@ -14,11 +16,16 @@ public import Physlib.SpaceAndTime.Space.Module
 
 ## i. Overview
 
-The Hilbert spaces appropriate for doing quantum mechanics on `Space d` are the $$L^2$$-spaces
+The Hilbert spaces appropriate for doing quantum mechanics on `Space d` are the $L^2$-spaces
 `SpaceDHilbertSpace d μ := Lp ℂ 2 μ`, where `μ` is some measure on `Space d`.
 Elements of `SpaceDHilbertSpace d μ` are _equivalence classes_ of functions `Space d → ℂ` which are
 square-integrable with respect to `μ`, i.e. `∫ x, ‖f x‖ ^ 2 ∂μ` is finite, and where `f` and `g` are
 in the same equivalence class if they are `μ`-a.e. equal.
+
+The ability of a function to be interpreted as an element of `SpaceDHilbertSpace d μ` is captured
+by the property `MemHS`. If one has `hf : MemHS f μ` for a function `f : Space d → ℂ` this means
+that `f` is `μ`-a.e. strongly measurable and square-integrable; `mk hf` constructs the corresponding
+equivalence class of `f` in `SpaceDHilbertSpace d μ`.
 
 Given `SpaceDHilbertSpace d μ` and `Ω : Set (Space d)`, the Hilbert space
 `SpaceDHilbertSpaceOn Ω μ ≔ SpaceDHilbertSpace d (μ.restrict Ω)` may be interpreted as the
@@ -28,17 +35,19 @@ The reason is that for each `ψ` in `SpaceDHilbertSpaceOn Ω μ` we have
 contains a representative which vanishes on the complement of `Ω`.
 The linear isometry `restrictIncl Ω μ` describes this sub-Hilbert space relationship
 by mapping each `ψ` to this special representative in its equivalence class.
-
 Similarly, we may project `SpaceDHilbertSpace d μ` onto `SpaceDHilbertSpaceOn Ω μ` by enlarging the
 equivalence classes, essentially dropping information about the functions on the complement of `Ω`.
 
 ## ii. Key results
 
-- `SpaceDHilbertSpace d μ` : The $$L^2$$-space on `Space d` with respect to the measure `μ`.
+- `SpaceDHilbertSpace d μ` : The $L^2$-space on `Space d` with respect to the measure `μ`.
 - `toBra` : The linear equivalence between the Hilbert space and its dual. This is the map which
     sends each ket to its corresponding bra and _vice versa_.
-- `MemHS f μ` : The proposition capturing exactly when the function `f : Space d → ℂ` can be lifted
+- `MemHS f μ` : The proposition capturing exactly when a function `f : Space d → ℂ` can be lifted
     to an element of the Hilbert space.
+- `SpaceDHilbertSpaceOn Ω μ` : An abbreviation for the Hilbert space
+    `SpaceDHilbertSpace d (μ.restrict Ω)` appropriate for describing the $L^2$-space of complex
+    functions on a subset of `Space d`.
 - `subspaceProjection` : The projection of `SpaceDHilbertSpace d μ` onto `SpaceDHilbertSpaceOn Ω μ`.
 - `subspaceIncl` : The linear isometry including `SpaceDHilbertSpaceOn Ω μ`
     as a sub-Hilbert space of `SpaceDHilbertspace d μ`.
@@ -64,14 +73,14 @@ noncomputable section
 namespace QuantumMechanics
 
 open Function InnerProductSpace MeasureTheory Measure Set
+open scoped SchwartzMap
 
 /-!
 ## A. SpaceDHilbertSpace
 -/
 
-/-- The Hilbert space for single-particle quantum mechanics on `Space d` with measure `μ`
-  is defined to be `L²(Space d, ℂ; μ)`, the space of `μ`-a.e. equal equivalence classes
-  of functions `f : Space d → ℂ` for which `∫ x, ‖f x‖² ∂μ` is finite. -/
+/-- The L²-space of `μ`-a.e. equal equivalence classes of functions `f : Space d → ℂ`
+  for which `∫ x, ‖f x‖² ∂μ` is finite. -/
 abbrev SpaceDHilbertSpace (d : ℕ) (μ : Measure (Space d) := volume) := Lp ℂ 2 μ
 
 namespace SpaceDHilbertSpace
@@ -147,7 +156,7 @@ lemma MemHS.indicator {Ω : Set (Space d)} (hΩ : MeasurableSet Ω) (hf : MemHS 
     MemHS (Ω.indicator f) μ :=
   MemLp.indicator hΩ hf
 
-/-- If `f` is a member of the Hilbert space `SpaceDHilbertSpaceOn Ω μ` then the representative
+/-- If `f` is a member of the Hilbert space with measure restricted to `Ω` then the representative
   `Ω.indicator f` which vanishes outside `Ω` is a member of `SpaceDHilbertSpace d μ`. -/
 lemma MemHS.indicator_of_restrict
     {Ω : Set (Space d)} (hΩ : MeasurableSet Ω) (hf : MemHS f (μ.restrict Ω)) :
@@ -182,12 +191,12 @@ lemma mk_sub : mk (hf.sub hg) = mk hf - mk hg := rfl
 @[simp]
 lemma mk_const_smul (c : ℂ) : mk (hf.const_smul c) = c • mk hf := rfl
 
-lemma coeFn_mk : mk hf =ᵐ[μ] f := AEEqFun.coeFn_mk f hf.1
-
 lemma mk_eq_iff : mk hf = mk hg ↔ f =ᵐ[μ] g := by simp [mk]
 
 lemma mk_surjective : ∃ (f : Space d → ℂ) (hf : MemHS f μ), mk hf = ψ :=
   ⟨ψ, memHS_coe ψ, by simp [mk]⟩
+
+lemma coeFn_mk : mk hf =ᵐ[μ] f := AEEqFun.coeFn_mk f hf.1
 
 lemma inner_mk_mk : ⟪mk hf, mk hg⟫_ℂ = ∫ x, starRingEnd ℂ (f x) * g x ∂μ := by
   apply integral_congr_ae
@@ -218,6 +227,15 @@ end
 ### A.5. Misc.
 -/
 
+/-- The tempered distribution associated to a state. -/
+abbrev toTemperedDistribution [μ.HasTemperateGrowth]
+    (ψ : SpaceDHilbertSpace d μ) : 𝓢'(Space d, ℂ) := Lp.toTemperedDistribution ψ
+
+/-- The embedding of states into tempered distributions as a continuous linear map. -/
+abbrev toTemperedDistributionCLM (d : ℕ) (μ : Measure (Space d) := volume)
+    [μ.HasTemperateGrowth] : SpaceDHilbertSpace d μ →L[ℂ] 𝓢'(Space d, ℂ) :=
+  Lp.toTemperedDistributionCLM ℂ μ 2
+
 open Filter in
 lemma tendsto_zero_iff_tendsto_zero_lintegral_enorm_sq
     {α : Type*} {l : Filter α} {ψ : α → SpaceDHilbertSpace d μ} :
@@ -239,9 +257,10 @@ end SpaceDHilbertSpace
 TODO "Upgrade subspaceProjection to a ContinuousLinearMap when Lp.LpToLpOfMeasureLeSMul
   becomes available."
 
-/-- The Hilbert space for single-particle quantum mechanics on a set `Ω ⊆ Space d` with measure `μ`
-  is defined to be `SpaceDHilbertSpace d (μ.restrict Ω)`, the space of `μ`-a.e. equal on `Ω`
-  equivalence classes of functions `f : Space d → ℂ` for which `∫ x on Ω, ‖f x‖² ∂μ` is finite. -/
+/-- The L²-space `SpaceDHilbertSpace d (μ.restrict Ω)`.
+
+  Elements are equivalence classes of functions which agree `μ`-a.e. on `Ω` and which have
+  `∫ x in Ω, ‖f x‖ ^ 2 ∂μ` finite. -/
 abbrev SpaceDHilbertSpaceOn {d : ℕ} (Ω : Set (Space d)) (μ : Measure (Space d) := volume) :=
   SpaceDHilbertSpace d (μ.restrict Ω)
 

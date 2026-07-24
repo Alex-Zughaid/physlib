@@ -1,7 +1,7 @@
 /-
 Copyright (c) 2026 Gregory J. Loges. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
-Authors: Gregory J. Loges
+Authors: Adam Bornemann, Gregory J. Loges
 -/
 module
 
@@ -134,6 +134,11 @@ lemma schwartzEquiv_inner :
 variable (μ) in
 lemma schwartzIncl_ker : (schwartzIncl μ).ker = (⊥ : Submodule ℂ 𝓢(Space d, ℂ)) := by
   ext; simp [← schwartzEquiv_apply_coe]
+
+omit [μ.IsOpenPosMeasure] in
+lemma toTemperedDistribution_schwartzIncl_eq :
+    toTemperedDistribution (schwartzIncl μ g) = g.toTemperedDistributionCLM (Space d) ℂ μ :=
+  Lp.toTemperedDistribution_toLp_eq g
 
 end SchwartzSubmodule
 end SpaceDHilbertSpace
