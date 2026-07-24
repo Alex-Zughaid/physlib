@@ -20,8 +20,7 @@ MAX_PRS_LISTED = int(os.environ.get("MAX_PRS_LISTED", "3"))
 ZULIP_SITE = os.environ["ZULIP_SITE"].rstrip("/")
 ZULIP_EMAIL = os.environ["ZULIP_BOT_EMAIL"]
 ZULIP_API_KEY = os.environ["ZULIP_BOT_API_KEY"]
-ZULIP_STREAM = os.environ["ZULIP_STREAM"]
-ZULIP_TOPIC = os.environ.get("ZULIP_TOPIC", "Reviewer load report")
+ZULIP_DM_SENDER_ID = os.environ.get("ZULIP_DM_SENDER_ID")
 
 
 def gh_request(path, params=None):
@@ -261,22 +260,19 @@ def format_message(report):
 
 
 def post_to_zulip(content):
+    if not ZULIP_DM_SENDER_ID:
+        raise RuntimeError(
+            "ZULIP_DM_SENDER_ID is not set - this workflow only replies via "
+            "direct message and needs a sender to reply to."
+        )
+
     data = urllib.parse.urlencode(
         {
-           "type": "stream",
-          "to": ZULIP_STREAM,
-         "topic": ZULIP_TOPIC,
+            "type": "direct",
+            "to": json.dumps([int(ZULIP_DM_SENDER_ID)]),
             "content": content,
         }
     ).encode()
-    # send a DM (Testing only)
-    '''data = urllib.parse.urlencode(
-        {
-            "type": "private",
-            "to": json.dumps([1175816]),
-            "content": content,
-        }
-    ).encode()'''
 
     req = urllib.request.Request(f"{ZULIP_SITE}/api/v1/messages", data=data)
     credentials = f"{ZULIP_EMAIL}:{ZULIP_API_KEY}"

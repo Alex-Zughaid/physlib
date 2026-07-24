@@ -2,8 +2,10 @@
 //
 // Zulip POSTs a JSON body here whenever the configured bot receives a
 // message. We check it's really from Zulip (shared token) and that it's a
-// DM (not a stream mention), then ask GitHub to fire the "zulip-dm"
-// repository_dispatch event, which the repo-updates workflow listens for.
+// direct message (not a stream mention - trigger "direct_message", Zulip's
+// current name for what used to be called "private_message"), then ask
+// GitHub to fire the "zulip-dm" repository_dispatch event, which the
+// repo-updates workflow listens for.
 
 export default {
   async fetch(request, env) {
@@ -26,7 +28,7 @@ export default {
     }
 
     // Only trigger on direct messages, not @-mentions in a stream.
-    if (payload.trigger !== "private_message") {
+    if (payload.trigger !== "direct_message") {
       return jsonResponse({});
     }
 
@@ -40,7 +42,10 @@ export default {
           "X-GitHub-Api-Version": "2022-11-28",
           "User-Agent": "zulip-dm-relay",
         },
-        body: JSON.stringify({ event_type: "zulip-dm" }),
+        body: JSON.stringify({
+          event_type: "zulip-dm",
+          client_payload: { sender_id: payload.message?.sender_id },
+        }),
       }
     );
 

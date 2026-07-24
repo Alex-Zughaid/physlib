@@ -31,6 +31,7 @@ jobs:
           ZULIP_SITE: ${{ secrets.ZULIP_SITE }}
           ZULIP_BOT_EMAIL: ${{ secrets.ZULIP_BOT_EMAIL }}
           ZULIP_BOT_API_KEY: ${{ secrets.ZULIP_BOT_API_KEY }}
-          ZULIP_STREAM: ${{ secrets.ZULIP_STREAM }}
-          ZULIP_TOPIC: "Repo Updates"
+          # Sent by the Zulip DM relay (via repository_dispatch); the report
+          # is sent back as a direct message to this user.
+          ZULIP_DM_SENDER_ID: ${{ github.event.client_payload.sender_id }}
         run: python3 scripts/repo-updates-script.py
