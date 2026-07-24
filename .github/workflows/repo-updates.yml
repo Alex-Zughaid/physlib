@@ -1,9 +1,8 @@
 name: Repo Updates
 
 on:
-  schedule:
-    # Runs daily at this time
-    - cron: "0 8 * * *"
+  repository_dispatch:
+    types: [zulip-dm]
   workflow_dispatch: {}
 
 permissions:
