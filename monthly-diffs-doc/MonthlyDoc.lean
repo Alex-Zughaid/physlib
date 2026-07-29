@@ -1,7 +1,20 @@
-=== .codespellignore ===
-ofSet
+import VersoManual
 
-=== .github/workflows/PRMessage.yml ===
+open Verso.Genre Manual
+
+#doc (Manual) "Jun 2026" =>
+
+# Changes
+
+## `.codespellignore`
+
+```
+ofSet
+```
+
+## `.github/workflows/PRMessage.yml`
+
+```
 name: PR Comment
 
 on:
@@ -31,8 +44,11 @@ jobs:
 
                   **Important:** If a reviewer adds an `awaiting-author` label to your PR, once you have addressed the review comments, please remove that label by adding a comment with `-awaiting-author`. This helps us keep track of reviews.
                 GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+```
 
-=== .github/workflows/alphaBuild.yml ===
+## `.github/workflows/alphaBuild.yml`
+
+```
 
 on:
   push:
@@ -122,8 +138,11 @@ jobs:
         run: |
           chmod u+x scripts/PhyslibAlpha/alphaPythonLinters.sh
           ./scripts/PhyslibAlpha/alphaPythonLinters.sh
+```
 
-=== AGENTS.md ===
+## `AGENTS.md`
+
+```
 # AGENTS file
 
 ## Introduction
@@ -209,8 +228,11 @@ If you write the PR description:
 - The PR description must list all lemmas and definitions added or removed, the file in which each appears, and a brief explanation of each.
 - The PR description should include a reviewer map: a brief guide indicating the order in which the reviewer should look at the changes.
 - The PR description must be concise.
+```
 
-=== AI-POLICY.md ===
+## `AI-POLICY.md`
+
+```
 # AI policy
 
 This file is the human-facing contract for AI-assisted contributions to Physlib. AI agent instructions are in [AGENTS.md](AGENTS.md).
@@ -242,8 +264,11 @@ This file is the human-facing contract for AI-assisted contributions to Physlib.
 3.1. All communication with human reviewers must be conducted by humans, not by an AI agent.
 
 3.2. If an AI agent is used to implement reviewer feedback, the author must independently verify that the feedback has been addressed correctly before requesting re-review. This must not be left to the reviewer to check.
+```
 
-=== CITATION.cff ===
+## `CITATION.cff`
+
+```
 cff-version: 1.2.0
 message: "If you use this library, please cite it as below."
 authors:
@@ -251,12 +276,18 @@ authors:
 title: "Physlib: The Lean Physics Library"
 date-released: 2024-04-16
 url: "https://github.com/leanprover-community/physlib"
+```
 
-=== CONTRIBUTING.md ===
+## `CONTRIBUTING.md`
+
+```
 - https://physlib.io/getting-started to learn how to get started
 - https://physlib.io/get-involved to see how to get involved.
+```
 
-=== Physlib.lean ===
+## `Physlib.lean`
+
+```
 public import Physlib.ClassicalMechanics.HarmonicOscillator.Geometric.Basic
 public import Physlib.ClassicalMechanics.HarmonicOscillator.Geometric.Trajectory
 public import Physlib.Cosmology.FLRW.ConformalTime
@@ -298,8 +329,11 @@ public import Physlib.SpaceAndTime.Space.Norm.Regularized
 public import Physlib.SpaceAndTime.Space.Origin
 public import Physlib.SpaceAndTime.TimeAndSpace.EuclideanGroup.Action
 public import Physlib.SpaceAndTime.TimeAndSpace.EuclideanGroup.SchwartzAction
+```
 
-=== Physlib/ClassicalMechanics/DampedHarmonicOscillator/API-map.yaml ===
+## `Physlib/ClassicalMechanics/DampedHarmonicOscillator/API-map.yaml`
+
+```
 version: v0.1
 
 Title: Damped harmonic oscillator
@@ -406,16 +440,22 @@ Requirements:
       equation of motion with the given initial conditions.
     done: false
     location: N/A
+```
 
-=== Physlib/ClassicalMechanics/DampedHarmonicOscillator/Basic.lean ===
+## `Physlib/ClassicalMechanics/DampedHarmonicOscillator/Basic.lean`
+
+```
 - **Underdamped** (`γ^2 < 4 * m * k`) : oscillatory motion with exponentially decaying
 - **Critically damped** (`γ^2 = 4 * m * k`) : fastest return to equilibrium without
 - **Overdamped** (`4 * m * k < γ^2`) : slow return to equilibrium without oscillation.
   position as a configuration space and velocity as its tangent space, see the
   HarmonicOscillator file."
 lemma equationOfMotion_iff_newtons_2nd_law (xₜ : Time → EuclideanSpace ℝ (Fin 1)) :
+```
 
-=== Physlib/ClassicalMechanics/DampedHarmonicOscillator/Solution.lean ===
+## `Physlib/ClassicalMechanics/DampedHarmonicOscillator/Solution.lean`
+
+```
     rw [IsUnderdamped, IsCriticallyDamped] at *
   rw [IsOverdamped] at hS
     rw [IsUnderdamped]
@@ -500,8 +540,11 @@ lemma equationOfMotion_iff_newtons_2nd_law (xₜ : Time → EuclideanSpace ℝ (
   fun_prop
         rw [IsOverdamped, IsUnderdamped] at *
         exact lt_of_le_of_ne (not_lt.mp hUnder) (Ne.symm hCritical)
+```
 
-=== Physlib/ClassicalMechanics/EulerLagrange.lean ===
+## `Physlib/ClassicalMechanics/EulerLagrange.lean`
+
+```
   simp only [eulerLagrangeOp_eq, Time.deriv_eq]
       apply ContDiff.differentiable (n := ∞) (by fun_prop) (by simp)
       · apply HasVarAdjDerivAt.fderiv (hu := hq)
@@ -510,8 +553,11 @@ lemma equationOfMotion_iff_newtons_2nd_law (xₜ : Time → EuclideanSpace ℝ (
       try funext t
       rw [gradient_eq_adjFDeriv, adjFDeriv_uncurry] <;>
         apply ContDiff.differentiable (n := ∞) (by fun_prop) (by simp)
+```
 
-=== Physlib/ClassicalMechanics/FreeParticle/Basic.lean ===
+## `Physlib/ClassicalMechanics/FreeParticle/Basic.lean`
+
+```
 public import Mathlib.Analysis.Calculus.MeanValue
 - `linearMomentum_conserved` shows that linear momentum stays constant over time.
 - `kineticEnergy_conserved` shows that kinetic energy stays constant over time.
@@ -578,8 +624,11 @@ theorem linearMomentum_conserved (s : FreeParticle) (q : Trajectory)
 
     (h : ∀ t, s.NewtonsSecondLaw q t) (hcont : ContDiff ℝ 2 q) :
     accel_zero s q h
+```
 
-=== Physlib/ClassicalMechanics/HamiltonsEquations.lean ===
+## `Physlib/ClassicalMechanics/HamiltonsEquations.lean`
+
+```
   simp [hamiltonEqOp_eq, funext_iff, Prod.mk_eq_zero, forall_and, add_eq_zero_iff_neg_eq]
       · exact HasVarAdjDerivAt.fmap _ _ (by fun_prop) (by fun_prop)
           fun x _ => (by fun_prop : DifferentiableAt ℝ _ _).hasAdjFDerivAt
@@ -592,8 +641,11 @@ theorem linearMomentum_conserved (s : FreeParticle) (q : Trajectory)
     rw [adjFDeriv_uncurry
       ((by fun_prop : ContDiff ℝ ∞ _).differentiable (by simp)).differentiableAt]
     all_goals exact ((by fun_prop : ContDiff ℝ ∞ _).differentiable (by simp)).differentiableAt
+```
 
-=== Physlib/ClassicalMechanics/HarmonicOscillator/Basic.lean ===
+## `Physlib/ClassicalMechanics/HarmonicOscillator/Basic.lean`
+
+```
 public import Mathlib.Algebra.Order.Archimedean.Real.Hom
 Here we both define and prove properties related to the angular frequency.
   simp only [ContinuousLinearMap.smul_comp, FunLike.coe_smul,
@@ -607,8 +659,11 @@ Here we both define and prove properties related to the angular frequency.
           exact congrArg (fun L => L 1) (fderiv_const_smul (c := S.m) (f := ∂ₜ xₜ) hd)
   simp only [_root_.zero_apply]
           exact congrArg (fun L => L 1) (fderiv_const_smul (c := S.m) (f := ∂ₜ xₜ) hd)
+```
 
-=== Physlib/ClassicalMechanics/HarmonicOscillator/Geometric/Basic.lean ===
+## `Physlib/ClassicalMechanics/HarmonicOscillator/Geometric/Basic.lean`
+
+```
 /-
 Copyright (c) 2026 Nicola Bernini. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
@@ -824,8 +879,11 @@ end ConfigurationSpace
 end HarmonicOscillator
 
 end ClassicalMechanics
+```
 
-=== Physlib/ClassicalMechanics/HarmonicOscillator/Geometric/Trajectory.lean ===
+## `Physlib/ClassicalMechanics/HarmonicOscillator/Geometric/Trajectory.lean`
+
+```
 /-
 Copyright (c) 2026 Nathaneal Sajan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
@@ -988,8 +1046,11 @@ end Trajectory
 end HarmonicOscillator
 
 end ClassicalMechanics
+```
 
-=== Physlib/ClassicalMechanics/HarmonicOscillator/Solution.lean ===
+## `Physlib/ClassicalMechanics/HarmonicOscillator/Solution.lean`
+
+```
 Authors: Nathaneal Sajan, Joseph Tooby-Smith, Lode Vermeulen
 public import Mathlib.Analysis.SpecialFunctions.Complex.Arg
     - A.2.1. Initial conditions at arbitrary time
@@ -1754,10 +1815,14 @@ lemma return_time (IC : InitialConditions) (non_trivial : IC.x₀ ≠ 0 ∨ IC.v
     _ = (S.ω * t) / S.ω := by rw [hn]
     _ = t * (S.ω / S.ω) := by ring_nf
     _ = t := by simp only [ne_eq, S.ω_ne_zero, not_false_eq_true, div_self, mul_one]
+```
 
-=== Physlib/ClassicalMechanics/Lagrangian/TotalDerivativeEquivalence.lean ===
+## `Physlib/ClassicalMechanics/Lagrangian/TotalDerivativeEquivalence.lean`
+
+```
 public import Physlib.SpaceAndTime.Time.Derivatives
 public import Mathlib.Analysis.Calculus.ContDiff.CPolynomial
+public import Physlib.Mathematics.VariationalCalculus.HasVarGradient
 A general function δL(t, q, dₜ q) is a total time derivative if there exists a function
 F(t, q) (independent of velocity) such that:
   δL(t, q, dₜ q) = d/dt F(t, q) = fderiv ℝ F (t q) (v, 1)
@@ -1885,6 +1950,118 @@ lemma isTotalTimeDerivative_explicit {δL : Time → X → X → ℝ} :
     · exact hFdif
     · exact hq_ContDiff
 
+/--
+Elementary fact: if δL is a time derivative, then so is -δL.
+-/
+lemma isTotalTimeDerivative_neg {δL : Time → X → X → ℝ} (h :  IsTotalTimeDerivative δL) :
+    IsTotalTimeDerivative (- δL) := by
+    rcases h with ⟨F, h_ContDiff, hF⟩
+    set F_neg := (fun t q => - F t q)
+    use F_neg
+    have h_neg_F_ContDiff : ContDiff ℝ ∞ ↿F_neg := by
+      fun_prop
+    use  h_neg_F_ContDiff
+    intro t q hq
+    simp only [Pi.neg_apply]
+    rw [hF t q hq]
+    unfold F_neg
+    unfold Time.deriv
+    simp only [fderiv_fun_neg, _root_.neg_apply]
+
+/-!
+## B. Total time derivative do not affect the physical content
+  The total time derivative does not affect the Euler-Lagrange equations, because its variational
+  derivative is zero:
+  ∫d/dt F(t, q)= F(t₁,q₁) - F(t₀,q₀)
+  is fixed by the boundary conditions.
+-/
+
+
+ /--
+Total time derivative has a variational derivative, which is zero
+ -/
+lemma totalTimeDerivative_hasZeroVarGradient [CompleteSpace X] {δL : Time → X → X → ℝ}
+    (h : IsTotalTimeDerivative δL) (q : Time → X) (hq : ContDiff ℝ ∞ q):
+     HasVarGradientAt (fun q' t => δL t (q' t) (∂ₜ q' t)) (fun _ => 0) q := by
+  rcases h with ⟨F,hF_contDiff, hF⟩
+  let traj_deriv := fun (G : Time → ℝ) t => fderiv ℝ G t 1
+  let F_traj := fun (q : Time → X) t => F t (q t)
+  apply HasVarGradientAt.intro _
+  · apply HasVarAdjDerivAt.congr (F := fun q' => traj_deriv (F_traj q'))
+    · apply HasVarAdjDerivAt.comp (F := traj_deriv) (G := F_traj)
+      · apply HasVarAdjDerivAt.fderiv
+        fun_prop
+      · apply HasVarAdjDerivAt.fmap (f := fun t => F t)
+        · exact hq
+        · fun_prop
+        · intro t x
+          apply DifferentiableAt.hasAdjFDerivAt
+          apply Differentiable.differentiableAt
+          apply ContDiff.differentiable
+          fun_prop
+          decide
+    · intro q' hq'
+      funext t'
+      rw [hF t' q' hq']
+      rfl
+  funext t
+  unfold adjFDeriv
+  simp [adjoint_eq_clm_adjoint]
+
+/--
+If two lagrangians, L and L', differ by a total time derivative, and L has a variational derivative
+grad, then so does L'.
+ -/
+lemma totalTimeDerivative_hasVarGradientAt_equivalence [CompleteSpace X] (L δL : Time → X → X → ℝ)
+    (hδL : IsTotalTimeDerivative δL)
+    (q : Time → X)    (hq : ContDiff ℝ ∞ q) (grad : Time → X)
+    (hgrad :  HasVarGradientAt (fun q' t => L t (q' t) (fderiv ℝ  q' t 1)) grad q) :
+    HasVarGradientAt (fun q' t => (L + δL) t (q' t) (fderiv ℝ q' t 1)) grad q := by
+  have h_add_zero : grad = grad + (fun _ => 0) := by
+    funext t
+    simp
+  rw [h_add_zero]
+  apply HasVarGradientAt.add
+  · exact hgrad
+  · exact totalTimeDerivative_hasZeroVarGradient hδL q hq
+
+
+/-
+Reformulation of the previous result:
+If two lagrangians, L and L', differ by a total time derivative, their variational time derivatives
+coincide (or neither of them has a variational derivative).
+-/
+lemma totalTimeDerivative_varGradient_equivalenvce [CompleteSpace X] (L L' : Time → X → X → ℝ)
+    (htot : IsTotalTimeDerivative (L' - L))
+    (q : Time → X) (hq : ContDiff ℝ ∞ q):
+    (δ (q':=q), ∫ t, L' t (q' t) (fderiv ℝ q' t 1)) =
+       (δ (q':=q), ∫ t, L t (q' t) (fderiv ℝ q' t 1)) := by
+  let δL := (fun t q v => L' t q v - L t q v)
+  by_cases hL : ∃ grad, HasVarGradientAt (fun q' t => L t (q' t) (fderiv ℝ q' t 1)) grad q
+  · apply HasVarGradientAt.varGradient
+    have h_triv : L' = L + (L' - L) := by module
+    rw [h_triv]
+    apply totalTimeDerivative_hasVarGradientAt_equivalence
+    · exact htot
+    · exact hq
+    · rcases hL with ⟨grad, hgrad⟩
+      rw [ HasVarGradientAt.varGradient (fun q' t => L t (q' t) (fderiv ℝ  q' t 1)) grad q hgrad]
+      exact hgrad
+  · by_cases hL' : ∃ grad, HasVarGradientAt (fun q' t => L' t (q' t) (fderiv ℝ q' t 1)) grad q
+    · apply Eq.symm
+      apply HasVarGradientAt.varGradient
+      have h_triv : L = L' +(-(L' - L)) := by module
+      rw [h_triv]
+      apply totalTimeDerivative_hasVarGradientAt_equivalence
+      · apply isTotalTimeDerivative_neg
+        exact htot
+      · exact hq
+      · rcases hL' with ⟨grad, hgrad⟩
+        rw [HasVarGradientAt.varGradient (fun q' t => L' t (q' t) (fderiv ℝ  q' t 1)) grad q hgrad]
+        exact hgrad
+    · unfold varGradient
+      simp only [hL, hL', ↓reduceDIte]
+## C. Velocity-Only Total Time Derivative
     If δL depends only on velocity and equals d/dt F(t, q) for some F,
     then δL(dₜ q) = ⟨g, dₜ q⟩ for some constant vector g.
     - d/dt F(t, q) = ∂F/∂t + ⟨∇F, dₜ q⟩ = ∂F/∂t + ⟨∇F, dₜ q⟩
@@ -1923,8 +2100,11 @@ lemma isTotalTimeDerivativeVelocity  [CompleteSpace X]
       ⟪(InnerProductSpace.toDual ℝ (X)).symm φ, v⟫_ℝ = φ v := by
         (E := X) (x := v) (y := φ)]
     _ = ⟪(InnerProductSpace.toDual ℝ (X)).symm φ, v⟫_ℝ := by
+```
 
-=== Physlib/ClassicalMechanics/Mass/MassUnit.lean ===
+## `Physlib/ClassicalMechanics/Mass/MassUnit.lean`
+
+```
   simp [toReal]
   · exact zero_le
   rfl
@@ -1936,11 +2116,17 @@ lemma isTotalTimeDerivativeVelocity  [CompleteSpace X]
   simp [pounds, ounces]; rw [toReal]; norm_num
   simp [shortTons, pounds]; rw [toReal]; norm_num
   simp [longTons, pounds]; rw [toReal]; norm_num
+```
 
-=== Physlib/ClassicalMechanics/OrbitalMechanics/VisViva.lean ===
+## `Physlib/ClassicalMechanics/OrbitalMechanics/VisViva.lean`
+
+```
 public import Mathlib.Analysis.Real.Sqrt
+```
 
-=== Physlib/ClassicalMechanics/RigidBody/API-map.yaml ===
+## `Physlib/ClassicalMechanics/RigidBody/API-map.yaml`
+
+```
 version: v0.1
 
 Title: Rigid body
@@ -2018,8 +2204,11 @@ Requirements:
       the space of smooth functions to `ℝ` (existing TODO).
     done: false
     location: N/A
+```
 
-=== Physlib/ClassicalMechanics/RigidBody/SolidSphere.lean ===
+## `Physlib/ClassicalMechanics/RigidBody/SolidSphere.lean`
+
+```
 lemma solidSphere_mass {d : ℕ} (m R : ℝ≥0) (hr : R ≠ 0) : (solidSphere d m R).mass = m := by
   simp only [LinearMap.coe_mk, AddHom.coe_mk, ContMDiffMap.coeFn_mk, integral_const,
     MeasurableSet.univ, measureReal_restrict_apply, Set.univ_inter, smul_eq_mul, mul_one]
@@ -2032,8 +2221,11 @@ lemma solidSphere_centerOfMass {d : ℕ} (m R : ℝ≥0) : (solidSphere d m R).c
     coe_eq_zero]
   suffices ∫ x in Metric.closedBall (0 : Space d) R, x i ∂MeasureSpace.volume
     = -∫ x in Metric.closedBall (0 : Space d) R, x i ∂MeasureSpace.volume by linarith
+```
 
-=== Physlib/ClassicalMechanics/WaveEquation/Basic.lean ===
+## `Physlib/ClassicalMechanics/WaveEquation/Basic.lean`
+
+```
     c^2 • Δᵥ (f t) x - ∂ₜ (fun t => (∂ₜ (fun t => f t x) t)) t = 0
   apply Differentiable.comp <;> fun_prop
     RingHom.id_apply, _root_.neg_apply,
@@ -2063,8 +2255,11 @@ lemma solidSphere_centerOfMass {d : ℕ} (m R : ℝ≥0) : (solidSphere d m R).c
   simp only [ContinuousLinearMap.fderiv, ContinuousLinearMap.coe_comp, Function.comp_apply,
   simp only [fderiv_fun_const, Pi.zero_apply, sub_zero, ContinuousLinearMap.coe_comp,
     _root_.zero_apply, inner_zero_right, fderiv_fun_id, ContinuousLinearMap.coe_id',
+```
 
-=== Physlib/CondensedMatter/TightBindingChain/Basic.lean ===
+## `Physlib/CondensedMatter/TightBindingChain/Basic.lean`
+
+```
 abbrev HilbertSpace := QuantumMechanics.FiniteHilbertSpace (Fin T.N)
   QuantumMechanics.FiniteHilbertSpace.basisFun (Fin T.N)
   rintro _ ⟨n, rfl⟩
@@ -2086,8 +2281,11 @@ abbrev HilbertSpace := QuantumMechanics.FiniteHilbertSpace (Fin T.N)
   · apply lt_of_lt_of_eq (b := Real.pi / a * (1 : ℝ))
     apply lt_of_eq_of_lt (b := Real.pi / a * (2 * ((n : ℝ) - (x / 2 : ℕ)) / x))
     · rw [div_lt_one hx]; linarith [hn, hx2']
+```
 
-=== Physlib/Cosmology/FLRW/Basic.lean ===
+## `Physlib/Cosmology/FLRW/Basic.lean`
+
+```
 public import Physlib.Meta.TODO.Basic
 public import Mathlib.Analysis.SpecialFunctions.Trigonometric.Deriv
 TODO "Replace the placeholder `FLRW` type with a concrete structure bundling a positive
@@ -2105,8 +2303,11 @@ TODO "Express the Hubble parameter as a function of the scale factor, `H(a)`, an
 TODO "Prove the change-of-variable relations underlying the age and distance integrals:
   `∂ₜ a = a * hubbleConstant a`, `dt = − dz / ((1 + z) * H)` and `dχ = c * dz / H`."
 
+```
 
-=== Physlib/Cosmology/FLRW/ConformalTime.lean ===
+## `Physlib/Cosmology/FLRW/ConformalTime.lean`
+
+```
 /-
 Copyright (c) 2026 Jinzheng Li. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
@@ -2144,8 +2345,11 @@ TODO "State the Friedmann and acceleration equations in conformal time:
 TODO "Prove the cosmic-to-conformal change of variables `f' = a * ∂ₜ f` (from `dt = a dη`)
   and use it to derive the conformal-time Friedmann and acceleration equations from their
   cosmic-time forms."
+```
 
-=== Physlib/Cosmology/FLRW/DensityParameters.lean ===
+## `Physlib/Cosmology/FLRW/DensityParameters.lean`
+
+```
 /-
 Copyright (c) 2026 Jinzheng Li. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
@@ -2186,8 +2390,11 @@ TODO "Define the age of the universe `t₀ = H₀⁻¹ ∫₀¹ da / (a E(a))` a
 
 TODO "Define the radiation-matter and matter-Λ equality scale factors
   `a_eq = Ω_{r0} / Ω_{m0}` and `a_Λ = (Ω_{m0} / Ω_Λ)^(1/3)`."
+```
 
-=== Physlib/Cosmology/FLRW/Distances.lean ===
+## `Physlib/Cosmology/FLRW/Distances.lean`
+
+```
 /-
 Copyright (c) 2026 Jinzheng Li. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
@@ -2238,8 +2445,11 @@ TODO "Prove Etherington's distance-duality relation `d_L = (1 + z)² d_A`."
 
 TODO "Prove the low-redshift expansions of `χ`, `d_L` and `d_A` in powers of `z`
   in terms of the deceleration parameter `q₀`."
+```
 
-=== Physlib/Cosmology/FLRW/Dynamics.lean ===
+## `Physlib/Cosmology/FLRW/Dynamics.lean`
+
+```
 /-
 Copyright (c) 2026 Jinzheng Li. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
@@ -2283,8 +2493,11 @@ TODO "Prove the existence of a Big-Bang singularity: a currently expanding, dece
   universe (`ρ > 0`, `P ≥ 0`, `Λ = 0`) reaches `a = 0` at a finite cosmic time in the past,
   giving a finite age `t₀ < 1 / H₀`; contrast the de Sitter case, which has no such
   singularity."
+```
 
-=== Physlib/Cosmology/FLRW/MatterContent.lean ===
+## `Physlib/Cosmology/FLRW/MatterContent.lean`
+
+```
 /-
 Copyright (c) 2026 Jinzheng Li. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
@@ -2325,8 +2538,11 @@ TODO "Specialize the density scaling law to dust (`w = 0`, `ρ ∝ a⁻³`), rad
 
 TODO "Prove that the cosmological constant acts as a `w = −1` perfect fluid with
   `ρ_Λ = Λ c² / (8 π G)` and `P_Λ = −ρ_Λ c²`."
+```
 
-=== Physlib/Cosmology/FLRW/Solutions.lean ===
+## `Physlib/Cosmology/FLRW/Solutions.lean`
+
+```
 /-
 Copyright (c) 2026 Jinzheng Li. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
@@ -2364,8 +2580,11 @@ TODO "Prove that the Milne solution `a = c t` (empty universe, `K < 0`) has
 
 TODO "Define the Einstein static universe (`∂ₜ a = ∂ₜ ∂ₜ a = 0`, forcing `K > 0`
   and `ρ_m = 2 ρ_Λ`) and prove that it is an unstable equilibrium."
+```
 
-=== Physlib/Electromagnetism/Charge/ChargeUnit.lean ===
+## `Physlib/Electromagnetism/Charge/ChargeUnit.lean`
+
+```
   simp [toReal]
   · exact zero_le
   rfl
@@ -2374,8 +2593,11 @@ TODO "Define the Einstein static universe (`∂ₜ a = ∂ₜ ∂ₜ a = 0`, for
     (x / y : ℝ) * (y / z : ℝ) = x / z := by
   simp [div_eq_val, toReal]
   rw [toReal]
+```
 
-=== Physlib/Electromagnetism/Current/InfiniteWire.lean ===
+## `Physlib/Electromagnetism/Current/InfiniteWire.lean`
+
+```
 public import Physlib.SpaceAndTime.Space.Norm.Basic
   ((IsDistBounded.log_norm (by norm_num)).smul_const _))
     (by apply (IsDistBounded.log_norm (by norm_num)).smul_const))) := by
@@ -2392,8 +2614,11 @@ public import Physlib.SpaceAndTime.Space.Norm.Basic
       Fin.sum_univ_three, infiniteWire_vectorPotential_distSpaceDeriv_0, map_zero,
       _root_.zero_apply, PiLp.zero_apply, zero_add, add_sub_add_right_eq_sub,
       wireCurrentDensity_currentDensity_snd, wireCurrentDensity_currentDensity_thrd, mul_zero]
+```
 
-=== Physlib/Electromagnetism/Distributional/Basic.lean ===
+## `Physlib/Electromagnetism/Distributional/Basic.lean`
+
+```
 public import Physlib.SpaceAndTime.Space.DistOfFunction
       FunLike.coe_smul, ContinuousLinearMap.coe_comp, Pi.smul_apply,
 /-- The creation of an electromagnetic potential from a static scalar-potential function.
@@ -2446,8 +2671,11 @@ lemma distTensorDeriv_basis_repr_apply {d} {μν : (Fin 1 ⊕ Fin d) × (Fin 1 �
 lemma toTensor_distTensorDeriv_basis_repr_apply {d} (A : DistElectromagneticPotential d)
     (Tensor.basis _).repr (Tensorial.toTensor (distTensorDeriv A ε)) b =
   rw [Module.Basis.repr_reindex_apply, distTensorDeriv_basis_repr_apply]
+```
 
-=== Physlib/Electromagnetism/Distributional/Dynamics/IsExtrema.lean ===
+## `Physlib/Electromagnetism/Distributional/Dynamics/IsExtrema.lean`
+
+```
   rw [isExtrema_iff_gradLagrangian]
   refine ⟨fun h => by simp [h], fun h => ?_⟩
   ext1 ε
@@ -2488,8 +2716,11 @@ lemma toTensor_distTensorDeriv_basis_repr_apply {d} (A : DistElectromagneticPote
           distTensorDeriv A.fieldStrength x | κ κ ν') + - (J x | ν')}ᵀ)) = 0 := by
     ext1 x
       one_apply_eq_self, smul_add, actionT_smul, smul_neg] using h (schwartzAction Λ x)
+```
 
-=== Physlib/Electromagnetism/Distributional/Dynamics/KineticTerm.lean ===
+## `Physlib/Electromagnetism/Distributional/Dynamics/KineticTerm.lean`
+
+```
       simp only [← Finset.sum_add_distrib]
       refine Finset.sum_congr rfl fun ν _ => Finset.sum_congr rfl fun μ _ => ?_
       refine Finset.sum_congr rfl fun ν _ => Finset.sum_congr rfl fun μ _ => ?_
@@ -2514,8 +2745,11 @@ lemma toTensor_distTensorDeriv_basis_repr_apply {d} (A : DistElectromagneticPote
   · split_ifs with h1 h2
     · exact absurd h1 (by decide)
     · exact absurd h2 (by decide)
+```
 
-=== Physlib/Electromagnetism/Distributional/Dynamics/Lagrangian.lean ===
+## `Physlib/Electromagnetism/Distributional/Dynamics/Lagrangian.lean`
+
+```
     ext1 ε
     ext1 ε
     FunLike.coe_smul, Pi.smul_apply, distTimeSlice_symm_apply,
@@ -2525,8 +2759,11 @@ lemma toTensor_distTensorDeriv_basis_repr_apply {d} (A : DistElectromagneticPote
     (permT id (IsReindexing.auto) {J ε | ν'}ᵀ))) ν
     (permT id (IsReindexing.auto) {((1/ 𝓕.μ₀ : ℝ) • (distTensorDeriv A.fieldStrength ε) | κ κ ν') +
   simp only [FunLike.coe_sub, Pi.sub_apply, apply_sub, one_div,
+```
 
-=== Physlib/Electromagnetism/Distributional/ElectricField.lean ===
+## `Physlib/Electromagnetism/Distributional/ElectricField.lean`
+
+```
     simp only [map_add, neg_add_rev, FunLike.coe_sub, Pi.sub_apply,
       add_apply, _root_.neg_apply, PiLp.sub_apply, PiLp.add_apply,
     simp only [map_smul, FunLike.coe_sub, FunLike.coe_smul, Pi.sub_apply,
@@ -2534,8 +2771,11 @@ lemma toTensor_distTensorDeriv_basis_repr_apply {d} (A : DistElectromagneticPote
     vectorPotential, Vector.spatialCLM, Space.distTimeDeriv_apply_CLM, FunLike.coe_sub,
     ContinuousLinearMap.coe_comp, ContinuousLinearMap.coe_mk', Pi.sub_apply,
     _root_.neg_apply, FunLike.coe_smul, Pi.smul_apply,
+```
 
-=== Physlib/Electromagnetism/Distributional/FieldStrength.lean ===
+## `Physlib/Electromagnetism/Distributional/FieldStrength.lean`
+
+```
 public import Mathlib.Algebra.Order.Archimedean.Real.Hom
       (permT id (IsReindexing.auto) {(η d | μ μ' ⊗ distTensorDeriv A ε | μ' ν) + -
       (η d | ν ν' ⊗ distTensorDeriv A ε | ν' μ)}ᵀ)
@@ -2553,24 +2793,39 @@ public import Mathlib.Algebra.Order.Archimedean.Real.Hom
       fieldStrengthAux_basis_repr_apply_eq_single, map_add, add_apply,
       fieldStrengthAux_basis_repr_apply_eq_single, map_smul, FunLike.coe_smul,
   rw [fieldStrengthAux_eq_add, distTensorDeriv_equivariant, lorentzGroup_smul_dist_apply,
+```
 
-=== Physlib/Electromagnetism/Distributional/MagneticField.lean ===
+## `Physlib/Electromagnetism/Distributional/MagneticField.lean`
+
+```
   simp only [magneticFieldMatrix, LinearMap.coe_mk, AddHom.coe_mk, ContinuousLinearMap.coe_comp,
     map_smul, Finsupp.coe_finsetSum, Finsupp.coe_smul, Finset.sum_apply, Pi.smul_apply,
     Space.distSpaceDeriv_apply_CLM, ContinuousLinearMap.coe_comp, ContinuousLinearMap.coe_mk',
+```
 
-=== Physlib/Electromagnetism/Distributional/ScalarPotential.lean ===
+## `Physlib/Electromagnetism/Distributional/ScalarPotential.lean`
+
+```
 public import Mathlib.Algebra.Order.Archimedean.Real.Hom
       LinearMap.coe_mk, AddHom.coe_mk, ContinuousLinearMap.coe_comp, FunLike.coe_smul,
+```
 
-=== Physlib/Electromagnetism/Distributional/VectorPotential.lean ===
+## `Physlib/Electromagnetism/Distributional/VectorPotential.lean`
+
+```
 public import Mathlib.Algebra.Order.Archimedean.Real.Hom
       LinearMap.coe_mk, AddHom.coe_mk, FunLike.coe_smul, ContinuousLinearMap.coe_comp,
+```
 
-=== Physlib/Electromagnetism/Dynamics/Basic.lean ===
+## `Physlib/Electromagnetism/Dynamics/Basic.lean`
+
+```
 public import Mathlib.Analysis.Real.Sqrt
+```
 
-=== Physlib/Electromagnetism/Dynamics/Hamiltonian.lean ===
+## `Physlib/Electromagnetism/Dynamics/Hamiltonian.lean`
+
+```
     simp only [kineticTerm_add_time_mul_const _ (hA.differentiable (by simp))]
     simp only [Fin.isValue, freeCurrentPotential, map_add, map_smul, _root_.add_apply,
       FunLike.coe_smul, Pi.smul_apply, smul_eq_mul, fderiv_const_add,
@@ -2584,8 +2839,11 @@ public import Mathlib.Analysis.Real.Sqrt
   rw [electricField_eq_fieldStrengthMatrix (hA := hA.differentiable (by simp))]
   · exact (hA.differentiable (by simp)).comp (by fun_prop)
   · exact vectorPotential_differentiable_time A (hA.differentiable (by simp)) x.space
+```
 
-=== Physlib/Electromagnetism/Dynamics/IsExtrema.lean ===
+## `Physlib/Electromagnetism/Dynamics/IsExtrema.lean`
+
+```
         (permT id (IsReindexing.auto) {((1/ 𝓕.μ₀ : ℝ) • tensorDeriv A.toFieldStrength x | κ κ ν') +
   have hcd : ∀ ij, ContDiff ℝ 2 (fun y => A.magneticFieldMatrix 𝓕.c t y ij) :=
     fun ij => magneticFieldMatrix_space_contDiff _ (hA.of_le (right_eq_inf.mp rfl)) t ij
@@ -2628,8 +2886,11 @@ public import Mathlib.Analysis.Real.Sqrt
         rw [Space.deriv_commute _ (hEs _), Space.deriv_eq_fderiv_basis]
         intro j _
         exact (hEd j j).differentiableAt
+```
 
-=== Physlib/Electromagnetism/Dynamics/KineticTerm.lean ===
+## `Physlib/Electromagnetism/Dynamics/KineticTerm.lean`
+
+```
     rw [← actionT_coMetric Λ]
     simp only [Tensorial.self_toTensor_apply]
     rw [coMetric_repr_apply_eq_minkowskiMatrix]
@@ -2642,8 +2903,11 @@ public import Mathlib.Analysis.Real.Sqrt
     (permT id (IsReindexing.auto) {(1/ 𝓕.μ₀ : ℝ) •
       tensorDeriv A.toFieldStrength x | κ κ ν'}ᵀ)) ν := by
     (permT id (IsReindexing.auto) {(1/ 𝓕.μ₀ : ℝ) • tensorDeriv A.toFieldStrength x | κ κ ν'}ᵀ))) ν
+```
 
-=== Physlib/Electromagnetism/Dynamics/Lagrangian.lean ===
+## `Physlib/Electromagnetism/Dynamics/Lagrangian.lean`
+
+```
   simp [freeCurrentPotential]
   exact (freeCurrentPotential_hasVarGradientAt A hA J hJ).varGradient
   congr <;>
@@ -2667,8 +2931,11 @@ public import Mathlib.Analysis.Real.Sqrt
     (permT id (IsReindexing.auto) {((1/ 𝓕.μ₀ : ℝ) • tensorDeriv A.toFieldStrength x | κ κ ν') +
     map_neg, map_add, permT_permT, CompTriple.comp_eq, apply_add, apply_smul,
     Lorentz.Vector.neg_apply]
+```
 
-=== Physlib/Electromagnetism/Kinematics/EMPotential.lean ===
+## `Physlib/Electromagnetism/Kinematics/EMPotential.lean`
+
+```
 instance {d} : Zero (ElectromagneticPotential d) where
   zero := ⟨fun _ => 0⟩
 
@@ -2751,8 +3018,11 @@ noncomputable instance {d} :
     simp_all [Equiv.eq_symm_apply, show e b = (b 0, b 1) from rfl]
   rcases μν with ⟨μ, ν⟩
     ext ⟨i, j⟩
+```
 
-=== Physlib/Electromagnetism/Kinematics/ElectricField.lean ===
+## `Physlib/Electromagnetism/Kinematics/ElectricField.lean`
+
+```
     rw [sub_eq_iff_eq_add', ← h, add_comm]
         convert! h
       · fun_prop
@@ -2786,8 +3056,11 @@ noncomputable instance {d} :
   rw [Time.deriv_eq, fderiv_const_mul]
   · exact (fieldStrengthMatrix_differentiable_time hA x).differentiableAt
   exact (fieldStrengthMatrix_differentiable_space hA t).neg.differentiableAt
+```
 
-=== Physlib/Electromagnetism/Kinematics/FieldStrength.lean ===
+## `Physlib/Electromagnetism/Kinematics/FieldStrength.lean`
+
+```
 public import Mathlib.Algebra.Order.Archimedean.Real.Hom
     - A.5.1. Index evaluation
   (permT id (IsReindexing.auto)
@@ -2860,8 +3133,11 @@ lemma toFieldStrength_eval_eq_fieldStrengthMatrix {d} (A : ElectromagneticPotent
 
   simp only [_root_.add_apply, Lorentz.Vector.apply_add]
   simp only [FunLike.coe_smul, Pi.smul_apply, Lorentz.Vector.apply_smul]
+```
 
-=== Physlib/Electromagnetism/Kinematics/GaugeTransformation.lean ===
+## `Physlib/Electromagnetism/Kinematics/GaugeTransformation.lean`
+
+```
 /-
 Copyright (c) 2026 Justin Findlay. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
@@ -3273,8 +3549,11 @@ lemma toFieldStrength_bareGradient_ne_zero {d : ℕ} (i : Fin d)
 end ElectromagneticPotential
 
 end Electromagnetism
+```
 
-=== Physlib/Electromagnetism/Kinematics/MagneticField.lean ===
+## `Physlib/Electromagnetism/Kinematics/MagneticField.lean`
+
+```
 lemma magneticField_coord_eq_fieldStrengthMatrix {i : Fin 3} {c : SpeedOfLight}
     A.magneticField c t x i =
     - A.fieldStrengthMatrix ((toTimeAndSpace c).symm (t, x)) (Sum.inr (i+1), Sum.inr (i+2)) := by
@@ -3334,13 +3613,19 @@ lemma magneticField_coord_eq_fieldStrengthMatrix {i : Fin 3} {c : SpeedOfLight}
     | (apply Differentiable.differentiableAt
        apply Space.space_deriv_differentiable_time
        apply electricField_apply_contDiff hA)
+```
 
-=== Physlib/Electromagnetism/Kinematics/VectorPotential.lean ===
+## `Physlib/Electromagnetism/Kinematics/VectorPotential.lean`
+
+```
 public import Mathlib.Algebra.Order.Archimedean.Real.Hom
     (B : Time → Space 3 → EuclideanSpace ℝ (Fin 3)) (i : Fin 3) (hB : Continuous ↿B) :
     simp only [fderiv_fun_const, Pi.zero_apply, _root_.zero_apply, inner_zero_right,
+```
 
-=== Physlib/Electromagnetism/PointParticle/OneDimension.lean ===
+## `Physlib/Electromagnetism/PointParticle/OneDimension.lean`
+
+```
 public import Physlib.SpaceAndTime.Space.Norm.Basic
     ContinuousLinearEquiv.apply_symm_apply, FunLike.coe_smul,
     ContinuousLinearMap.coe_comp, LinearMap.coe_toContinuousLinearMap', Pi.smul_apply,
@@ -3351,8 +3636,11 @@ public import Physlib.SpaceAndTime.Space.Norm.Basic
   have h1 := Space.distGrad_distOfFunction_norm_zpow (d := 1) 1 (by grind)
       FunLike.coe_smul, Pi.smul_apply, smul_eq_mul]
     simp only [map_smul, FunLike.coe_smul, Pi.smul_apply, smul_eq_mul]
+```
 
-=== Physlib/Electromagnetism/PointParticle/ThreeDimension.lean ===
+## `Physlib/Electromagnetism/PointParticle/ThreeDimension.lean`
+
+```
 public import Physlib.SpaceAndTime.Space.Norm.Basic
     ContinuousLinearEquiv.apply_symm_apply, FunLike.coe_smul,
     ContinuousLinearMap.coe_comp, LinearMap.coe_toContinuousLinearMap', Pi.smul_apply,
@@ -3363,11 +3651,17 @@ public import Physlib.SpaceAndTime.Space.Norm.Basic
   have := Space.distGrad_distOfFunction_norm_zpow (d := 3) (-1) (by grind)
       FunLike.coe_smul, Pi.smul_apply, smul_eq_mul]
     simp only [one_div, map_smul, FunLike.coe_smul, Pi.smul_apply, smul_eq_mul]
+```
 
-=== Physlib/Electromagnetism/Vacuum/Constant.lean ===
+## `Physlib/Electromagnetism/Vacuum/Constant.lean`
+
+```
   simp only [one_div, FunLike.coe_smul, FunLike.coe_sum, Pi.smul_apply,
+```
 
-=== Physlib/Electromagnetism/Vacuum/HarmonicWave.lean ===
+## `Physlib/Electromagnetism/Vacuum/HarmonicWave.lean`
+
+```
     have transverse_deriv_eq_zero : ∀ (g : ℝ → ℝ), Differentiable ℝ g →
         Space.deriv j.succ (fun y => g (y 0)) x = 0 := by
       intro g hg
@@ -3424,8 +3718,11 @@ public import Physlib.SpaceAndTime.Space.Norm.Basic
     exact electricField_differentiable_time (harmonicWaveX_contDiff 2 𝓕 k E₀ φ) x
     simp only [cos_add, sin_sub, cos_sub]
     nlinarith [sin_sq_add_cos_sq τ, sin_sq_add_cos_sq (φ i), sin_sq_add_cos_sq (φ j)]
+```
 
-=== Physlib/Electromagnetism/Vacuum/IsPlaneWave.lean ===
+## `Physlib/Electromagnetism/Vacuum/IsPlaneWave.lean`
+
+```
   apply (electricField_differentiable hA).comp
   refine Differentiable.prodMk ?_ ?_
   · change Differentiable ℝ (Time.toRealCLE.symm ∘ fun u => -u / 𝓕.c.val)
@@ -3460,8 +3757,11 @@ public import Physlib.SpaceAndTime.Space.Norm.Basic
       exact (hBd k).differentiableAt
     exact (hBd k).differentiableAt
   simp only [FunLike.coe_smul, Pi.smul_apply, smul_eq_mul]
+```
 
-=== Physlib/FluidDynamics/NavierStokes/Momentum.lean ===
+## `Physlib/FluidDynamics/NavierStokes/Momentum.lean`
+
+```
   rw [← Space.deriv_smul (u := j) (x := x)
     ((differentiable_euclidean.mp hMomentumDensity j).differentiableAt)]
   rw [conservativeMomentumLHS, convectiveMomentumLHS, continuityResidual,
@@ -3476,11 +3776,17 @@ public import Physlib.SpaceAndTime.Space.Norm.Basic
         (hMomentumDensity t) (hVelocitySpace t), hResidual, zero_smul, add_zero]
   exact ⟨fun h t x => (conservative_eq_convective_lhs t x).symm.trans (h t x),
     fun h t x => (conservative_eq_convective_lhs t x).trans (h t x)⟩
+```
 
-=== Physlib/Mathematics/Calculus/AdjFDeriv.lean ===
+## `Physlib/Mathematics/Calculus/AdjFDeriv.lean`
+
+```
     simp (disch:=fun_prop) [fderiv_fun_comp]
+```
 
-=== Physlib/Mathematics/Calculus/ParametricIntegration.lean ===
+## `Physlib/Mathematics/Calculus/ParametricIntegration.lean`
+
+```
 variable {M N : Type}
     [NormedAddCommGroup M] [NormedSpace ℝ M] [ProperSpace M]
     [NormedAddCommGroup N] [NormedSpace ℝ N]
@@ -3507,8 +3813,11 @@ variable {M N : Type}
       fderiv_apply_parameteric_intervalIntegral (hf.of_le (by simp))]
     exact fun y => ih (by fun_prop)
   · exact contDiff_zero.mpr (by fun_prop)
+```
 
-=== Physlib/Mathematics/Calculus/Wirtinger/Basic.lean ===
+## `Physlib/Mathematics/Calculus/Wirtinger/Basic.lean`
+
+```
 /-
 Copyright (c) 2026 Andrea Pari. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
@@ -4295,8 +4604,11 @@ end Physlib.Wirtinger
 end
 
 end
+```
 
-=== Physlib/Mathematics/Calculus/Wirtinger/Coordinate.lean ===
+## `Physlib/Mathematics/Calculus/Wirtinger/Coordinate.lean`
+
+```
 /-
 Copyright (c) 2026 Andrea Pari. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
@@ -4993,8 +5305,11 @@ end
 end Physlib.Wirtinger
 end
 end
+```
 
-=== Physlib/Mathematics/ConjModule.lean ===
+## `Physlib/Mathematics/ConjModule.lean`
+
+```
 /-
 Copyright (c) 2026 Andrea Pari. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
@@ -5106,8 +5421,11 @@ noncomputable def _root_.Basis.conj (b : Basis ι k M) : Basis ι k (ConjModule 
 end ConjModule
 
 end
+```
 
-=== Physlib/Mathematics/CrossProductMatrix.lean ===
+## `Physlib/Mathematics/CrossProductMatrix.lean`
+
+```
 /-
 Copyright (c) 2026 Giuseppe Sorge. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
@@ -5164,8 +5482,11 @@ lemma crossProductVee_crossProductMatrix (ω : Fin 3 → ℝ) :
   fin_cases i <;> simp [crossProductVee, crossProductMatrix]
 
 end Matrix
+```
 
-=== Physlib/Mathematics/DataStructures/FourTree/Basic.lean ===
+## `Physlib/Mathematics/DataStructures/FourTree/Basic.lean`
+
+```
   simp only [card, toMultiset, Multiset.card_bind, Function.comp_apply, Multiset.card_map]
   rfl
   have leaf_iff : ∀ (l : Leaf α4) (y : α4), l.mem y ↔ l.1 = y := by
@@ -5190,8 +5511,11 @@ end Matrix
   tauto
   simp only [toMultiset, Multiset.mem_bind, Multiset.mem_map]
   exact ⟨trunk, trunk_mem, branch, branch_mem, twig, twig_mem, leaf, leaf_mem, heq.symm⟩
+```
 
-=== Physlib/Mathematics/DataStructures/FourTree/UniqueMap.lean ===
+## `Physlib/Mathematics/DataStructures/FourTree/UniqueMap.lean`
+
+```
   apply mem_of_parts (trunk.uniqueMap4 f) (branch.uniqueMap4 f) (twig.uniqueMap4 f)
     (.leaf (f leaf.1))
   · exact Multiset.mem_map_of_mem _ htrunk
@@ -5223,15 +5547,21 @@ end Matrix
   refine ⟨trunkT.1, branchT.1, twigT.1, leafI.1, ?_,
     mem_of_parts trunkT branchT twigT leafI trunkT_mem branchT_mem twigT_mem leftI_mem rfl⟩
   simp [Trunk.uniqueMap3, Branch.uniqueMap3]
+```
 
-=== Physlib/Mathematics/DataStructures/Matrix/LieTrace.lean ===
+## `Physlib/Mathematics/DataStructures/Matrix/LieTrace.lean`
+
+```
   rw [← NormedSpace.exp_sum Finset.univ]
     rw [h_conj, Unitary.coe_star, trace_unitary_conj]
     rw [h_conj, Unitary.coe_star, det_exp_unitary_conj]
   erw [Matrix.map_smul, Matrix.map_pow A (algebraMap ℝ ℂ) k]
     rw [Complex.coe_algebraMap, ← Complex.ofReal_exp]
+```
 
-=== Physlib/Mathematics/Distribution/Basic.lean ===
+## `Physlib/Mathematics/Distribution/Basic.lean`
+
+```
 public import Mathlib.Topology.Algebra.Module.Spaces.PointwiseConvergenceCLM
 - `Distribution.ofFiniteMeasure` is the scalar distribution associated to a finite measure.
     exact s.le_sup hkn
@@ -5267,8 +5597,11 @@ end finiteMeasure
 
 ### E.3. The dirac delta distribution
 ### E.4. The heaviside step function
+```
 
-=== Physlib/Mathematics/Distribution/PowMul.lean ===
+## `Physlib/Mathematics/Distribution/PowMul.lean`
+
+```
 public import Mathlib.Analysis.Calculus.ContDiff.Bounds
   | 0 => simp
   | 1 =>
@@ -5280,8 +5613,11 @@ public import Mathlib.Analysis.Calculus.ContDiff.Bounds
       exact RCLike.ofRealCLM.fderiv
     rw [← norm_iteratedFDeriv_fderiv, h, iteratedFDeriv_const_of_ne n.succ_ne_zero]
     simp
+```
 
-=== Physlib/Mathematics/FDerivCurry.lean ===
+## `Physlib/Mathematics/FDerivCurry.lean`
+
+```
   simp only [add_apply, ContinuousLinearMap.coe_comp,
   simp only [ContinuousLinearMap.coe_comp, Function.comp_apply]
   simp only [ContinuousLinearMap.coe_comp, Function.comp_apply]
@@ -5289,8 +5625,11 @@ public import Mathlib.Analysis.Calculus.ContDiff.Bounds
   apply Differentiable.comp <;> fun_prop
   simp only [add_apply, ContinuousLinearMap.coe_comp,
   simp only [add_apply, ContinuousLinearMap.coe_comp,
+```
 
-=== Physlib/Mathematics/Fin.lean ===
+## `Physlib/Mathematics/Fin.lean`
+
+```
     ⟨x.val - 1, by omega⟩
   simp only [predAboveI, Fin.succAbove, Fin.ext_iff, apply_dite Fin.val, apply_ite Fin.val,
     Fin.lt_def, Fin.val_castSucc, Fin.val_succ]
@@ -5320,8 +5659,11 @@ public import Mathlib.Analysis.Calculus.ContDiff.Bounds
   induction x using Fin.cases <;> rfl
     (Fin.equivCons e).symm ⟨i + 1, hi⟩ = (e.symm ⟨i, Nat.succ_lt_succ_iff.mp hi⟩).succ := rfl
     (Fin.equivCons e) ⟨i + 1, hi⟩ = (e ⟨i, Nat.succ_lt_succ_iff.mp hi⟩).succ := rfl
+```
 
-=== Physlib/Mathematics/Fin/Involutions.lean ===
+## `Physlib/Mathematics/Fin/Involutions.lean`
+
+```
     · simp only [succ_eq_add_one, h, ↓reduceDIte, Fin.succ_pred, f.2 i.succ, Fin.pred_succ,
         dite_eq_ite, ite_eq_right_iff]
       exact fun h => False.elim (Fin.succ_ne_zero i h)⟩,
@@ -5358,8 +5700,11 @@ public import Mathlib.Analysis.Calculus.ContDiff.Bounds
           simp [Fin.ext_iff] at h
           have ht : f.1 ⟨m, by omega⟩ = ⟨x, by omega⟩ := Fin.ext h
           rw [← ht, f.2.1]
+```
 
-=== Physlib/Mathematics/Geometry/Metric/PseudoRiemannian/Defs.lean ===
+## `Physlib/Mathematics/Geometry/Metric/PseudoRiemannian/Defs.lean`
+
+```
     simp only [ContinuousLinearMap.map_smul, _root_.smul_apply, smul_smul]
         (fun a v y => by simp only [map_smul, smul_apply]; ring)
         (fun a v y => by simp only [map_smul, smul_apply]; ring),
@@ -5374,11 +5719,17 @@ public import Mathlib.Analysis.Calculus.ContDiff.Bounds
           simp only [cotangentMetricVal, map_smul, smul_apply]; ring)
           simp only [cotangentMetricVal, map_smul, smul_apply]; ring),
             simp only [ContinuousLinearMap.map_add, add_apply]
+```
 
-=== Physlib/Mathematics/Geometry/Metric/Riemannian/Defs.lean ===
+## `Physlib/Mathematics/Geometry/Metric/Riemannian/Defs.lean`
+
+```
     simp only [inner_apply, map_add, add_apply]
+```
 
-=== Physlib/Mathematics/InnerProductSpace/Basic.lean ===
+## `Physlib/Mathematics/InnerProductSpace/Basic.lean`
+
+```
         apply le_of_eq_of_le (b :=  √c * ‖x.ofLp‖ )
         · simp [WithLp.equiv_apply]
           ring
@@ -5444,8 +5795,11 @@ public import Mathlib.Analysis.Calculus.ContDiff.Bounds
         rw [Real.sq_sqrt]
         · ring
         · linarith
+```
 
-=== Physlib/Mathematics/KroneckerDelta.lean ===
+## `Physlib/Mathematics/KroneckerDelta.lean`
+
+```
 public import Mathlib.LinearAlgebra.Matrix.Determinant.Basic
   · simp
   · simp [two_nsmul]
@@ -5485,15 +5839,21 @@ lemma generalizedKroneckerDelta_swap {α ι : Type} [DecidableEq α] [DecidableE
 
 end Generalized
 
+```
 
-=== Physlib/Mathematics/LinearMaps.lean ===
+## `Physlib/Mathematics/LinearMaps.lean`
+
+```
   with definitions from Mathlib."
   coe_injective f g h := by
   coe_injective f g h := by
   coe_injective f g h := by
   coe_injective f g h := by
+```
 
-=== Physlib/Mathematics/LinearPMap.lean ===
+## `Physlib/Mathematics/LinearPMap.lean`
+
+```
 /-
 Copyright (c) 2026 Gregory J. Loges. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
@@ -5879,8 +6239,11 @@ lemma compRestricted_inverse_eq : f ∘ᵣ f.inverse = domRestrict 1 f.inverse.d
 end Inverses
 
 end LinearPMap
+```
 
-=== Physlib/Mathematics/List.lean ===
+## `Physlib/Mathematics/List.lean`
+
+```
 public import Mathlib.Order.Lattice.Nat
     split <;> rfl
     rw [List.eraseIdx_of_length_le ((List.takeWhile_sublist _).length_le.trans (by simp))]
@@ -5914,8 +6277,11 @@ public import Mathlib.Order.Lattice.Nat
     split <;> rfl
     have ht (i j k : I) (hij : le1 i j) (hjk : ¬ le1 k j) : ¬ le1 k i :=
       fun hik => hjk (IsTrans.trans (r := le1) k i j hik hij)
+```
 
-=== Physlib/Mathematics/List/InsertionSort.lean ===
+## `Physlib/Mathematics/List/InsertionSort.lean`
+
+```
   simp only [List.length_cons, insertionSortDropMinPos, Nat.succ_eq_add_one]
   have hl1 : (List.insertionSort r (a :: l)).Pairwise r := List.pairwise_insertionSort r (a :: l)
   exact h
@@ -5945,12 +6311,18 @@ public import Mathlib.Order.Lattice.Nat
       rw [List.filter_cons_of_neg (by simpa using h)]
   conv_lhs => rw [← List.takeWhile_append_dropWhile (p := fun c => decide ¬ r a c)
     (l := (l1 ++ l ++ l2).insertionSort r), hlt]
+```
 
-=== Physlib/Mathematics/SchurTriangulation.lean ===
+## `Physlib/Mathematics/SchurTriangulation.lean`
+
+```
     let g : Module.End 𝕜 W := Submodule.orthogonalProjectionOnto W ∘ₗ f.domRestrict W
                 Submodule.inner_orthogonalProjectionOnto_eq_of_mem_left]
+```
 
-=== Physlib/Mathematics/SpecialFunctions/PhysHermite.lean ===
+## `Physlib/Mathematics/SpecialFunctions/PhysHermite.lean`
+
+```
     simp [coeff_physHermite_self_succ, Nat.descFactorial_self]
     rw [coeff_physHermite_of_lt (by omega), Polynomial.coeff_C_of_ne_zero (by omega)]
     ContinuousLinearMap.coe_comp, Function.comp_apply, ContinuousLinearMap.smulRight_apply,
@@ -5985,8 +6357,11 @@ lemma guassian_integrable_polynomial {b : ℝ} (hb : 0 < b) (P : Polynomial ℤ)
     have hy : (fun (y : ℝ) => y ^ (2 * l)) = fun y => ((X ^ (2 * l) : Polynomial ℤ)).aeval y := by
       simp
     exact hy ▸ polynomial_mem_physHermite_span _
+```
 
-=== Physlib/Mathematics/VariationalCalculus/Basic.lean ===
+## `Physlib/Mathematics/VariationalCalculus/Basic.lean`
+
+```
       intro h; apply hx0; exact congrArg (fromL2 ℝ) h
     have hcont₂ : ContinuousAt f₂ x₀ := ((toL2 ℝ).continuous.comp hf).continuousAt
       -- Cauchy–Schwarz in `WithLp 2 V` bounds the cross term from below
@@ -6026,8 +6401,11 @@ lemma guassian_integrable_polynomial {b : ℝ} (hb : 0 < b) (P : Polynomial ℤ)
     have integral_pos : 0 < ∫ x, φ x * ⟪f x, f x₀⟫_ℝ ∂μ :=
       (integral_pos_iff_support_of_nonneg h_nonneg integrable_prod).mpr
         (lt_of_lt_of_le hμ (measure_mono closedBall_subset_support))
+```
 
-=== Physlib/Mathematics/VariationalCalculus/HasVarAdjDeriv.lean ===
+## `Physlib/Mathematics/VariationalCalculus/HasVarAdjDeriv.lean`
+
+```
     · rfl
     · exact ContDiff.smul (by fun_prop) (by fun_prop [deriv])
     · fun_prop [deriv]
@@ -6082,8 +6460,11 @@ lemma guassian_integrable_polynomial {b : ℝ} (hb : 0 < b) (P : Polynomial ℤ)
         · apply function_differentiableAt_snd
           exact hφ.differentiable (by simp)
       simp only [ContinuousLinearMap.coe_comp, Function.comp_apply]
+```
 
-=== Physlib/Mathematics/VariationalCalculus/HasVarAdjoint.lean ===
+## `Physlib/Mathematics/VariationalCalculus/HasVarAdjoint.lean`
+
+```
   -- prepare test function that is one on `K ∪ L`
   obtain ⟨y₀, -, hr, hsup⟩ := IsCompact.exists_sSup_image_eq_and_ge (s := {0} ∪ (K ∪ L))
     (IsCompact.union (by simp) (IsCompact.union cK cL)) hnonempty
@@ -6137,8 +6518,11 @@ lemma guassian_integrable_polynomial {b : ℝ} (hb : 0 < b) (P : Polynomial ℤ)
             simp only [ContinuousLinearMap.fderiv, ContinuousLinearMap.coe_comp,
   convert! h2 using 1
     rw [Space.grad_eq_gradient]
+```
 
-=== Physlib/Mathematics/VariationalCalculus/IsLocalizedfunctionTransform.lean ===
+## `Physlib/Mathematics/VariationalCalculus/IsLocalizedfunctionTransform.lean`
+
+```
   obtain ⟨L, cL, h⟩ := hF K cK
   exact ⟨L, cL, fun φ φ' hφ x hx => by dsimp only; rw [h φ φ' hφ x hx]⟩
   obtain ⟨L, cL, h⟩ := hF K cK
@@ -6196,8 +6580,11 @@ lemma guassian_integrable_polynomial {b : ℝ} (hb : 0 < b) (P : Polynomial ℤ)
       · intro y hy
         exact hφ y (Metric.thickening_subset_cthickening 1 K hy)
     exact Filter.EventuallyEq.fderiv_eq h
+```
 
-=== Physlib/Mathematics/VariationalCalculus/IsTestFunction.lean ===
+## `Physlib/Mathematics/VariationalCalculus/IsTestFunction.lean`
+
+```
   simp only [ContinuousLinearMap.coe_comp, Function.comp_apply]
   let reprMap : X →ₗ[ℝ] ℝ := {
   let f' : X →L[ℝ] ℝ := reprMap.toContinuousLinearMap
@@ -6206,8 +6593,11 @@ lemma guassian_integrable_polynomial {b : ℝ} (hb : 0 < b) (P : Polynomial ℤ)
     (f:=fun x : X => (fderiv ℝ f x) (bX i)) (g:=f')
   · simp [f']
   · exact h_trace_contDiff
+```
 
-=== Physlib/Particles/BeyondTheStandardModel/RHN/AnomalyCancellation/Basic.lean ===
+## `Physlib/Particles/BeyondTheStandardModel/RHN/AnomalyCancellation/Basic.lean`
+
+```
 lemma sum_one  [AddCommMonoid M] (f : Fin (SMνSpecies 1).numberCharges → M) :
     ∑ i, f i = f ⟨0, by simp⟩ := by
   change  ∑ (i : Fin 1), f i = _
@@ -6230,8 +6620,11 @@ lemma sum_one  [AddCommMonoid M] (f : Fin (SMνSpecies 1).numberCharges → M) :
   simp only [toSpecies_apply, Fin.isValue, neg_mul, one_mul, add_left_inj]
     simp only [toSpecies_apply, Fin.isValue]
     simp only [toSpecies_apply, Fin.isValue]
+```
 
-=== Physlib/Particles/BeyondTheStandardModel/RHN/AnomalyCancellation/FamilyMaps.lean ===
+## `Physlib/Particles/BeyondTheStandardModel/RHN/AnomalyCancellation/FamilyMaps.lean`
+
+```
     simp only [ACCSystemCharges.chargesAddCommMonoid_add]
     simp only [HSMul.hSMul, ACCSystemCharges.chargesModule_smul,
   simp only [Function.comp_apply, toSpecies_apply, toSpeciesEquiv_apply,
@@ -6248,8 +6641,11 @@ lemma sum_one  [AddCommMonoid M] (f : Fin (SMνSpecies 1).numberCharges → M) :
   simp only [Fin.isValue, toSpecies_apply, add_left_inj]
   simp only [Fin.isValue, toSpecies_apply]
   simp only [Fin.isValue, toSpecies_apply, sum_one]
+```
 
-=== Physlib/Particles/BeyondTheStandardModel/RHN/AnomalyCancellation/NoGrav/Basic.lean ===
+## `Physlib/Particles/BeyondTheStandardModel/RHN/AnomalyCancellation/NoGrav/Basic.lean`
+
+```
   simp only [SMNoGrav_linearACCs] at hS
   exact hS ⟨0, by simp⟩
   simp only [SMNoGrav_linearACCs] at hS
@@ -6258,8 +6654,11 @@ lemma sum_one  [AddCommMonoid M] (f : Fin (SMνSpecies 1).numberCharges → M) :
     | ⟨1, _⟩ => exact hSU3⟩
     | ⟨0, _⟩ => exact accSU2_invariant
     | ⟨1, _⟩ => exact accSU3_invariant
+```
 
-=== Physlib/Particles/BeyondTheStandardModel/RHN/AnomalyCancellation/Ordinary/Basic.lean ===
+## `Physlib/Particles/BeyondTheStandardModel/RHN/AnomalyCancellation/Ordinary/Basic.lean`
+
+```
   simp only [SM_linearACCs] at hS
   exact hS ⟨0, by simp⟩
   simp only [SM_linearACCs] at hS
@@ -6272,8 +6671,11 @@ lemma sum_one  [AddCommMonoid M] (f : Fin (SMνSpecies 1).numberCharges → M) :
     | ⟨0, _⟩ => exact accGrav_invariant
     | ⟨1, _⟩ => exact accSU2_invariant
     | ⟨2, _⟩ => exact accSU3_invariant
+```
 
-=== Physlib/Particles/BeyondTheStandardModel/RHN/AnomalyCancellation/Ordinary/DimSevenPlane.lean ===
+## `Physlib/Particles/BeyondTheStandardModel/RHN/AnomalyCancellation/Ordinary/DimSevenPlane.lean`
+
+```
     Fin.mk_eq_zero, Nat.div_eq_zero_iff, OfNat.ofNat_ne_zero, false_or, imp_false, isEmpty_Prop,
     not_lt, le_add_iff_nonneg_left, zero_le, IsEmpty.forall_iff, Fin.mk_eq_one, Nat.mod_succ,
     Fin.sum_univ_three, Nat.zero_div, Fin.zero_eta, one_mul, Nat.reduceDiv, Fin.mk_one, neg_mul,
@@ -6300,8 +6702,11 @@ lemma sum_one  [AddCommMonoid M] (f : Fin (SMνSpecies 1).numberCharges → M) :
   | ⟨4, _⟩ => exact h4
   | ⟨5, _⟩ => exact h5
   | ⟨6, _⟩ => exact h6
+```
 
-=== Physlib/Particles/BeyondTheStandardModel/RHN/AnomalyCancellation/PlusU1/BMinusL.lean ===
+## `Physlib/Particles/BeyondTheStandardModel/RHN/AnomalyCancellation/PlusU1/BMinusL.lean`
+
+```
     | ⟨0, _⟩ => with_unfolding_all rfl
     | ⟨1, _⟩ => with_unfolding_all rfl
     | ⟨2, _⟩ => with_unfolding_all rfl
@@ -6309,8 +6714,11 @@ lemma sum_one  [AddCommMonoid M] (f : Fin (SMνSpecies 1).numberCharges → M) :
     | ⟨0, _⟩ => with_unfolding_all rfl
   simp only [Fin.isValue, BL₁_val, toSpecies_apply, one_mul, mul_neg,
   simp only [Fin.isValue, BL₁_val, mul_one, toSpecies_apply, mul_neg,
+```
 
-=== Physlib/Particles/BeyondTheStandardModel/RHN/AnomalyCancellation/PlusU1/Basic.lean ===
+## `Physlib/Particles/BeyondTheStandardModel/RHN/AnomalyCancellation/PlusU1/Basic.lean`
+
+```
   simp only [PlusU1_linearACCs] at hS
   exact hS ⟨0, by simp⟩
   simp only [PlusU1_linearACCs] at hS
@@ -6331,8 +6739,11 @@ lemma sum_one  [AddCommMonoid M] (f : Fin (SMνSpecies 1).numberCharges → M) :
     | ⟨2, _⟩ => exact accSU3_invariant
     | ⟨3, _⟩ => exact accYY_invariant
     | ⟨0, _⟩ => exact accQuad_invariant
+```
 
-=== Physlib/Particles/BeyondTheStandardModel/RHN/AnomalyCancellation/PlusU1/HyperCharge.lean ===
+## `Physlib/Particles/BeyondTheStandardModel/RHN/AnomalyCancellation/PlusU1/HyperCharge.lean`
+
+```
     | ⟨0, _⟩ => with_unfolding_all rfl
     | ⟨1, _⟩ => with_unfolding_all rfl
     | ⟨2, _⟩ => with_unfolding_all rfl
@@ -6341,14 +6752,23 @@ lemma sum_one  [AddCommMonoid M] (f : Fin (SMνSpecies 1).numberCharges → M) :
   simp only [Fin.isValue, Y₁_val, toSpecies_apply, one_mul, mul_neg,
   simp only [Fin.isValue, Y₁_val, mul_one, toSpecies_apply, mul_neg,
   simp only [Fin.isValue, Y₁_val, mul_one, toSpecies_apply, mul_neg,
+```
 
-=== Physlib/Particles/BeyondTheStandardModel/RHN/AnomalyCancellation/PlusU1/QuadSol.lean ===
+## `Physlib/Particles/BeyondTheStandardModel/RHN/AnomalyCancellation/PlusU1/QuadSol.lean`
+
+```
     OfNat.ofNat_ne_zero, false_or, α₂, HomogeneousQuadratic, accQuad] at h1 h2
+```
 
-=== Physlib/Particles/BeyondTheStandardModel/RHN/AnomalyCancellation/PlusU1/QuadSolToSol.lean ===
+## `Physlib/Particles/BeyondTheStandardModel/RHN/AnomalyCancellation/PlusU1/QuadSolToSol.lean`
+
+```
   simp_all [α₁, α₂]
+```
 
-=== Physlib/Particles/BeyondTheStandardModel/TwoHDM/API-map.yaml ===
+## `Physlib/Particles/BeyondTheStandardModel/TwoHDM/API-map.yaml`
+
+```
 version: v0.1
 
 Title: Two Higgs Doublet Model
@@ -6484,8 +6904,11 @@ Requirements:
       Physlib/Particles/BeyondTheStandardModel/TwoHDM/Potential.lean
       (stabilityCounterExample, stabilityCounterExample_not_potentialIsStable,
       forall_reduced_exists_not_potentialIsStable)
+```
 
-=== Physlib/Particles/BeyondTheStandardModel/TwoHDM/GramMatrix.lean ===
+## `Physlib/Particles/BeyondTheStandardModel/TwoHDM/GramMatrix.lean`
+
+```
   have hinner : ⟪H1.Φ1, H1.Φ1⟫_ℂ = ⟪H2.Φ1, H2.Φ1⟫_ℂ := congrArg (· 0 0) h
   rw [norm_eq_sqrt_re_inner (𝕜 := ℂ) H1.Φ1, norm_eq_sqrt_re_inner (𝕜 := ℂ) H2.Φ1, hinner]
   have hinner : ⟪H1.Φ2, H1.Φ2⟫_ℂ = ⟪H2.Φ2, H2.Φ2⟫_ℂ := congrArg (· 1 1) h
@@ -6527,8 +6950,11 @@ Requirements:
   have hK_selfAdjoint : IsSelfAdjoint K := by
     rw [isSelfAdjoint_iff]
     simp only [gramVector_eq, h]
+```
 
-=== Physlib/Particles/BeyondTheStandardModel/TwoHDM/Potential.lean ===
+## `Physlib/Particles/BeyondTheStandardModel/TwoHDM/Potential.lean`
+
+```
           rw [show ⟪H.Φ2, H.Φ1⟫_ℂ = conj ⟪H.Φ1, H.Φ2⟫_ℂ from Eq.symm (conj_inner_symm H.Φ2 H.Φ1),
             ← Complex.normSq_eq_norm_sq, Complex.normSq_apply, sq, sq, sq]
           simp only [Complex.add_re, Complex.mul_re, Complex.conj_re, Complex.conj_im]
@@ -6555,8 +6981,11 @@ TODO "Define a general effective potential for the two Higgs doublet model, mirr
       exact tan_arctan _
     rw [potential_H_cos_sin, show -cos t ^ 2 / (4 * sin t ^ 2) = -1 / (4 * (sin t / cos t) ^ 2) by
       field, htan]
+```
 
-=== Physlib/Particles/FlavorPhysics/CKMMatrix/PhaseFreedom.lean ===
+## `Physlib/Particles/FlavorPhysics/CKMMatrix/PhaseFreedom.lean`
+
+```
   conv_lhs => rw [← norm_mul_exp_arg_mul_I [V]ud]
   rw [mul_left_comm, ← exp_add]
   rw [show (u : ℂ) * I + d * I + arg [V]ud * I = 0 from by
@@ -6596,8 +7025,11 @@ TODO "Define a general effective potential for the two Higgs doublet model, mirr
     linear_combination hc * I, exp_zero, mul_one]
       simp_all only [Fin.isValue, ne_eq, not_or, Decidable.not_not, VubAbs, ofReal_eq_one]
       exact h1
+```
 
-=== Physlib/Particles/FlavorPhysics/CKMMatrix/Relations.lean ===
+## `Physlib/Particles/FlavorPhysics/CKMMatrix/Relations.lean`
+
+```
   simp_all only [SetLike.coe_mem, Unitary.mul_star_self_of_mem, Fin.isValue, ofReal_pow, ofReal_add,
     ofReal_one]
   exact ht
@@ -6610,8 +7042,11 @@ TODO "Define a general effective potential for the two Higgs doublet model, mirr
   simp_all only [SetLike.coe_mem, Unitary.star_mul_self_of_mem, Fin.isValue, ofReal_pow, ofReal_add,
     ofReal_one]
   exact ht
+```
 
-=== Physlib/Particles/FlavorPhysics/CKMMatrix/Rows.lean ===
+## `Physlib/Particles/FlavorPhysics/CKMMatrix/Rows.lean`
+
+```
   show ∑ k, conj (V.1 0 k) * V.1 0 k = 1
   have ht := congrFun (congrFun (mem_unitaryGroup_iff.mp V.prop) 0) 0
   simp only [mul_apply, star_apply, RCLike.star_def, Fin.sum_univ_three, one_apply_eq] at ht
@@ -6667,8 +7102,11 @@ TODO "Define a general effective potential for the two Higgs doublet model, mirr
     fin_cases j <;> exact h1
     fin_cases j <;> exact h1
     fin_cases j <;> exact h1
+```
 
-=== Physlib/Particles/FlavorPhysics/CKMMatrix/StandardParameterization/Basic.lean ===
+## `Physlib/Particles/FlavorPhysics/CKMMatrix/StandardParameterization/Basic.lean`
+
+```
   fin_cases j <;> fin_cases i <;>
     simp only [standParamAsMatrix, mul_apply, Fin.sum_univ_three, conjTranspose_apply,
       cons_val', cons_val_zero, cons_val_one, cons_val_two, cons_val_fin_one, head_cons,
@@ -6693,8 +7131,11 @@ TODO "Define a general effective potential for the two Higgs doublet model, mirr
       rw [Complex.norm_real, Real.norm_eq_abs, sq_abs]
     simp [hx]
   simp [exp_neg]
+```
 
-=== Physlib/Particles/FlavorPhysics/CKMMatrix/StandardParameterization/StandardParameters.lean ===
+## `Physlib/Particles/FlavorPhysics/CKMMatrix/StandardParameterization/StandardParameters.lean`
+
+```
   rw [S₁₂]
   exact div_nonneg (VAbs_ge_zero 0 1 V) (Real.sqrt_nonneg _)
   · rw [S₂₃, if_neg ha]
@@ -6757,8 +7198,11 @@ TODO "Define a general effective potential for the two Higgs doublet model, mirr
   · have haU : ¬ ([U]ud ≠ 0 ∨ [U]us ≠ 0) := by
       rw [ud_us_ne_zero_iff_ub_ne_one] at ha ⊢
       rwa [show norm [U]ub = VubAbs ⟦U⟧ from rfl, hUV]
+```
 
-=== Physlib/Particles/StandardModel/AnomalyCancellation/Basic.lean ===
+## `Physlib/Particles/StandardModel/AnomalyCancellation/Basic.lean`
+
+```
 lemma sum_SMSpecies_numberCharges_one {M} [AddCommMonoid M]
     (f : Fin (SMSpecies 1).numberCharges → M) :
     ∑ i, f i = f ⟨0, by simp⟩ := by
@@ -6787,12 +7231,18 @@ lemma toSpecies_apply_eq (i : Fin 5) (S : (SMCharges n).Charges) :
     simp only [toSpecies_apply, Fin.isValue, neg_mul, one_mul]
     simp only [toSpecies_apply, Fin.isValue]
     simp only [toSpecies_apply, Fin.isValue]
+```
 
-=== Physlib/Particles/StandardModel/AnomalyCancellation/FamilyMaps.lean ===
+## `Physlib/Particles/StandardModel/AnomalyCancellation/FamilyMaps.lean`
+
+```
     simp only [ACCSystemCharges.chargesAddCommMonoid_add]
     simp only [HSMul.hSMul, ACCSystemCharges.chargesModule_smul, eq_ratCast, Rat.cast_eq_id, id_eq]
+```
 
-=== Physlib/Particles/StandardModel/AnomalyCancellation/NoGrav/Basic.lean ===
+## `Physlib/Particles/StandardModel/AnomalyCancellation/NoGrav/Basic.lean`
+
+```
   simp only [SMNoGrav_linearACCs] at hS
   exact hS ⟨0, by simp⟩
   simp only [SMNoGrav_linearACCs] at hS
@@ -6800,8 +7250,11 @@ lemma toSpecies_apply_eq (i : Fin 5) (S : (SMCharges n).Charges) :
 lemma cubeSol (S : (SMNoGrav n).Sols) : accCube S.val = 0 := S.cubicSol
     | ⟨0, _⟩ => exact hSU2
     | ⟨1, _⟩ => exact hSU3⟩
+```
 
-=== Physlib/Particles/StandardModel/AnomalyCancellation/NoGrav/One/Lemmas.lean ===
+## `Physlib/Particles/StandardModel/AnomalyCancellation/NoGrav/One/Lemmas.lean`
+
+```
   have hE := E_zero_iff_Q_zero.mp hQ
   simp_all only [toSpecies_apply_eq, Fin.isValue, sum_SMSpecies_numberCharges_one, LinearMap.coe_mk,
     AddHom.coe_mk]
@@ -6809,8 +7262,11 @@ lemma cubeSol (S : (SMNoGrav n).Sols) : accCube S.val = 0 := S.cubicSol
   simp only [accSU2, toSpecies_apply_eq, Fin.isValue, sum_SMSpecies_numberCharges_one,
     LinearMap.coe_mk, AddHom.coe_mk, accSU3] at h1 h2
   erw [hQ] at h1 h2
+```
 
-=== Physlib/Particles/StandardModel/AnomalyCancellation/NoGrav/One/LinearParameterization.lean ===
+## `Physlib/Particles/StandardModel/AnomalyCancellation/NoGrav/One/LinearParameterization.lean`
+
+```
     toSpeciesEquiv S.asCharges= fun i _ => S.asCharges i := by
   funext i j
   match j with
@@ -6851,11 +7307,17 @@ lemma toSpecies_apply_asCharges (S : linearParameters) (i : Fin 5) :
       ring
   simp only [toSpecies_apply_eq, Fin.isValue, sum_SMSpecies_numberCharges_one, LinearMap.coe_mk,
     AddHom.coe_mk]
+```
 
-=== Physlib/Particles/StandardModel/AnomalyCancellation/Permutations.lean ===
+## `Physlib/Particles/StandardModel/AnomalyCancellation/Permutations.lean`
+
+```
     erw [toSMSpecies_toSpecies_inv, toSMSpecies_toSpecies_inv, toSMSpecies_toSpecies_inv]
+```
 
-=== Physlib/Particles/StandardModel/Basic.lean ===
+## `Physlib/Particles/StandardModel/Basic.lean`
+
+```
 Authors: Nikolai Kashcheev, Joseph Tooby-Smith
 public import Mathlib.RingTheory.RootsOfUnity.Complex
 /-!
@@ -7399,8 +7861,11 @@ end GaugeGroupQuot
 
 -/
 
+```
 
-=== Physlib/Particles/StandardModel/HiggsBoson/Basic.lean ===
+## `Physlib/Particles/StandardModel/HiggsBoson/Basic.lean`
+
+```
 public import Mathlib.Geometry.Manifold.VectorBundle.ContMDiffSection
   - A.8. Gauge action removing phase from second component
   - A.9. To real scalars
@@ -7469,8 +7934,11 @@ lemma ofReal_toRealScalars_norm (φ : HiggsVec) :
   exact h1
   simp [inner_apply, _root_.inner_add_left]
   simp [inner_apply, _root_.inner_add_right]
+```
 
-=== Physlib/Particles/StandardModel/HiggsBoson/EffectivePotential.lean ===
+## `Physlib/Particles/StandardModel/HiggsBoson/EffectivePotential.lean`
+
+```
 /-
 Copyright (c) 2026 Joseph Tooby-Smith. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
@@ -7719,8 +8187,11 @@ end HiggsField
 
 end StandardModel
 end
+```
 
-=== Physlib/Particles/StandardModel/HiggsBoson/Potential.lean ===
+## `Physlib/Particles/StandardModel/HiggsBoson/Potential.lean`
+
+```
 public import Mathlib.RingTheory.MvPolynomial.Homogeneous
 TODO "Define a CoeFun instance for the Higgs Potential (or similar), instead of relying on
   `P.toFun`."
@@ -7776,8 +8247,11 @@ TODO "Define a CoeFun instance for the Higgs Potential (or similar), instead of 
   · have h1' : P.toFun φ x ≤ 0 := by simpa using h 0 0
     have h1'' := attainable_nonneg _ ((h1 (P.toFun φ x)).mp ⟨φ, x, rfl⟩)
     exact fun φ' x' => attainable_nonneg _ ((h1 (P.toFun φ' x')).mp ⟨φ', x', rfl⟩)
+```
 
-=== Physlib/Particles/StandardModel/Representations.lean ===
+## `Physlib/Particles/StandardModel/Representations.lean`
+
+```
 public import Physlib.Meta.TODO.Basic
 TODO "Define a structure capturing the fermionic content of the Standard Model, with all fermions
   expressed as left-handed Weyl fermions (`Fermion.LeftHandedWeyl`) and including all three
@@ -7785,8 +8259,11 @@ TODO "Define a structure capturing the fermionic content of the Standard Model, 
   Lorentz group and a representation of the global gauge group `GaugeGroupI` (built from `repU1`
   and `fundamentalSU2`)."
 
+```
 
-=== Physlib/Particles/SuperSymmetry/MSSMNu/AnomalyCancellation/B3.lean ===
+## `Physlib/Particles/SuperSymmetry/MSSMNu/AnomalyCancellation/B3.lean`
+
+```
   simp only [cubeTriLin, TriLinearSymm.mk₃_toFun_apply_apply, cubeTriLinToFun]
   erw [Fin.sum_univ_three]
   simp only [MSSMACC_linearACCs] at hLin
@@ -7796,8 +8273,11 @@ TODO "Define a structure capturing the fermionic content of the Standard Model, 
   erw [Fin.sum_univ_three] at h0 h2
   simp only [Fin.isValue, toSMSpecies_apply, Nat.reduceMul, Hd_apply, Fin.reduceFinMk,
     Hu_apply] at h0 h2
+```
 
-=== Physlib/Particles/SuperSymmetry/MSSMNu/AnomalyCancellation/Basic.lean ===
+## `Physlib/Particles/SuperSymmetry/MSSMNu/AnomalyCancellation/Basic.lean`
+
+```
 lemma sum_MSSMSpecies_numberCharges_eq_expand [AddCommMonoid M]
     (f : Fin MSSMSpecies.numberCharges → M) :
     ∑ i, f i = f ⟨0, by simp⟩ + f ⟨1, by simp⟩ + f ⟨2, by simp⟩ := by
@@ -7852,8 +8332,11 @@ lemma sum_MSSMSpecies_numberCharges_eq_expand [AddCommMonoid M]
     simp only [reduceMul, Fin.isValue, sum_MSSMSpecies_numberCharges_eq_expand, Fin.zero_eta,
       Fin.mk_one]
     simp only [Fin.isValue, Prod.mk_zero_zero, Prod.mk_one_one]
+```
 
-=== Physlib/Particles/SuperSymmetry/MSSMNu/AnomalyCancellation/LineY3B3.lean ===
+## `Physlib/Particles/SuperSymmetry/MSSMNu/AnomalyCancellation/LineY3B3.lean`
+
+```
   simp only [cubeTriLin, TriLinearSymm.mk₃_toFun_apply_apply, cubeTriLinToFun]
   erw [Fin.sum_univ_three, B₃_val, Y₃_val, B₃AsCharge, Y₃AsCharge]
   simp only [MSSMACC_linearACCs] at hLin
@@ -7864,8 +8347,11 @@ lemma sum_MSSMSpecies_numberCharges_eq_expand [AddCommMonoid M]
   erw [Fin.sum_univ_three] at h1 h2 h3
   simp only [Fin.isValue, toSMSpecies_apply, Nat.reduceMul, Hd_apply, Fin.reduceFinMk,
     Hu_apply] at h1 h2 h3
+```
 
-=== Physlib/Particles/SuperSymmetry/MSSMNu/AnomalyCancellation/OrthogY3B3/PlaneWithY3B3.lean ===
+## `Physlib/Particles/SuperSymmetry/MSSMNu/AnomalyCancellation/OrthogY3B3/PlaneWithY3B3.lean`
+
+```
   simp only [dot.map_add₂, dot.map_smul₂, R.perpY₃, R.perpB₃,
     show dot Y₃.val Y₃.val = 216 by with_unfolding_all rfl,
     show dot B₃.val B₃.val = 108 by with_unfolding_all rfl,
@@ -7875,8 +8361,11 @@ lemma sum_MSSMSpecies_numberCharges_eq_expand [AddCommMonoid M]
   have ha : a = a' := by linarith
   have hb : b = b' := by linarith
   exact ⟨ha, hb, smul_left_injective ℚ hR' (add_left_cancel h)⟩
+```
 
-=== Physlib/Particles/SuperSymmetry/MSSMNu/AnomalyCancellation/Y3.lean ===
+## `Physlib/Particles/SuperSymmetry/MSSMNu/AnomalyCancellation/Y3.lean`
+
+```
   simp only [cubeTriLin, TriLinearSymm.mk₃_toFun_apply_apply, cubeTriLinToFun]
   erw [Fin.sum_univ_three]
   simp only [MSSMACC_linearACCs] at hLin
@@ -7885,8 +8374,11 @@ lemma sum_MSSMSpecies_numberCharges_eq_expand [AddCommMonoid M]
   erw [Fin.sum_univ_three] at h3
   simp only [Fin.isValue, toSMSpecies_apply, Nat.reduceMul, Hd_apply, Fin.reduceFinMk,
     Hu_apply] at h3
+```
 
-=== Physlib/Particles/SuperSymmetry/N1/Basic.lean ===
+## `Physlib/Particles/SuperSymmetry/N1/Basic.lean`
+
+```
 /-
 Copyright (c) 2026 Andrea Pari. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
@@ -8352,8 +8844,11 @@ end SUSY.N1
 end
 
 end
+```
 
-=== Physlib/Particles/SuperSymmetry/SU5/ChargeSpectrum/AllowsTerm.lean ===
+## `Physlib/Particles/SuperSymmetry/SU5/ChargeSpectrum/AllowsTerm.lean`
+
+```
   case Λ => exact ⟨a, b, by simp⟩
   case K1 => exact ⟨b, - a - b, by simp⟩
   case topYukawa => exact ⟨b, - a - b, by simp⟩
@@ -8371,8 +8866,11 @@ instance (x : ChargeSpectrum 𝓩) (q5 : 𝓩) (T : PotentialTerm) :
       · exact .inr ⟨a1, a2, a3, ⟨h1, h2, h3⟩, hsum⟩
 def AllowsTermQ10 (x : ChargeSpectrum 𝓩) (q10 : 𝓩) (T : PotentialTerm) : Prop :=
 instance (x : ChargeSpectrum 𝓩) (q10 : 𝓩) (T : PotentialTerm) :
+```
 
-=== Physlib/Particles/SuperSymmetry/SU5/ChargeSpectrum/Basic.lean ===
+## `Physlib/Particles/SuperSymmetry/SU5/ChargeSpectrum/Basic.lean`
+
+```
     x = y ↔ x.qHd = y.qHd ∧ x.qHu = y.qHu ∧ x.Q5 = y.Q5 ∧ x.Q10 = y.Q10 :=
   ⟨fun h => ⟨congrArg qHd h, congrArg qHu h, congrArg Q5 h, congrArg Q10 h⟩,
     fun ⟨h1, h2, h3, h4⟩ => eq_of_parts h1 h2 h3 h4⟩
@@ -8419,8 +8917,11 @@ lemma subset_antisymm {x y : ChargeSpectrum 𝓩} (hxy : x ⊆ y) (hyx : y ⊆ x
       a.toFinset ⊆ S := by cases a <;> simp
   simp only [ofFinset, Finset.mem_map_equiv, Equiv.symm_symm, toProd, Equiv.coe_fn_mk,
     Finset.product_eq_sprod, Finset.mem_product, hoption, Finset.mem_powerset]
+```
 
-=== Physlib/Particles/SuperSymmetry/SU5/ChargeSpectrum/Completions.lean ===
+## `Physlib/Particles/SuperSymmetry/SU5/ChargeSpectrum/Completions.lean`
+
+```
     match x1 with
     | none => simpa using hy.1
     | some a => simp_all
@@ -8437,8 +8938,11 @@ lemma subset_antisymm {x y : ChargeSpectrum 𝓩} (hxy : x ⊆ y) (hyx : y ⊆ x
     refine ⟨by simp_all, by simp_all, ?_, ?_⟩
     · split_ifs with h3 <;> simp_all [Finset.singleton_subset_iff]
     · split_ifs with h4 <;> simp_all [Finset.singleton_subset_iff]
+```
 
-=== Physlib/Particles/SuperSymmetry/SU5/ChargeSpectrum/Map.lean ===
+## `Physlib/Particles/SuperSymmetry/SU5/ChargeSpectrum/Map.lean`
+
+```
   have heq : ∀ {W : Type} [AddCommGroup W] [DecidableEq W] (y : ChargeSpectrum W)
       (S : PotentialTerm), (ofPotentialTerm y S).toFinset = (ofPotentialTerm' y S).toFinset := by
     intro W _ _ y S
@@ -8451,8 +8955,11 @@ lemma subset_antisymm {x y : ChargeSpectrum 𝓩} (hxy : x ⊆ y) (hyx : y ⊆ x
       Multiset.toFinset_singleton, Finset.image_singleton, Finset.product_eq_sprod,
       ← Finset.prodMap_image_product, Finset.image_image, Prod.map_fst, Prod.map_snd] <;>
     simp
+```
 
-=== Physlib/Particles/SuperSymmetry/SU5/ChargeSpectrum/MinimalSuperSet.lean ===
+## `Physlib/Particles/SuperSymmetry/SU5/ChargeSpectrum/MinimalSuperSet.lean`
+
+```
   simp [mem_ofFinset_iff] at hy
   · obtain ⟨z3, hz3, hz3not⟩ :=
       Finset.exists_of_ssubset (ssubset_of_subset_of_ne hsubset.2.2.1 h3)
@@ -8468,8 +8975,11 @@ lemma subset_antisymm {x y : ChargeSpectrum 𝓩} (hxy : x ⊆ y) (hyx : y ⊆ x
     simp_all [Finset.insert_subset_iff]
         (by simp_all) (x2 := (x2, x3, x4)))
         (by simp_all) (x2 := (x3, x4)))
+```
 
-=== Physlib/Particles/SuperSymmetry/SU5/ChargeSpectrum/MinimallyAllowsTerm/FinsetTerms.lean ===
+## `Physlib/Particles/SuperSymmetry/SU5/ChargeSpectrum/MinimallyAllowsTerm/FinsetTerms.lean`
+
+```
   simp [minTopBottom] at h
   obtain ⟨qHd, qHu, q5, q10, _, rfl⟩ := h
   simp [allowsTerm_iff_subset_allowsTermForm, allowsTermForm, subset_def]
@@ -8484,8 +8994,11 @@ lemma subset_antisymm {x y : ChargeSpectrum 𝓩} (hxy : x ⊆ y) (hyx : y ⊆ x
     · simp [allowsTerm_iff_subset_allowsTermForm, allowsTermForm, subset_def]
       exact ⟨-qHu, by simp, q10, by simp⟩
     · simp [allowsTerm_iff_subset_allowsTermForm, allowsTermForm, subset_def]
+```
 
-=== Physlib/Particles/SuperSymmetry/SU5/ChargeSpectrum/MinimallyAllowsTerm/OfFinset.lean ===
+## `Physlib/Particles/SuperSymmetry/SU5/ChargeSpectrum/MinimallyAllowsTerm/OfFinset.lean`
+
+```
   simp [toMultisetsOne, Multiset.card_eq_one]
   rintro x rfl
     · obtain ⟨a, rfl⟩ := Finset.card_eq_one.mp hacard
@@ -8512,52 +9025,79 @@ lemma subset_antisymm {x y : ChargeSpectrum 𝓩} (hxy : x ⊆ y) (hyx : y ⊆ x
     x.MinimallyAllowsTerm T ↔ x ∈ minimallyAllowsTermsOfFinset S5 S10 T :=
   ⟨fun h => mem_minimallyAllowsTermOfFinset_of_minimallyAllowsTerm x h hx,
     minimallyAllowsTerm_of_mem_minimallyAllowsTermOfFinset⟩
+```
 
-=== Physlib/Particles/SuperSymmetry/SU5/ChargeSpectrum/OfPotentialTerm.lean ===
-  rcases x with ⟨_ | qHd, _ | qHu, Q5, Q10⟩ <;> simp [ofPotentialTerm']
-  rcases x with ⟨_ | qHd, _ | qHu, Q5, Q10⟩ <;> simp [ofPotentialTerm']
-  rcases x with ⟨_ | qHd, _ | qHu, Q5, Q10⟩ <;> simp [ofPotentialTerm']
-  rcases x with ⟨_ | qHd, _ | qHu, Q5, Q10⟩ <;> simp [ofPotentialTerm']
-  rcases x with ⟨_ | qHd, _ | qHu, Q5, Q10⟩ <;> simp [ofPotentialTerm']
-  rcases x with ⟨_ | qHd, _ | qHu, Q5, Q10⟩ <;> simp [ofPotentialTerm']
-  rcases x with ⟨_ | qHd, _ | qHu, Q5, Q10⟩ <;> simp [ofPotentialTerm']
-  rcases x with ⟨_ | qHd, _ | qHu, Q5, Q10⟩ <;> simp [ofPotentialTerm']
+## `Physlib/Particles/SuperSymmetry/SU5/ChargeSpectrum/OfPotentialTerm.lean`
 
-=== Physlib/Particles/SuperSymmetry/SU5/ChargeSpectrum/PhenoClosed.lean ===
+```
+  rcases x with ⟨_ | qHd, _ | qHu, Q5, Q10⟩ <;> simp [ofPotentialTerm']
+  rcases x with ⟨_ | qHd, _ | qHu, Q5, Q10⟩ <;> simp [ofPotentialTerm']
+  rcases x with ⟨_ | qHd, _ | qHu, Q5, Q10⟩ <;> simp [ofPotentialTerm']
+  rcases x with ⟨_ | qHd, _ | qHu, Q5, Q10⟩ <;> simp [ofPotentialTerm']
+  rcases x with ⟨_ | qHd, _ | qHu, Q5, Q10⟩ <;> simp [ofPotentialTerm']
+  rcases x with ⟨_ | qHd, _ | qHu, Q5, Q10⟩ <;> simp [ofPotentialTerm']
+  rcases x with ⟨_ | qHd, _ | qHu, Q5, Q10⟩ <;> simp [ofPotentialTerm']
+  rcases x with ⟨_ | qHd, _ | qHu, Q5, Q10⟩ <;> simp [ofPotentialTerm']
+```
+
+## `Physlib/Particles/SuperSymmetry/SU5/ChargeSpectrum/PhenoClosed.lean`
+
+```
   rcases h q10 hq10 x hx with h'| h' | h'
 instance {S5 S10 : Finset 𝓩} {charges : Multiset (ChargeSpectrum 𝓩)} :
+```
 
-=== Physlib/QFT/AnomalyCancellation/Basic.lean ===
+## `Physlib/QFT/AnomalyCancellation/Basic.lean`
+
+```
   exact congrArg (fun X => X.val) h
     exact h
   exact hv
+```
 
-=== Physlib/QFT/PerturbationTheory/FieldOpFreeAlgebra/Basic.lean ===
+## `Physlib/QFT/PerturbationTheory/FieldOpFreeAlgebra/Basic.lean`
+
+```
     have h1 := congrFun hg x
     simp_all only [Function.comp_apply, FreeAlgebra.lift_ι_apply]
     exact h1
+```
 
-=== Physlib/QFT/PerturbationTheory/FieldOpFreeAlgebra/Grading.lean ===
+## `Physlib/QFT/PerturbationTheory/FieldOpFreeAlgebra/Grading.lean`
+
+```
       simp only [DirectSum.of_eq_same]
       grind
       grind
+```
 
-=== Physlib/QFT/PerturbationTheory/FieldSpecification/CrAnSection.lean ===
+## `Physlib/QFT/PerturbationTheory/FieldSpecification/CrAnSection.lean`
+
+```
     refine And.intro (Subtype.ext ?_) (Subtype.ext ?_) <;> simp
+```
 
-=== Physlib/QFT/PerturbationTheory/FieldSpecification/NormalOrder.lean ===
+## `Physlib/QFT/PerturbationTheory/FieldSpecification/NormalOrder.lean`
+
+```
     simp only [List.orderedInsert.eq_2]
     simp only [List.cons_append, List.orderedInsert.eq_2]
   simp only [List.orderedInsert.eq_2]
       simp only [List.cons_append, List.orderedInsert.eq_2]
       simp only [List.orderedInsert.eq_2]
+```
 
-=== Physlib/QFT/PerturbationTheory/FieldSpecification/TimeOrder.lean ===
+## `Physlib/QFT/PerturbationTheory/FieldSpecification/TimeOrder.lean`
+
+```
       have h2 := orderedInsert_swap_eq_time h2 h1
       simp_all
       exact (List.append_left_inj _).mpr rfl
+```
 
-=== Physlib/QFT/PerturbationTheory/WickAlgebra/Basic.lean ===
+## `Physlib/QFT/PerturbationTheory/WickAlgebra/Basic.lean`
+
+```
     have key {u w v : 𝓕.FieldOpFreeAlgebra}
         (hv : v ∈ TwoSidedIdeal.span 𝓕.fieldOpIdealSet) :
         u * v * w ∈ TwoSidedIdeal.span 𝓕.fieldOpIdealSet :=
@@ -8571,42 +9111,63 @@ instance {S5 S10 : Finset 𝓩} {charges : Multiset (ChargeSpectrum 𝓩)} :
       · exact TwoSidedIdeal.mem_span_iff.mpr fun I hI => hI h
       · simp [h]
     exact add_mem (add_mem (key hBy) (key hFy)) (add_mem (key hFy) (key hBy))
+```
 
-=== Physlib/QFT/PerturbationTheory/WickAlgebra/Grading.lean ===
+## `Physlib/QFT/PerturbationTheory/WickAlgebra/Grading.lean`
+
+```
       simp only [DirectSum.of_eq_same]
       grind
       grind
       grind
+```
 
-=== Physlib/QFT/PerturbationTheory/WickAlgebra/SuperCommute.lean ===
-    apply superCommute_create_create <;> rfl
-    apply superCommute_create_create <;> rfl
-    apply superCommute_create_create <;> rfl
-    apply superCommute_create_create <;> rfl
-    apply superCommute_annihilate_annihilate <;> rfl
-    apply superCommute_annihilate_annihilate <;> rfl
-    apply superCommute_annihilate_annihilate <;> rfl
-    apply superCommute_annihilate_annihilate <;> rfl
+## `Physlib/QFT/PerturbationTheory/WickAlgebra/SuperCommute.lean`
 
-=== Physlib/QFT/PerturbationTheory/WickContraction/ExtractEquiv.lean ===
+```
+    apply superCommute_create_create <;> rfl
+    apply superCommute_create_create <;> rfl
+    apply superCommute_create_create <;> rfl
+    apply superCommute_create_create <;> rfl
+    apply superCommute_annihilate_annihilate <;> rfl
+    apply superCommute_annihilate_annihilate <;> rfl
+    apply superCommute_annihilate_annihilate <;> rfl
+    apply superCommute_annihilate_annihilate <;> rfl
+```
+
+## `Physlib/QFT/PerturbationTheory/WickContraction/ExtractEquiv.lean`
+
+```
 import all Init.Data.Fin.Fold
+```
 
-=== Physlib/QFT/PerturbationTheory/WickContraction/InsertAndContractNat.lean ===
+## `Physlib/QFT/PerturbationTheory/WickContraction/InsertAndContractNat.lean`
+
+```
         simp_all only [Nat.succ_eq_add_one, erase, Finset.mem_filter, Finset.mem_univ, true_and]
         exact ha'
+```
 
-=== Physlib/QFT/PerturbationTheory/WickContraction/Join.lean ===
+## `Physlib/QFT/PerturbationTheory/WickContraction/Join.lean`
+
+```
   simp_all only [Finset.card_pos]
   exact h
+```
 
-=== Physlib/QFT/QED/AnomalyCancellation/Basic.lean ===
+## `Physlib/QFT/QED/AnomalyCancellation/Basic.lean`
+
+```
     simp only [HSMul.hSMul, ACCSystemCharges.chargesModule_smul]
     simp only [ACCSystemCharges.chargesAddCommMonoid_add]
   simp only [TriLinearSymm.mk₃_toFun_apply_apply]
   simp only [PureU1_linearACCs] at hS
   exact hS ⟨0, by simp⟩
+```
 
-=== Physlib/QFT/QED/AnomalyCancellation/BasisLinear.lean ===
+## `Physlib/QFT/QED/AnomalyCancellation/BasisLinear.lean`
+
+```
     asCharges k ⟨j, by simp⟩= 0 := by
   simp [asCharges, Fin.ext_iff]
   grind
@@ -8631,16 +9192,22 @@ import all Init.Data.Fin.Fold
     simp only [HSMul.hSMul, SMul.smul,asLinSols_val]
     · simp only [asCharges, ↓reduceIte, mul_one]
       erw [asCharges_ne_castSucc hkj]
+```
 
-=== Physlib/QFT/QED/AnomalyCancellation/ConstAbs.lean ===
+## `Physlib/QFT/QED/AnomalyCancellation/ConstAbs.lean`
+
+```
   simp only [ConstAbs, FamilyPermutations, PermGroup, permCharges,
   simp only [succ_eq_add_one, accGrav, LinearMap.coe_mk, AddHom.coe_mk, Fin.val_succ]
   simp only [succ_eq_add_one, mul_eq, cast_add, cast_mul, cast_ofNat,
   erw [pureU1_linear A] at h0
   simp only [Fin.val_cast, Fin.val_castAdd, mul_eq, Fin.val_castSucc]
   simp only [mul_eq, Fin.val_succ, Fin.val_cast, Fin.val_natAdd]
+```
 
-=== Physlib/QFT/QED/AnomalyCancellation/Even/BasisLinear.lean ===
+## `Physlib/QFT/QED/AnomalyCancellation/Even/BasisLinear.lean`
+
+```
 set_option backward.isDefEq.respectTransparency false in
   simp only [basisAsCharges, succ_eq_add_one, evenFst, evenSnd]
 set_option backward.isDefEq.respectTransparency false in
@@ -8665,8 +9232,11 @@ set_option backward.isDefEq.respectTransparency false in
   erw [sum_evenShift, basis!_on_evenShiftZero, basis!_on_evenShiftLast]
   simp only [succ_eq_add_one, accCubeTriLinSymm,
   erw [sum_even]
+```
 
-=== Physlib/QFT/QED/AnomalyCancellation/LineInPlaneCond.lean ===
+## `Physlib/QFT/QED/AnomalyCancellation/LineInPlaneCond.lean`
+
+```
   simp only [FamilyPermutations_anomalyFreeLinear_apply]
   rcases eq_or_ne i j with hij | hij
   · rw [hij]
@@ -8688,12 +9258,18 @@ set_option backward.isDefEq.respectTransparency false in
   exact linesInPlane_four S' (lineInPlaneCond_perm hS M)
   rcases eq_or_ne i j with hij | hij
   · rw [hij]
+```
 
-=== Physlib/QFT/QED/AnomalyCancellation/LowDim/One.lean ===
+## `Physlib/QFT/QED/AnomalyCancellation/LowDim/One.lean`
+
+```
   match i with
   | ⟨0, _⟩ => exact hLin
+```
 
-=== Physlib/QFT/QED/AnomalyCancellation/Odd/BasisLinear.lean ===
+## `Physlib/QFT/QED/AnomalyCancellation/Odd/BasisLinear.lean`
+
+```
 set_option backward.isDefEq.respectTransparency false in
   simp only [basisAsCharges]
 set_option backward.isDefEq.respectTransparency false in
@@ -8714,18 +9290,30 @@ set_option backward.isDefEq.respectTransparency false in
     | ⟨0, _⟩ => exact basis!_linearACC j⟩
   simp only [accCubeTriLinSymm, TriLinearSymm.mk₃_toFun_apply_apply]
   erw [sum_oddShift, basis!_on_oddShiftZero]
+```
 
-=== Physlib/QFT/QED/AnomalyCancellation/Permutations.lean ===
+## `Physlib/QFT/QED/AnomalyCancellation/Permutations.lean`
+
+```
     | ⟨0, _⟩ => exact accGrav_invariant
+```
 
-=== Physlib/QFT/QED/AnomalyCancellation/Sorts.lean ===
+## `Physlib/QFT/QED/AnomalyCancellation/Sorts.lean`
+
+```
   simp only [Sorted, sort, FamilyPermutations, PermGroup, permCharges]
   simp only [Equiv.invFun_as_coe, Equiv.apply_symm_apply] at hi
+```
 
-=== Physlib/QuantumMechanics/DDimensions/Basic.lean ===
+## `Physlib/QuantumMechanics/DDimensions/Basic.lean`
+
+```
     SchwartzSubmodule Q.d ≤ Q.potentialOperator.domain :=
+```
 
-=== Physlib/QuantumMechanics/DDimensions/Hydrogen/LaplaceRungeLenzVector.lean ===
+## `Physlib/QuantumMechanics/DDimensions/Hydrogen/LaplaceRungeLenzVector.lean`
+
+```
 attribute [local instance 100] LieRing.ofAssociativeRing
 
         ← comp_finsetSum, ← finsetSum_comp, sum_smul, smul_add, smul_sub, smul_smul, mul_assoc]
@@ -8754,12 +9342,18 @@ attribute [local instance 100] LieRing.ofAssociativeRing
     comp_smul, finsetSum_comp, comp_finsetSum, Finset.sum_add_distrib, ← Finset.smul_sum,
   simp only [add_apply, _root_.smul_apply, _root_.add_apply,
     _root_.smul_apply, Function.comp_apply, coe_comp, coe_id', smul_eq_mul, ofReal_add,
+```
 
-=== Physlib/QuantumMechanics/DDimensions/Operators/AngularMomentum.lean ===
+## `Physlib/QuantumMechanics/DDimensions/Operators/AngularMomentum.lean`
+
+```
   simp only [FunLike.coe_sum, FunLike.coe_smul,
     ContinuousLinearMap.coe_comp, Finset.sum_apply, Pi.smul_apply, Function.comp_apply]
+```
 
-=== Physlib/QuantumMechanics/DDimensions/Operators/Commutation.lean ===
+## `Physlib/QuantumMechanics/DDimensions/Operators/Commutation.lean`
+
+```
 public import Physlib.Relativity.Tensors.RealTensor.Vector.Tensorial
 attribute [local instance 100] LieRing.ofAssociativeRing
 
@@ -8769,16 +9363,22 @@ attribute [local instance 100] LieRing.ofAssociativeRing
   simp only [nsmul_eq_mul, smul_apply, sub_apply, add_apply, mul_apply_eq_comp, comp_apply,
     _root_.natCast_apply, positionCLM_apply, momentumCLM_apply, neg_mul, mul_neg, smul_neg,
     sub_neg_eq_add, smul_eq_mul, smul_add]
+```
 
-=== Physlib/QuantumMechanics/DDimensions/Operators/Momentum.lean ===
+## `Physlib/QuantumMechanics/DDimensions/Operators/Momentum.lean`
+
+```
   domain := SchwartzSubmodule d
 lemma momentumOperator_apply (ψ : SchwartzSubmodule d) :
 lemma momentumOperator_apply_ae (ψ : SchwartzSubmodule d) :
 lemma momentumOperator_range (ψ : SchwartzSubmodule d) : 𝓟 i ψ ∈ SchwartzSubmodule d := by
 lemma momentumSqOperator_domain_eq : momentumSqOperator.domain = SchwartzSubmodule d := by
     rw [← iInf_const (a := SchwartzSubmodule d) (ι := Fin d)]
+```
 
-=== Physlib/QuantumMechanics/DDimensions/Operators/Multiplication.lean ===
+## `Physlib/QuantumMechanics/DDimensions/Operators/Multiplication.lean`
+
+```
       refine (hψ.add hφ).ae_eq ?_
       filter_upwards [coeFn_add ψ φ] with x h
     zero_mem' := MemHS.zero.ae_eq (by filter_upwards; simp)
@@ -8825,8 +9425,11 @@ lemma momentumSqOperator_domain_eq : momentumSqOperator.domain = SchwartzSubmodu
     refine (mem_mulOperator_domain_iff.mp hgψ).ae_eq ?_
   refine mem_compRestricted_domain_iff.mpr ⟨h ▸ Submodule.mem_top, ?_⟩
   refine (mem_mulOperator_domain_iff.mp hψ).ae_eq ?_
+```
 
-=== Physlib/QuantumMechanics/DDimensions/Operators/Position.lean ===
+## `Physlib/QuantumMechanics/DDimensions/Operators/Position.lean`
+
+```
 public import Physlib.SpaceAndTime.Space.Norm.Regularized
   simp only [positionCLM]
   erw [smulLeftCLM_apply_apply (g := Complex.ofRealCLM ∘ (coordCLM i)) (by fun_prop)]
@@ -8861,8 +9464,11 @@ lemma radiusPowOperator_isSelfAdjoint (s : ℝ) : IsSelfAdjoint (𝓡[d] s) :=
     PolyBddSchwartzSubmodule d ⌊1 - d / 2 - s⌋.toNat ≤ (radiusPowOperator s).domain := by
   refine MemHS.ae_eq (f := 𝐫 s f.1) ?_ ?_
   · exact radiusPowLM_apply_memHS s f.1 _ f.2 (add_floor_toNat_pos_aux d s)
+```
 
-=== Physlib/QuantumMechanics/DDimensions/Operators/SpectralTheory/Basic.lean ===
+## `Physlib/QuantumMechanics/DDimensions/Operators/SpectralTheory/Basic.lean`
+
+```
 /-
 Copyright (c) 2026 Gregory J. Loges. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
@@ -9778,8 +10384,11 @@ lemma resolvent_sub' {T : H →ₗ.[ℂ] H} (z₁ z₂ : ℂ) (hz₁ : z₁ ∈ 
 end
 
 end LinearPMap
+```
 
-=== Physlib/QuantumMechanics/DDimensions/Operators/SpectralTheory/SelfAdjoint.lean ===
+## `Physlib/QuantumMechanics/DDimensions/Operators/SpectralTheory/SelfAdjoint.lean`
+
+```
 /-
 Copyright (c) 2026 Gregory J. Loges. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
@@ -9876,8 +10485,11 @@ lemma residualSpectrum_eq_empty : σʳ T = ∅ := by
 
 end IsSelfAdjoint
 end LinearPMap
+```
 
-=== Physlib/QuantumMechanics/DDimensions/Operators/SpectralTheory/SpectralMeasure.lean ===
+## `Physlib/QuantumMechanics/DDimensions/Operators/SpectralTheory/SpectralMeasure.lean`
+
+```
 /-
 Copyright (c) 2026 Gregory J. Loges. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
@@ -10000,8 +10612,11 @@ lemma commute (A B : Set α) : Commute (μS A) (μS B) := by
 end SpectralMeasure
 
 end
+```
 
-=== Physlib/QuantumMechanics/DDimensions/Operators/SpectralTheory/Symmetric.lean ===
+## `Physlib/QuantumMechanics/DDimensions/Operators/SpectralTheory/Symmetric.lean`
+
+```
 /-
 Copyright (c) 2026 Gregory J. Loges. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
@@ -10220,8 +10835,11 @@ lemma pointSpectrum_real : σᵖ T ⊆ range ofReal := by
 
 end IsSymmetric
 end LinearPMap
+```
 
-=== Physlib/QuantumMechanics/DDimensions/Operators/Unbounded.lean ===
+## `Physlib/QuantumMechanics/DDimensions/Operators/Unbounded.lean`
+
+```
 public import Physlib.Mathematics.LinearPMap
 The appropriate mathematical objects for discussing operators in non-relativistic quantum mechanics
 are partially-defined linear map (`LinearPMap`) between complex Hilbert spaces, `H →ₗ.[ℂ] H'`.
@@ -10473,8 +11091,11 @@ lemma IsUnbounded.orthogonal_closure_ker [CompleteSpace H] [CompleteSpace H'] (h
     (U.closure.toFun.ker.map U.closure.domain.subtype)ᗮ = U†.toFun.range.closure :=
   h.adjoint_adjoint_eq_closure ▸ h.adjoint.hasDenseDomain.orthogonal_adjoint_ker
 
+```
 
-=== Physlib/QuantumMechanics/DDimensions/SpaceDHilbertSpace/Basic.lean ===
+## `Physlib/QuantumMechanics/DDimensions/SpaceDHilbertSpace/Basic.lean`
+
+```
 # Hilbert spaces for quantum mechanics on `Space d`
 
 ## i. Overview
@@ -10580,8 +11201,11 @@ end
     {α : Type*} {l : Filter α} {ψ : α → SpaceDHilbertSpace d} :
     Tendsto ψ l (nhds 0) ↔ Tendsto (fun a ↦ ∫⁻ x, ‖ψ a x‖ₑ ^ 2) l (nhds 0) := by
 end
+```
 
-=== Physlib/QuantumMechanics/DDimensions/SpaceDHilbertSpace/PolyBddSchwartzSubmodule.lean ===
+## `Physlib/QuantumMechanics/DDimensions/SpaceDHilbertSpace/PolyBddSchwartzSubmodule.lean`
+
+```
 public import Mathlib.Analysis.Calculus.BumpFunction.InnerProduct
 For each `a : ℕ∞`, `PolyBddSchwartzSubmodule d a` is the submodule corresponding to Schwartz
 potential operator maps `PolyBddSchwartzSubmodule d ⊤` to itself. In the same way that multiplying
@@ -10634,8 +11258,11 @@ lemma dense_top (d : ℕ) : Dense (PolyBddSchwartzSubmodule d ⊤ : Set (SpaceDH
         refine Tendsto.squeeze tendsto_const_nhds hξB (zero_le) (fun n ↦ ?_)
         refine Tendsto.squeeze tendsto_const_nhds hψξ (zero_le) (fun n ↦ ?_)
 lemma dense (d : ℕ) (a : ℕ∞) : Dense (PolyBddSchwartzSubmodule d a : Set (SpaceDHilbertSpace d)) :=
+```
 
-=== Physlib/QuantumMechanics/DDimensions/SpaceDHilbertSpace/SchwartzSubmodule.lean ===
+## `Physlib/QuantumMechanics/DDimensions/SpaceDHilbertSpace/SchwartzSubmodule.lean`
+
+```
 - `SchwartzSubmodule d`: Submodule of `SpaceDHilbertSpace d` consisting of the L² equivalence
 abbrev SchwartzSubmodule (d : ℕ) := (schwartzIncl (d := d)).range
 def schwartzEquiv : 𝓢(Space d, ℂ) ≃ₗ[ℂ] SchwartzSubmodule d :=
@@ -10643,8 +11270,11 @@ variable (f g : 𝓢(Space d, ℂ)) (ψ : SchwartzSubmodule d)
 instance : CoeFun (SchwartzSubmodule d) fun _ ↦ Space d → ℂ := ⟨fun ψ ↦ ψ.val⟩
 lemma zero_eq_top : SchwartzSubmodule 0 = ⊤ := by
 lemma dense (d : ℕ) : Dense (SchwartzSubmodule d : Set (SpaceDHilbertSpace d)) :=
+```
 
-=== Physlib/QuantumMechanics/FiniteTarget/HilbertSpace.lean ===
+## `Physlib/QuantumMechanics/FiniteTarget/HilbertSpace.lean`
+
+```
 A finite target quantum mechanical system is one whose states live in a finite
 dimensional Hilbert space, with the basis states labelled by a finite type `d`
 (for example the sites of a finite lattice, or the levels of a qudit).
@@ -10764,8 +11394,11 @@ noncomputable def basisFun (d : Type*) [Fintype d] [DecidableEq d] :
 lemma basisFun_apply (i : d) : basisFun d i = ⟨EuclideanSpace.single i 1⟩ := by
   rw [basisFun, OrthonormalBasis.map_apply, EuclideanSpace.basisFun_apply]; rfl
 end FiniteHilbertSpace
+```
 
-=== Physlib/QuantumMechanics/OneDimension/HarmonicOscillator/Completeness.lean ===
+## `Physlib/QuantumMechanics/OneDimension/HarmonicOscillator/Completeness.lean`
+
+```
   apply MeasureTheory.integrable_finsetSum
   rw [h2, MeasureTheory.integral_finsetSum]
     simp_rw [← Finset.sum_mul]
@@ -10802,11 +11435,17 @@ end FiniteHilbertSpace
     exact HilbertSpace.mul_gaussian_mem_Lp_one f hf (1/ (2 * Q.ξ^2)) 0 (by simp)
     · exact memLp_one_iff_integrable.mp hInt
     · exact hInt.aestronglyMeasurable
+```
 
-=== Physlib/QuantumMechanics/OneDimension/HarmonicOscillator/Eigenfunction.lean ===
+## `Physlib/QuantumMechanics/OneDimension/HarmonicOscillator/Eigenfunction.lean`
+
+```
   apply And.intro <;> fun_prop
+```
 
-=== Physlib/QuantumMechanics/OneDimension/HarmonicOscillator/TISE.lean ===
+## `Physlib/QuantumMechanics/OneDimension/HarmonicOscillator/TISE.lean`
+
+```
     rw [show (fun (x : ℝ) => Complex.exp (- x ^ 2 / (2 * Q.ξ ^ 2)))
           = Complex.exp ∘ (fun (x : ℝ) => - x ^ 2 / (2 * Q.ξ ^ 2)) from rfl,
       deriv_comp _ (by fun_prop) (by fun_prop)]
@@ -10827,12 +11466,18 @@ end FiniteHilbertSpace
         simp [nsmul_eq_mul]
       rw [hr]
       push_cast
+```
 
-=== Physlib/QuantumMechanics/OneDimension/HilbertSpace/Basic.lean ===
+## `Physlib/QuantumMechanics/OneDimension/HilbertSpace/Basic.lean`
+
+```
   simp only [norm_zero, ne_eq, OfNat.ofNat_ne_zero, not_false_eq_true, zero_pow,
     integrable_fun_zero, and_true]
+```
 
-=== Physlib/QuantumMechanics/OneDimension/Operators/Momentum.lean ===
+## `Physlib/QuantumMechanics/OneDimension/Operators/Momentum.lean`
+
+```
   simp only [Pi.smul_apply, deriv_const_smul _ (hψ x), smul_comm (-Complex.I * ℏ) c]
   simp only [Pi.add_apply, deriv_add (hψ1 x) (hψ2 x), smul_eq_mul]
     simp only [map_smul, RingHom.id_apply, smul_comm (-Complex.I * ℏ) a]
@@ -10857,23 +11502,35 @@ end FiniteHilbertSpace
   · exact hint ψ1 (SchwartzMap.derivCLM ℂ ℂ ψ2)
   · exact hint ψ1 ψ2
   · exact fun x _ => (SchwartzMap.differentiable ψ1).star x
+```
 
-=== Physlib/QuantumMechanics/OneDimension/Operators/Parity.lean ===
+## `Physlib/QuantumMechanics/OneDimension/Operators/Parity.lean`
+
+```
 public import Mathlib.Analysis.Calculus.ContDiff.Operations
     rw [show (fun x : ℝ => -x) = -(fun x : ℝ => x) from rfl]
     rw [iteratedFDeriv_neg_apply]
       simp only [Nat.succ_eq_add_one, fderiv_fun_id, Function.comp_apply,
+```
 
-=== Physlib/Relativity/Bispinors/Basic.lean ===
+## `Physlib/Relativity/Bispinors/Basic.lean`
+
+```
 def contrBispinorUp (p : ℂT[.up]) : ℂT[.upL, .upR] := permT id (IsReindexing.auto)
 def contrBispinorDown (p : ℂT[.up]) : ℂT[.downL, .downR] := permT id (IsReindexing.auto)
 def coBispinorUp (p : ℂT[.down]) : ℂT[.upL, .upR] := permT id (IsReindexing.auto)
 def coBispinorDown (p : ℂT[.down]) : ℂT[.downL, .downR] := permT id (IsReindexing.auto)
+```
 
-=== Physlib/Relativity/CliffordAlgebra.lean ===
+## `Physlib/Relativity/CliffordAlgebra.lean`
+
+```
       SetLike.mk_smul_mk, Finset.sum_apply, AddSubmonoidClass.coe_finsetSum]
+```
 
-=== Physlib/Relativity/LorentzAlgebra/Basic.lean ===
+## `Physlib/Relativity/LorentzAlgebra/Basic.lean`
+
+```
 public import Mathlib.Algebra.Lie.SerreConstruction
 attribute [local instance 100] LieRing.ofAssociativeRing
 
@@ -10881,11 +11538,17 @@ attribute [local instance 100] LieRing.ofAssociativeRing
     mem_skewAdjointMatricesLieSubalgebra, mem_skewAdjointMatricesSubmodule, Matrix.IsSkewAdjoint,
     IsAdjointPair, mul_neg]
   exact h
+```
 
-=== Physlib/Relativity/LorentzAlgebra/ExponentialMap.lean ===
+## `Physlib/Relativity/LorentzAlgebra/ExponentialMap.lean`
+
+```
   convert! det_exp_real (reindex e e A.1)
+```
 
-=== Physlib/Relativity/LorentzGroup/API-map.yaml ===
+## `Physlib/Relativity/LorentzGroup/API-map.yaml`
+
+```
 version: v0.1
 
 Title: "Lorentz Group"
@@ -10951,8 +11614,11 @@ Requirements:
   - description: Prove that every member of the restricted Lorentz group is a combination of a boost and a rotation
     done: false
     location: N/A
+```
 
-=== Physlib/Relativity/LorentzGroup/Basic.lean ===
+## `Physlib/Relativity/LorentzGroup/Basic.lean`
+
+```
 public import Mathlib.Topology.Maps.Basic
 public import Mathlib.Topology.Algebra.Group.ClosedSubgroup
   simp [dual]
@@ -11056,11 +11722,17 @@ def toClosedSubgroup (d : ℕ) : ClosedSubgroup (GL (Fin 1 ⊕ Fin d) ℝ) where
 
 /-!
 
+```
 
-=== Physlib/Relativity/LorentzGroup/Boosts/Apply.lean ===
+## `Physlib/Relativity/LorentzGroup/Boosts/Apply.lean`
+
+```
 public import Physlib.Relativity.Tensors.RealTensor.Vector.Tensorial
+```
 
-=== Physlib/Relativity/LorentzGroup/Boosts/Basic.lean ===
+## `Physlib/Relativity/LorentzGroup/Boosts/Basic.lean`
+
+```
     have hγ : (γ β) ^ 2 - (γ β) ^ 2 * β ^ 2 = 1 := by
       have hd := γ_det_not_zero β hβ
       rw [show (γ β) ^ 2 - (γ β) ^ 2 * β ^ 2 = (γ β) ^ 2 * (1 - β ^ 2) by ring, γ_sq β hβ]
@@ -11094,8 +11766,11 @@ public import Physlib.Relativity.Tensors.RealTensor.Vector.Tensorial
   boost_inr_other_inr_self hβ (Fin.ne_of_val_ne (Nat.succ_ne_zero i))
   rw [boost_inr_inr_other hβ (Fin.succ_ne_zero i2)]
   simp [Fin.succ_inj, eq_comm]
+```
 
-=== Physlib/Relativity/LorentzGroup/Boosts/Generalized.lean ===
+## `Physlib/Relativity/LorentzGroup/Boosts/Generalized.lean`
+
+```
     simp only [FunLike.coe_smul, Pi.smul_apply, smul_eq_mul]
     simp only [map_add, add_apply, neg_add_rev]
     simp only [FunLike.coe_smul, Pi.smul_apply, smul_eq_mul, RingHom.id_apply]
@@ -11134,8 +11809,11 @@ public import Physlib.Relativity.Tensors.RealTensor.Vector.Tensorial
     smul_apply, smul_eq_mul, Velocity.minkowskiProduct_self_eq_one, one_smul,
     minkowskiProduct_symm v.1 u.1]
   match_scalars <;> field_simp <;> ring
+```
 
-=== Physlib/Relativity/LorentzGroup/Orthochronous/Basic.lean ===
+## `Physlib/Relativity/LorentzGroup/Orthochronous/Basic.lean`
+
+```
   constructor <;> intro h <;> rcases h1 with h1 | h1 <;> linarith
   constructor <;> intro h <;> rcases h1 with h1 | h1 <;> linarith
   constructor <;> intro h <;> rcases h1 with h1 | h1 <;> linarith
@@ -11167,15 +11845,24 @@ public import Physlib.Relativity.Tensors.RealTensor.Vector.Tensorial
   generalize orthchroRep Λ = x
   revert x
   decide
+```
 
-=== Physlib/Relativity/LorentzGroup/Rotations.lean ===
+## `Physlib/Relativity/LorentzGroup/Rotations.lean`
+
+```
     constructor <;> simp
         simp [Matrix.fromBlocks_transpose, Matrix.fromBlocks_multiply] at hΛ
+```
 
-=== Physlib/Relativity/MinkowskiMatrix.lean ===
+## `Physlib/Relativity/MinkowskiMatrix.lean`
+
+```
   simp [as_block, fromBlocks_multiply]
+```
 
-=== Physlib/Relativity/PauliMatrices/AsTensor.lean ===
+## `Physlib/Relativity/PauliMatrices/AsTensor.lean`
+
+```
 def asTensor : (ContrℂModule ⊗[ℂ] (LeftHandedWeyl ⊗[ℂ] RightHandedWeyl)) :=
   simp [leftRightToMatrix_symm_expand_tmul, pauliBasis, pauliSelfAdjoint, pauliMatrix]
   module
@@ -11215,22 +11902,34 @@ def asConsTensor :
             module
           · simp only [Finset.mem_univ, not_true_eq_false] at hb
 lemma asConsTensor_apply_one : asConsTensor (1 : ℂ) = asTensor := by
+```
 
-=== Physlib/Relativity/PauliMatrices/CliffordAlgebra.lean ===
+## `Physlib/Relativity/PauliMatrices/CliffordAlgebra.lean`
+
+```
       Finset.sum_apply, AddSubmonoidClass.coe_finsetSum]
+```
 
-=== Physlib/Relativity/PauliMatrices/Relations.lean ===
+## `Physlib/Relativity/PauliMatrices/Relations.lean`
+
+```
       Function.comp_apply, Finsupp.coe_smul, Pi.smul_apply, smul_eq_mul]
     simp only [Fin.isValue, Fin.cast_eq_self, ofRat_basis_repr_apply]
     rw [leftDualLeftUnit_eq_ofRat, contrMetric_eq_ofRat, prodT_ofRat_ofRat, ← map_nsmul,
     rw [dualRightRightUnit_eq_ofRat, contrMetric_eq_ofRat, prodT_ofRat_ofRat, ← map_nsmul,
+```
 
-=== Physlib/Relativity/PauliMatrices/SelfAdjoint.lean ===
+## `Physlib/Relativity/PauliMatrices/SelfAdjoint.lean`
+
+```
   fin_cases i <;>
     simp [pauliSelfAdjoint', pauliSelfAdjoint, pauliBasis, pauliBasis',
       minkowskiMatrix.inr_i_inr_i, Subtype.ext_iff, NegMemClass.coe_neg, neg_neg]
+```
 
-=== Physlib/Relativity/PauliMatrices/ToTensor.lean ===
+## `Physlib/Relativity/PauliMatrices/ToTensor.lean`
+
+```
 open Module
   simp only [fromTripleT_apply_basis]
   permT id (IsReindexing.auto) {η' | μ ν ⊗ σ^^^ | ν α β}ᵀ
@@ -11242,8 +11941,11 @@ open Module
       dualRightMetric_eq_ofRat]
   rw [smul_pauliCo, actionT_dualLeftMetric, actionT_dualRightMetric]
   rw [toTensor_smul_eq_self, actionT_dualLeftMetric, actionT_dualRightMetric]
+```
 
-=== Physlib/Relativity/SL2C/Basic.lean ===
+## `Physlib/Relativity/SL2C/Basic.lean`
+
+```
   rw [SpecialLinearGroup.coe_inv, Matrix.inv_def, SpecialLinearGroup.det_coe]
   simp
 noncomputable def toSelfAdjointMap (M : SL(2, ℂ)) :
@@ -11261,16 +11963,25 @@ noncomputable def toSelfAdjointMap (M : SL(2, ℂ)) :
   exact h1x
   exact congrFun (toLorentzGroup_fst_col M) (Sum.inl 0)
   rw [LorentzGroup.IsOrthochronous, toLorentzGroup_inl_inl]
+```
 
-=== Physlib/Relativity/SL2C/SelfAdjoint.lean ===
+## `Physlib/Relativity/SL2C/SelfAdjoint.lean`
+
+```
   have hxy : x * y = 1 := by rw [show x * y = M.det by rw [he]; simp, detM]
   have detA_one : normSq x * normSq y = 1 := by
     rw [← Complex.normSq_mul, hxy, Complex.normSq_one]
+```
 
-=== Physlib/Relativity/Special/TwinParadox/Basic.lean ===
+## `Physlib/Relativity/Special/TwinParadox/Basic.lean`
+
+```
     FunLike.coe_sub, Pi.sub_apply, Finset.sum_const_zero, MulZeroClass.zero_mul]
+```
 
-=== Physlib/Relativity/Tensors/Basic.lean ===
+## `Physlib/Relativity/Tensors/Basic.lean`
+
+```
 public import Physlib.Relativity.Tensors.ComponentIdx.Single
 public import Physlib.Relativity.Tensors.Reindexing
 This file realizes `Tensor S c` as a `PiTensorProduct`, relates pure tensors to
@@ -11486,8 +12197,11 @@ lemma eq_smul_toField {c : Fin 0 → C} (t : Tensor S c) :
     t = toField t • (basis c (@default (ComponentIdx (S := S) c) Unique.instInhabited)) := by
   apply toField_injective
   simp
+```
 
-=== Physlib/Relativity/Tensors/ComplexTensor/Basic.lean ===
+## `Physlib/Relativity/Tensors/ComplexTensor/Basic.lean`
+
+```
   /-- The color associated with dual-Left handed fermions. -/
   /-- The color associated with dual-Right handed fermions. -/
 deriving Fintype
@@ -11642,8 +12356,11 @@ lemma contrPCoeff_basis {n : ℕ} {c : Fin n → complexLorentzTensor.Color} (i 
     simp only [cast_eq]
     erw [Lorentz.contrCoContraction_basis]
     grind
+```
 
-=== Physlib/Relativity/Tensors/ComplexTensor/Lemmas.lean ===
+## `Physlib/Relativity/Tensors/ComplexTensor/Lemmas.lean`
+
+```
 
     rw [hA, hs, prodT_permT_left, prodT_permT_right, contrT_comm, permT_permT,
       contrT_permT, contrT_permT, permT_permT]
@@ -11651,8 +12368,11 @@ lemma contrPCoeff_basis {n : ℕ} {c : Fin n → complexLorentzTensor.Color} (i 
   congr 1
   apply permT_congr_eq_id
   decide
+```
 
-=== Physlib/Relativity/Tensors/ComplexTensor/Matrix/Pre.lean ===
+## `Physlib/Relativity/Tensors/ComplexTensor/Matrix/Pre.lean`
+
+```
 def contrContrToMatrix : (ContrℂModule ⊗[ℂ] ContrℂModule) ≃ₗ[ℂ]
     exact congrArg _ (Basis.tensorProduct_apply complexContrBasis complexContrBasis i j)
 def coCoToMatrix : (CoℂModule ⊗[ℂ] CoℂModule) ≃ₗ[ℂ]
@@ -11696,8 +12416,11 @@ lemma coContrToMatrix_ρ (v : (CoℂModule ⊗[ℂ] ContrℂModule)) (M : SL(2,�
   rw [← h1, LinearEquiv.symm_apply_apply]
     TensorProduct.map (CoℂModule.SL2CRep M) (ContrℂModule.SL2CRep M) (coContrToMatrix.symm v) =
   rw [← h1, LinearEquiv.symm_apply_apply]
+```
 
-=== Physlib/Relativity/Tensors/ComplexTensor/Metrics/Basic.lean ===
+## `Physlib/Relativity/Tensors/ComplexTensor/Metrics/Basic.lean`
+
+```
 abbrev dualLeftMetric : ℂT[.downL, .downL] := complexLorentzTensor.metricTensor Color.downL
 abbrev dualRightMetric : ℂT[.downR, .downR] := complexLorentzTensor.metricTensor Color.downR
 scoped[complexLorentzTensor] notation "εL'" => dualLeftMetric
@@ -11734,8 +12457,11 @@ lemma dualRightMetric_eq_ofRat : εR' = ofRat fun f =>
 lemma actionT_dualLeftMetric (g : SL(2,ℂ)) : g • εL' = εL' := by
 /-- The tensor `dualRightMetric` is invariant under the action of `SL(2,ℂ)`. -/
 lemma actionT_dualRightMetric (g : SL(2,ℂ)) : g • εR' = εR' := by
+```
 
-=== Physlib/Relativity/Tensors/ComplexTensor/Metrics/Lemmas.lean ===
+## `Physlib/Relativity/Tensors/ComplexTensor/Metrics/Lemmas.lean`
+
+```
 /-- The dual-left metric is antisymmetric `{εL' | α α' = - εL' | α' α}ᵀ`. -/
 lemma dualLeftMetric_antisymm : {εL' | α α' = - (εL' | α' α)}ᵀ := by
   rw [dualLeftMetric_eq_ofRat, ofRat_basis_repr_apply, ← map_neg, ofRat_basis_repr_apply]
@@ -11750,8 +12476,11 @@ lemma rightMetric_contr_dualRightMetric : {εR | α β ⊗ εR' | β γ = δR | 
 lemma dualLeftMetric_contr_leftMetric : {εL' | α β ⊗ εL | β γ = δL' | α γ}ᵀ := by
 /-- The contraction of the dual-right metric with the right metric is the unit
 lemma dualRightMetric_contr_rightMetric : {εR' | α β ⊗ εR | β γ = δR' | α γ}ᵀ := by
+```
 
-=== Physlib/Relativity/Tensors/ComplexTensor/Metrics/Pre.lean ===
+## `Physlib/Relativity/Tensors/ComplexTensor/Metrics/Pre.lean`
+
+```
 def contrMetricVal : (ContrℂModule ⊗[ℂ] ContrℂModule) :=
   simp only [map_apply, ofRealHom_eq_coe, Fintype.sum_sum_type, Finset.univ_unique,
     not_false_eq_true, minkowskiMatrix.off_diag_zero, Sum.inr.injEq, zero_ne_one, Fin.reduceEq,
@@ -11815,8 +12544,11 @@ lemma coContrContraction_apply_metric :
   simp [Fin.isValue, tmul_sub, sub_tmul, map_sub]
   simp only [← Representation.IntertwiningMap.toLinearMap_apply]
   simp [Fin.isValue, ↓reduceIte, one_smul, reduceCtorEq, Sum.inr.injEq, one_ne_zero,
+```
 
-=== Physlib/Relativity/Tensors/ComplexTensor/OfRat.lean ===
+## `Physlib/Relativity/Tensors/ComplexTensor/OfRat.lean`
+
+```
 open Module
       ((complexLorentzTensor.contr c)
     change Fermion.leftDualContraction (Fermion.leftBasis i ⊗ₜ Fermion.dualLeftBasis j) = _
@@ -11831,8 +12563,11 @@ open Module
     change Lorentz.contrCoContraction
     {σ : Fin m → Fin n} (h : IsReindexing c c1 σ)
     ((ofRat (fun b => f (fun i => Fin.cast (by simp [IsReindexing.inv_perserve_color])
+```
 
-=== Physlib/Relativity/Tensors/ComplexTensor/Units/Basic.lean ===
+## `Physlib/Relativity/Tensors/ComplexTensor/Units/Basic.lean`
+
+```
 abbrev dualLeftLeftUnit : ℂT[.downL, .upL] := complexLorentzTensor.unitTensor Color.upL
 abbrev leftDualLeftUnit : ℂT[.upL, .downL] := complexLorentzTensor.unitTensor Color.downL
 abbrev dualRightRightUnit : ℂT[.downR, .upR] := complexLorentzTensor.unitTensor Color.upR
@@ -11897,8 +12632,11 @@ lemma actionT_leftDualLeftUnit (g : SL(2,ℂ)) : g • δL = δL := by
 lemma actionT_dualRightRightUnit (g : SL(2,ℂ)) : g • δR' = δR' := by
 /-- The tensor `rightDualRightUnit` is invariant under the action of `SL(2,ℂ)`. -/
 lemma actionT_rightDualRightUnit (g : SL(2,ℂ)) : g • δR = δR := by
+```
 
-=== Physlib/Relativity/Tensors/ComplexTensor/Units/Pre.lean ===
+## `Physlib/Relativity/Tensors/ComplexTensor/Units/Pre.lean`
+
+```
 def contrCoUnitVal : ContrℂModule ⊗[ℂ] CoℂModule :=
 def contrCoUnit : (Representation.trivial ℂ SL(2,ℂ) ℂ).IntertwiningMap
     (ContrℂModule.SL2CRep.tprod CoℂModule.SL2CRep) where
@@ -11966,8 +12704,11 @@ lemma contr_coContrUnit (x : ContrℂModule) :
       (TensorProduct.comm ℂ _ _ (coContrUnit (1 : ℂ))) := by
     (coContrUnit (1 : ℂ)) = LinearMap.lTensor _ (LinearEquiv.refl _ _).toLinearMap
       (TensorProduct.comm ℂ _ _ (contrCoUnit (1 : ℂ))) := by
+```
 
-=== Physlib/Relativity/Tensors/ComplexTensor/Units/Symm.lean ===
+## `Physlib/Relativity/Tensors/ComplexTensor/Units/Symm.lean`
+
+```
 /-- Swapping indices of `dualLeftLeftUnit` returns
   `leftDualLeftUnit`: `{δL' | α α' = δL | α' α}ᵀ`. -/
 lemma dualLeftLeftUnit_symm : {δL' | α α' = δL | α' α}ᵀ := by
@@ -11982,8 +12723,11 @@ lemma dualRightRightUnit_symm : {δR' | β β' = δR | β' β}ᵀ := by
 /-- Swapping indices of `rightDualRightUnit` returns `dualRightRightUnit`:
 lemma rightDualRightUnit_symm : {δR | β β' = δR' | β' β}ᵀ := by
   rw [rightDualRightUnit, unitTensor_eq_permT_dual]
+```
 
-=== Physlib/Relativity/Tensors/ComplexTensor/Vector/Pre/Basic.lean ===
+## `Physlib/Relativity/Tensors/ComplexTensor/Vector/Pre/Basic.lean`
+
+```
 Authors: Nikolai Kashcheev, Joseph Tooby-Smith
 def complexContrBasis : Basis (Fin 1 ⊕ Fin 3) ℂ ContrℂModule :=
     (LinearMap.toMatrix complexContrBasis complexContrBasis) (ContrℂModule.SL2CRep M) i j =
@@ -12051,8 +12795,11 @@ lemma inclCoRealLorentz_ρ (M : SL(2, ℂ)) (v : CoMod 3) :
       v.toFin1dℝ)) i
   rw [LorentzGroup.toComplex_mulVec_ofReal]
 
+```
 
-=== Physlib/Relativity/Tensors/ComplexTensor/Vector/Pre/Contraction.lean ===
+## `Physlib/Relativity/Tensors/ComplexTensor/Vector/Pre/Contraction.lean`
+
+```
 def contrCoContrBi : ContrℂModule →ₗ[ℂ] CoℂModule →ₗ[ℂ] ℂ where
 def contrContrCoBi : CoℂModule →ₗ[ℂ] ContrℂModule →ₗ[ℂ] ℂ where
 def contrCoContraction : (ContrℂModule.SL2CRep.tprod CoℂModule.SL2CRep).IntertwiningMap
@@ -12081,8 +12828,11 @@ lemma contrCoContraction_tmul_symm (φ : ContrℂModule) (ψ : CoℂModule) :
     contrCoContraction (φ ⊗ₜ ψ) = coContrContraction (ψ ⊗ₜ φ) := by
 lemma coContrContraction_tmul_symm (φ : CoℂModule) (ψ : ContrℂModule) :
     coContrContraction (φ ⊗ₜ ψ) = contrCoContraction (ψ ⊗ₜ φ) := by
+```
 
-=== Physlib/Relativity/Tensors/ComplexTensor/Vector/Pre/Modules.lean ===
+## `Physlib/Relativity/Tensors/ComplexTensor/Vector/Pre/Modules.lean`
+
+```
 Authors: Nikolai Kashcheev, Joseph Tooby-Smith
 @[ext]
 lemma ext (ψ ψ' : CoℂModule) (h : ψ.val = ψ'.val) : ψ = ψ' := by
@@ -12097,8 +12847,11 @@ lemma val_add (ψ ψ' : CoℂModule) : (ψ + ψ').val = ψ.val + ψ'.val := rfl
 @[simp]
 lemma val_smul (r : ℂ) (ψ : CoℂModule) : (r • ψ).val = r • ψ.val := rfl
 
+```
 
-=== Physlib/Relativity/Tensors/ComplexTensor/Weyl/Basic.lean ===
+## `Physlib/Relativity/Tensors/ComplexTensor/Weyl/Basic.lean`
+
+```
 public import Physlib.Meta.Informal.Basic
 public import Physlib.Meta.TODO.Basic
 TODO "Rename the Weyl fermion representations `leftHandedRep`, `dualLeftHandedRep`,
@@ -12189,8 +12942,11 @@ informal_definition rightHandedWeylDualEquiv where
 `SL(2,C)` on `rightHandedWeyl` and `DualRightHandedWeyl`.
 informal_lemma rightHandedWeylDualEquiv_equivariant where
   deps := [``rightHandedWeylDualEquiv]
+```
 
-=== Physlib/Relativity/Tensors/ComplexTensor/Weyl/Contraction.lean ===
+## `Physlib/Relativity/Tensors/ComplexTensor/Weyl/Contraction.lean`
+
+```
   dual-left-handed Weyl fermion. -/
 def leftDualBi : LeftHandedWeyl →ₗ[ℂ] DualLeftHandedWeyl →ₗ[ℂ] ℂ where
 /-- The bi-linear map corresponding to contraction of a dual-left-handed Weyl fermion with a
@@ -12269,8 +13025,11 @@ lemma rightDualContraction_tmul_symm (ψ : RightHandedWeyl) (φ : DualRightHande
 lemma dualRightContraction_tmul_symm (φ : DualRightHandedWeyl) (ψ : RightHandedWeyl) :
     dualRightContraction (φ ⊗ₜ[ℂ] ψ) = rightDualContraction (ψ ⊗ₜ[ℂ] φ) := by
   rw [rightDualContraction_tmul_symm]
+```
 
-=== Physlib/Relativity/Tensors/ComplexTensor/Weyl/Metric.lean ===
+## `Physlib/Relativity/Tensors/ComplexTensor/Weyl/Metric.lean`
+
+```
 These allow us to go from left-handed to dual-left-handed Weyl fermions and back,
 and from right-handed to dual-right-handed Weyl fermions and back.
 def leftMetricVal : LeftHandedWeyl ⊗[ℂ] LeftHandedWeyl :=
@@ -12470,8 +13229,11 @@ lemma dualRightContraction_apply_metric :
   simp only [Fin.isValue, Fin.coe_ofNat_eq_mod, Nat.mod_succ, ↓reduceIte, one_smul, Nat.zero_mod,
     zero_ne_one, zero_smul, sub_zero, one_ne_zero, zero_sub, sub_neg_eq_add]
   rw [rightDualRightUnit_apply_one, rightDualRightUnitVal_expand_tmul]
+```
 
-=== Physlib/Relativity/Tensors/ComplexTensor/Weyl/Modules.lean ===
+## `Physlib/Relativity/Tensors/ComplexTensor/Weyl/Modules.lean`
+
+```
 public import Physlib.Meta.TODO.Basic
 
 TODO "Make a directory in ./Physlib/Relativity called Fermions for these files.
@@ -12542,8 +13304,11 @@ def toFin2ℂEquiv : DualRightHandedWeyl ≃ₗ[ℂ] (Fin 2 → ℂ) where
 abbrev toFin2ℂ (ψ : DualRightHandedWeyl) := toFin2ℂEquiv ψ
 end DualRightHandedWeyl
 end DualRightHanded
+```
 
-=== Physlib/Relativity/Tensors/ComplexTensor/Weyl/Two.lean ===
+## `Physlib/Relativity/Tensors/ComplexTensor/Weyl/Two.lean`
+
+```
 def leftLeftToMatrix : (LeftHandedWeyl ⊗[ℂ] LeftHandedWeyl) ≃ₗ[ℂ] Matrix (Fin 2) (Fin 2) ℂ :=
 /-- Equivalence of `dualLeftHanded ⊗ dualLeftHanded` to `2 x 2` complex matrices. -/
 def dualLeftdualLeftToMatrix : (DualLeftHandedWeyl ⊗[ℂ] DualLeftHandedWeyl) ≃ₗ[ℂ]
@@ -12843,8 +13608,11 @@ lemma dualLeftDualRightToMatrix_ρ_symm_selfAdjoint (v : Matrix (Fin 2) (Fin 2) 
     dualLeftDualRightToMatrix.symm (SL2C.toSelfAdjointMap (M.transpose⁻¹) ⟨v, hv⟩) := by
   rw [dualLeftDualRightToMatrix_ρ_symm]
     TensorProduct.map (leftHandedRep M) (rightHandedRep M) (leftRightToMatrix.symm v) =
+```
 
-=== Physlib/Relativity/Tensors/ComplexTensor/Weyl/Unit.lean ===
+## `Physlib/Relativity/Tensors/ComplexTensor/Weyl/Unit.lean`
+
+```
 /-- The left-dual-left unit `δᵃₐ` as an element of `(leftHanded ⊗ dualLeftHanded).V`. -/
 def leftDualLeftUnitVal : (LeftHandedWeyl ⊗[ℂ] DualLeftHandedWeyl) :=
   leftDualLeftToMatrix.symm 1
@@ -13035,8 +13803,11 @@ lemma rightDualRightUnit_symm :
       (TensorProduct.comm ℂ _ _ (dualRightRightUnit (1 : ℂ))) := by
   rw [dualRightRightUnit_apply_one, dualRightRightUnitVal_expand_tmul]
   rw [rightDualRightUnit_apply_one, rightDualRightUnitVal_expand_tmul]
+```
 
-=== Physlib/Relativity/Tensors/ComponentIdx/Basic.lean ===
+## `Physlib/Relativity/Tensors/ComponentIdx/Basic.lean`
+
+```
 /-
 Copyright (c) 2025 Joseph Tooby-Smith. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
@@ -13119,8 +13890,11 @@ def ComponentIdx.cast {n m : ℕ} {c : Fin n → C} {cm : Fin m → C}
 end Tensor
 
 end TensorSpecies
+```
 
-=== Physlib/Relativity/Tensors/ComponentIdx/Contraction.lean ===
+## `Physlib/Relativity/Tensors/ComponentIdx/Contraction.lean`
+
+```
 /-
 Copyright (c) 2025 Joseph Tooby-Smith. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
@@ -13310,8 +14084,11 @@ end ComponentIdx
 end Tensor
 
 end TensorSpecies
+```
 
-=== Physlib/Relativity/Tensors/ComponentIdx/Product.lean ===
+## `Physlib/Relativity/Tensors/ComponentIdx/Product.lean`
+
+```
 /-
 Copyright (c) 2025 Joseph Tooby-Smith. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
@@ -13394,8 +14171,11 @@ lemma ComponentIdx.prod_symm_castAdd {n1 n2 : ℕ} {c : Fin n1 → C} {c1 : Fin 
 
 end Tensor
 end TensorSpecies
+```
 
-=== Physlib/Relativity/Tensors/ComponentIdx/Single.lean ===
+## `Physlib/Relativity/Tensors/ComponentIdx/Single.lean`
+
+```
 /-
 Copyright (c) 2025 Joseph Tooby-Smith. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
@@ -13476,8 +14256,11 @@ lemma ComponentIdx.single_symm_apply {c : C} (b : basisIdx c) (i : Fin 1) :
 end Tensor
 
 end TensorSpecies
+```
 
-=== Physlib/Relativity/Tensors/Conjugation/Basic.lean ===
+## `Physlib/Relativity/Tensors/Conjugation/Basic.lean`
+
+```
 /-
 Copyright (c) 2026 Andrea Pari. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
@@ -13810,8 +14593,11 @@ def IsHermitian {c : C} (g : V c ⊗[k] V (S.bar c) →ₗ[k] k) : Prop :=
 end ConjTensorSpecies
 end
 end
+```
 
-=== Physlib/Relativity/Tensors/Constructors.lean ===
+## `Physlib/Relativity/Tensors/Constructors.lean`
+
+```
 open Module
 variable {k : Type} [RCLike k] {C : Type} {G : Type} [Group G]
     {V : C → Type} [∀ c, AddCommGroup (V c)] [∀ c, Module k (V c)]
@@ -13983,8 +14769,11 @@ lemma fromTripleT_tmul {c1 c2 c3 : C} (x : V c1)
     (v : (Representation.trivial k G k).IntertwiningMap ((rep c1).tprod ((rep c2).tprod (rep c3))))
     (g : G) : g • fromConstTriple (S := S) v = fromConstTriple v := by
   exact congrArg _ (LinearMap.congr_fun (v.isIntertwining' g) 1).symm
+```
 
-=== Physlib/Relativity/Tensors/Contraction/Basic.lean ===
+## `Physlib/Relativity/Tensors/Contraction/Basic.lean`
+
+```
 ## i. Overview
 
 This file defines tensor contraction for an arbitrary `TensorSpecies`.
@@ -14045,8 +14834,11 @@ variable {k : Type} [CommRing k] {C : Type} {G : Type} [Group G]
       permT _ (hσ.succSuccAbove i j hij.1)
     permT id (IsReindexing.succSuccAbove_comm i1 j1 i2 j2 hij1.left hij2.left)
       permT id (IsReindexing.succSuccAbove_comm i1 j1 i2 j2 hij1.left hij2.left)
+```
 
-=== Physlib/Relativity/Tensors/Contraction/Basis.lean ===
+## `Physlib/Relativity/Tensors/Contraction/Basis.lean`
+
+```
 public import Physlib.Relativity.Tensors.ComponentIdx.Contraction
 open Module
 variable {k : Type} [CommRing k] {C : Type} {G : Type} [Group G]
@@ -14084,8 +14876,11 @@ attribute [-simp] LinearEquiv.cast_apply
     (b (c i) x1 ⊗ₜ[k] b (S.τ (c i)) (basisIdxCongr (by rw [h.2]) x2))) := by
   rw [contrT_basis_repr_apply h t φ, ← (DropPairSection.ofFinEquiv h.1 φ).sum_comp,
     (h : i ≠ j ∧ S.τ (c i) = c j) (b : ComponentIdx (S := S) c) :
+```
 
-=== Physlib/Relativity/Tensors/Contraction/Products.lean ===
+## `Physlib/Relativity/Tensors/Contraction/Products.lean`
+
+```
 variable {k : Type} [CommRing k] {C : Type} {G : Type} [Group G]
     {V : C → Type} [∀ c, AddCommGroup (V c)] [∀ c, Module k (V c)]
     {basisIdx : C → Type} [∀ c, Fintype (basisIdx c)] [∀ c, DecidableEq (basisIdx c)]
@@ -14147,8 +14942,11 @@ attribute [-simp] LinearEquiv.cast_apply
     {c1 : Fin n1 → C} (i j : Fin (n + 1 + 1)) (hij : i ≠ j ∧ S.τ (c i) = c j)
     (contrT _ (i.natAdd n1) (j.natAdd n1) (by simpa using hij) <| prodT t1 t) =
     ((permT id (IsReindexing.on_id_symm (IsReindexing.append_succSuccAbove_natAdd i j))) <|
+```
 
-=== Physlib/Relativity/Tensors/Contraction/Pure.lean ===
+## `Physlib/Relativity/Tensors/Contraction/Pure.lean`
+
+```
 open Module
 variable {k : Type} [CommRing k] {C : Type} {G : Type} [Group G]
     {V : C → Type} [∀ c, AddCommGroup (V c)] [∀ c, Module k (V c)]
@@ -14214,14 +15012,20 @@ open TensorProduct
     (p : Pure S c) (x y : V (c m)) :
     (p : Pure S c) (r : k) (x : V (c m)) :
     MultilinearMap k (fun i => V (c i))
+```
 
-=== Physlib/Relativity/Tensors/Contraction/SuccSuccAbove.lean ===
+## `Physlib/Relativity/Tensors/Contraction/SuccSuccAbove.lean`
+
+```
     rcases Fin.eq_self_or_eq_succAbove i a with rfl | ⟨a, rfl⟩
   apply ((succSuccAbove_strictMono i j).range_inj (OrderEmbedding.strictMono _)).mp
 set_option warning.simp.varHead false in
 lemma apply_succSuccAbove_symm {c : Fin (n + 1 + 1) → C} (i j : Fin (n + 1 + 1))
+```
 
-=== Physlib/Relativity/Tensors/Dual.lean ===
+## `Physlib/Relativity/Tensors/Dual.lean`
+
+```
 variable {k : Type} [RCLike k] {C : Type} {G : Type} [Group G]
     {V : C → Type} [∀ c, AddCommGroup (V c)] [∀ c, Module k (V c)]
     {basisIdx : C → Type} [∀ c, Fintype (basisIdx c)] [∀ c, DecidableEq (basisIdx c)]
@@ -14239,8 +15043,11 @@ attribute [-simp] LinearEquiv.cast_apply
     rw [permT_permT]
     rw (transparency := .instances) [permT_permT, contrT_permT]
     τ_τ_apply, IsReindexing.on_id, Matrix.cons_val_fin_one, implies_true]
+```
 
-=== Physlib/Relativity/Tensors/Elab.lean ===
+## `Physlib/Relativity/Tensors/Elab.lean`
+
+```
 - Suppose `T` and `T'` are tensors with color `![c1, c2]`.
 - Suppose `T2` is a tensor with color `![c3]`.
 - If `T3` is a tensor with color `![S.τ c1, S.τ c2]`, then
@@ -14384,8 +15191,11 @@ info: (contrT 0 0 1 ⋯) ((contrT 2 1 3 ⋯) ((prodT u) td)) :
 #guard_msgs in
 #check ({u | α β = u' | β α}ᵀ : Prop)
 end Tests
+```
 
-=== Physlib/Relativity/Tensors/Evaluation.lean ===
+## `Physlib/Relativity/Tensors/Evaluation.lean`
+
+```
 variable {k : Type} [CommRing k] {C : Type} {G : Type} [Group G]
     {V : C → Type} [∀ c, AddCommGroup (V c)] [∀ c, Module k (V c)]
     {basisIdx : C → Type} [∀ c, Fintype (basisIdx c)] [∀ c, DecidableEq (basisIdx c)]
@@ -14531,8 +15341,11 @@ lemma eq_sum_evalT_zero {n : ℕ} {c : Fin (n + 1) → C} (t : Tensor S c) :
     grind
 
 end Tensor
+```
 
-=== Physlib/Relativity/Tensors/LeviCivita/Basic.lean ===
+## `Physlib/Relativity/Tensors/LeviCivita/Basic.lean`
+
+```
 /-
 Copyright (c) 2026 Robert Sneiderman. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
@@ -14652,8 +15465,11 @@ lemma leviCivita_antisymm_last : {ε4 | μ ν ρ σ = - (ε4 | μ ν σ ρ)}ᵀ 
   fin_cases i <;> rfl
 
 end realLorentzTensor
+```
 
-=== Physlib/Relativity/Tensors/MetricTensor.lean ===
+## `Physlib/Relativity/Tensors/MetricTensor.lean`
+
+```
 variable {k : Type} [RCLike k] {C : Type} {G : Type} [Group G]
     {V : C → Type} [∀ c, AddCommGroup (V c)] [∀ c, Module k (V c)]
     {basisIdx : C → Type} [∀ c, Fintype (basisIdx c)] [∀ c, DecidableEq (basisIdx c)]
@@ -14666,8 +15482,11 @@ attribute [-simp] LinearEquiv.cast_apply
   change _ = fromPairT ((S.unit c) (1 : k))
     fromPairTContr ((S.metric c) (1 : k))
     ((S.metric (S.τ c)) (1 : k)) =
+```
 
-=== Physlib/Relativity/Tensors/OfInt.lean ===
+## `Physlib/Relativity/Tensors/OfInt.lean`
+
+```
 open Module
 variable {k : Type} [CommRing k] {C : Type} {G : Type} [Group G]
     {V : C → Type} [∀ c, AddCommGroup (V c)] [∀ c, Module k (V c)]
@@ -14675,8 +15494,11 @@ variable {k : Type} [CommRing k] {C : Type} {G : Type} [Group G]
     {rep : (c : C) → Representation k G (V c)} {b : (c : C) → Basis (basisIdx c) k (V c)}
     (S : TensorSpecies k C G V basisIdx rep b)
 variable {S : TensorSpecies k C G V basisIdx rep b}
+```
 
-=== Physlib/Relativity/Tensors/Product.lean ===
+## `Physlib/Relativity/Tensors/Product.lean`
+
+```
 public import Physlib.Relativity.Tensors.ComponentIdx.Product
 open Module
 variable {k : Type} [CommRing k] {C : Type} {G : Type} [Group G]
@@ -14958,8 +15780,11 @@ lemma prodT_swap {n n1} {c : Fin n → C} {c1 : Fin n1 → C} (t : S.Tensor c) (
     · simp [ht1, ht2]
   · simp [ht]
   · simp [ht1, ht2]
+```
 
-=== Physlib/Relativity/Tensors/RealTensor/Basic.lean ===
+## `Physlib/Relativity/Tensors/RealTensor/Basic.lean`
+
+```
 deriving Fintype
 /-- The modules associated with each of the different types of real Lorentz vector space. -/
 abbrev modules (d : ℕ) : Color → Type
@@ -15041,8 +15866,11 @@ lemma contrT_basis_repr_apply_eq_fin {n d: ℕ} {c : Fin (n + 1 + 1) → realLor
       erw [Lorentz.coContrContract_basis]
     simp
 
+```
 
-=== Physlib/Relativity/Tensors/RealTensor/CoVector/Basic.lean ===
+## `Physlib/Relativity/Tensors/RealTensor/CoVector/Basic.lean`
+
+```
 public import Mathlib.Analysis.InnerProductSpace.PiL2
 public import Mathlib.Geometry.Manifold.IsManifold.Basic
 open Module
@@ -15058,8 +15886,11 @@ lemma eq_of_apply_eq {d : ℕ} {v w : CoVector d} (h : ∀ i, v i = w i) : v = w
 lemma apply_sum {d : ℕ} {ι : Type} [Fintype ι] (f : ι → CoVector d) (i : Fin 1 ⊕ Fin d) :
     (∑ j, f j) i = ∑ j, f j i := Finset.sum_apply i Finset.univ f
 
+```
 
-=== Physlib/Relativity/Tensors/RealTensor/CoVector/Representation.lean ===
+## `Physlib/Relativity/Tensors/RealTensor/CoVector/Representation.lean`
+
+```
 /-
 Copyright (c) 2026 Joseph Tooby-Smith. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
@@ -15145,8 +15976,11 @@ lemma rep_bijective (d : ℕ) (Λ : LorentzGroup d) : Function.Bijective (rep Λ
 end CoVector
 
 end Lorentz
+```
 
-=== Physlib/Relativity/Tensors/RealTensor/CoVector/Tensorial.lean ===
+## `Physlib/Relativity/Tensors/RealTensor/CoVector/Tensorial.lean`
+
+```
 /-
 Copyright (c) 2026 Joseph Tooby-Smith. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
@@ -15354,8 +16188,11 @@ lemma smul_basis {d : ℕ} (Λ : LorentzGroup d) (μ : Fin 1 ⊕ Fin d) :
 end CoVector
 
 end Lorentz
+```
 
-=== Physlib/Relativity/Tensors/RealTensor/Matrix/Pre.lean ===
+## `Physlib/Relativity/Tensors/RealTensor/Matrix/Pre.lean`
+
+```
 /-- Equivalence of `ContrMod ⊗ ContrMod` to `(1 + d) x (1 + d)` real matrices. -/
 def contrContrToMatrixRe {d : ℕ} : (ContrMod d ⊗[ℝ] ContrMod d) ≃ₗ[ℝ]
 /-- Equivalence of `CoMod ⊗ CoMod` to `(1 + d) x (1 + d)` real matrices. -/
@@ -15396,8 +16233,11 @@ lemma coContrToMatrixRe_ρ {d : ℕ} (v : (CoMod d ⊗[ℝ] ContrMod d)) (M : Lo
   rw [← h1, LinearEquiv.symm_apply_apply]
     TensorProduct.map (CoMod.rep M) (ContrMod.rep M) (coContrToMatrixRe.symm v) =
   rw [← h1, LinearEquiv.symm_apply_apply]
+```
 
-=== Physlib/Relativity/Tensors/RealTensor/Metrics/Basic.lean ===
+## `Physlib/Relativity/Tensors/RealTensor/Metrics/Basic.lean`
+
+```
 open Module
     η' d = fromConstPair (S := realLorentzTensor d) (c1 := .down) (c2 := .down)
       (Lorentz.preCoMetric d) := by
@@ -15424,8 +16264,11 @@ open Module
     smul_eq_mul]
   rw [Finset.sum_eq_single (b 0)] <;>
     simp +contextual [minkowskiMatrix.as_diagonal, Matrix.diagonal_apply]
+```
 
-=== Physlib/Relativity/Tensors/RealTensor/Metrics/Pre.lean ===
+## `Physlib/Relativity/Tensors/RealTensor/Metrics/Pre.lean`
+
+```
 open scoped TensorProduct
 /-- The metric `ηᵃᵃ` as an element of `(ContrMod d ⊗[ℝ] ContrMod d)`. -/
 def preContrMetricVal (d : ℕ := 3) : ContrMod d ⊗[ℝ] ContrMod d :=
@@ -15537,8 +16380,11 @@ lemma preCoMetric_apply_one {d : ℕ} : (preCoMetric d) (1 : ℝ) = preCoMetricV
         · simp [minkowskiMatrix.η_apply_mul_η_apply_diag, coContrContract_basis]
           simp [coContrContract_basis, if_neg (Ne.symm hb)]
   simp [map_sum]
+```
 
-=== Physlib/Relativity/Tensors/RealTensor/ToComplex.lean ===
+## `Physlib/Relativity/Tensors/RealTensor/ToComplex.lean`
+
+```
 Authors: Nikolai Kashcheev, Joseph Tooby-Smith
     simp only [map_smul, Finsupp.coe_smul, Pi.smul_apply, smul_eq_mul, Complex.ofRealHom_eq_coe]
     rw [← smul_smul]
@@ -15795,8 +16641,11 @@ lemma isReindexing_prodTColorToComplex {n m : ℕ}
     next h => simp_all only [Complex.ofReal_zero]
     rw [Pure.dropPair_basisVector]
     rw [← Tensor.basis_apply]
+```
 
-=== Physlib/Relativity/Tensors/RealTensor/Units/Pre.lean ===
+## `Physlib/Relativity/Tensors/RealTensor/Units/Pre.lean`
+
+```
 def preContrCoUnitVal (d : ℕ := 3) : ContrMod d ⊗[ℝ] CoMod d :=
     Finset.sum_const_zero, add_zero, one_apply_eq, one_smul, zero_add]
 def preContrCoUnit (d : ℕ := 3) :
@@ -15878,8 +16727,11 @@ lemma contr_preCoContrUnit {d : ℕ} (x : ContrMod d) :
       (TensorProduct.comm ℝ _ _ ((preCoContrUnit d) (1 : ℝ))) := by
     (preCoContrUnit d) (1 : ℝ) = LinearMap.lTensor _ (LinearEquiv.cast (by simp)).toLinearMap
     (TensorProduct.comm ℝ _ _ ((preContrCoUnit d) (1 : ℝ))) := by
+```
 
-=== Physlib/Relativity/Tensors/RealTensor/Vector/Basic.lean ===
+## `Physlib/Relativity/Tensors/RealTensor/Vector/Basic.lean`
+
+```
 public import Mathlib.Analysis.InnerProductSpace.PiL2
 open Module
 
@@ -15900,8 +16752,11 @@ def ofSpatialComponent {d : ℕ} : EuclideanSpace ℝ (Fin d) →L[ℝ] Vector d
   map_smul' c xs := by
     simp [smul_smul, Finset.smul_sum]
 
+```
 
-=== Physlib/Relativity/Tensors/RealTensor/Vector/Causality/LightLike.lean ===
+## `Physlib/Relativity/Tensors/RealTensor/Vector/Causality/LightLike.lean`
+
+```
   split_ifs with h h2 <;> simp_all
   simp [causallyPrecedes, pastLightConeBoundary]
   rw [show v (Sum.inl 0) = w (Sum.inl 0) from h_time] at hv
@@ -15910,8 +16765,11 @@ set_option linter.unusedVariables false in
   refine ⟨r, ?_⟩
   rw [hr]
   simp [abs_mul]
+```
 
-=== Physlib/Relativity/Tensors/RealTensor/Vector/MinkowskiProduct.lean ===
+## `Physlib/Relativity/Tensors/RealTensor/Vector/MinkowskiProduct.lean`
+
+```
 public import Physlib.Relativity.Tensors.RealTensor.Vector.Tensorial
 open Module
   rw [toField_eq_repr, contrT_basis_repr_apply_eq_fin]
@@ -15938,8 +16796,11 @@ open Module
   rw [minkowskiMatrix.η_apply_sq_eq_one]
   have hp : p = ∑ μ, p μ • basis μ := (Basis.sum_repr basis p).symm
   have hq : q = ∑ ν, q ν • basis ν := (Basis.sum_repr basis q).symm
+```
 
-=== Physlib/Relativity/Tensors/RealTensor/Vector/Pre/Basic.lean ===
+## `Physlib/Relativity/Tensors/RealTensor/Vector/Pre/Basic.lean`
+
+```
 def contrBasis (d : ℕ := 3) : Basis (Fin 1 ⊕ Fin d) ℝ (ContrMod d) :=
     (LinearMap.toMatrix (contrBasis d) (contrBasis d)) (ContrMod.rep M) i j =
 lemma contrBasis_repr_apply {d : ℕ} (p : ContrMod d) (i : Fin 1 ⊕ Fin d) :
@@ -15983,8 +16844,11 @@ def contrIsoCo (d : ℕ) : Representation.Equiv (ContrMod.rep (d := d)) (CoMod.r
   · intro x
     simp [Contr.toCo, Co.toContr]
     ContrMod.rep Λ (ContrMod.stdBasis μ) = ∑ j, Λ.1 j μ • ContrMod.stdBasis j := by
+```
 
-=== Physlib/Relativity/Tensors/RealTensor/Vector/Pre/Contraction.lean ===
+## `Physlib/Relativity/Tensors/RealTensor/Vector/Pre/Contraction.lean`
+
+```
 /-- The linear map from ContrMod d ⊗ CoMod d to ℝ given by
 def contrCoContract : ((ContrMod.rep).tprod (CoMod.rep)).IntertwiningMap
     (Representation.trivial ℝ (LorentzGroup d) ℝ) where
@@ -16065,8 +16929,11 @@ lemma basis_left {v : ContrMod d} (μ : Fin 1 ⊕ Fin d) :
     RCLike.ofReal_real_eq_id, id_eq, sq_abs, ofReal_add, ofReal_pow, I_sq, mul_neg, mul_one]
     contrCoContract (contrBasis d i ⊗ₜ coBasis d j) = if i = j then (1 : ℝ) else 0 := by
     coContrContract (coBasis d i ⊗ₜ[ℝ] contrBasis d j) = if i = j then (1 : ℝ) else 0 := by
+```
 
-=== Physlib/Relativity/Tensors/RealTensor/Vector/Representation.lean ===
+## `Physlib/Relativity/Tensors/RealTensor/Vector/Representation.lean`
+
+```
 /-
 Copyright (c) 2026 Joseph Tooby-Smith. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
@@ -16158,8 +17025,11 @@ lemma rep_left_injective (d : ℕ) : Function.Injective (rep (d := d)) := by
 end Vector
 
 end Lorentz
+```
 
-=== Physlib/Relativity/Tensors/RealTensor/Vector/Tensorial.lean ===
+## `Physlib/Relativity/Tensors/RealTensor/Vector/Tensorial.lean`
+
+```
 /-
 Copyright (c) 2026 Joseph Tooby-Smith. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
@@ -16391,13 +17261,19 @@ lemma smul_basis {d : ℕ} (Λ : LorentzGroup d) (μ : Fin 1 ⊕ Fin d) :
 end Vector
 
 end Lorentz
+```
 
-=== Physlib/Relativity/Tensors/RealTensor/Velocity/Basic.lean ===
+## `Physlib/Relativity/Tensors/RealTensor/Velocity/Basic.lean`
+
+```
             simp only [zero, Fin.isValue, map_add, map_smul, _root_.add_apply,
               FunLike.coe_smul, Pi.smul_apply, minkowskiProduct_basis_right,
     ext1
+```
 
-=== Physlib/Relativity/Tensors/Reindexing.lean ===
+## `Physlib/Relativity/Tensors/Reindexing.lean`
+
+```
 /-
 Copyright (c) 2025 Joseph Tooby-Smith. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
@@ -16873,8 +17749,11 @@ end IsReindexing
 end Tensor
 
 end TensorSpecies
+```
 
-=== Physlib/Relativity/Tensors/TensorSpecies/Basic.lean ===
+## `Physlib/Relativity/Tensors/TensorSpecies/Basic.lean`
+
+```
 public import Mathlib.RepresentationTheory.Rep.Basic
 public import Physlib.Mathematics.PiTensorProduct
 public import Mathlib.Algebra.Lie.OfAssociative
@@ -16931,8 +17810,11 @@ omit [(c : C) → Fintype (basisIdx c)] [(c : C) → DecidableEq (basisIdx c)] i
     LinearEquiv.cast (R := k) h (basis c i) = basis c1 (basisIdxCongr h i) := by
 def numIndices {S : TensorSpecies k C G V basisIdx rep basis} {n : ℕ} {c : Fin n → C}
     (_ : PiTensorProduct k (fun i => V (c i))) : ℕ := n
+```
 
-=== Physlib/Relativity/Tensors/Tensorial.lean ===
+## `Physlib/Relativity/Tensors/Tensorial.lean`
+
+```
 public import Physlib.Relativity.Tensors.Evaluation
 variable {k : Type} [CommRing k] {C : Type} {G : Type} [Group G]
     {V : C → Type} [∀ c, AddCommGroup (V c)] [∀ c, Module k (V c)]
@@ -16991,8 +17873,11 @@ variable {k : Type} [RCLike k] {C : Type} {G : Type} [Group G]
     {rep : (c : C) → Representation k G (V c)} {b : (c : C) → Module.Basis (basisIdx c) k (V c)}
     (S : TensorSpecies k C G V basisIdx rep b) {c : Fin n → C} {M : Type}
     [AddCommGroup M] [Module k M]
+```
 
-=== Physlib/Relativity/Tensors/UnitTensor.lean ===
+## `Physlib/Relativity/Tensors/UnitTensor.lean`
+
+```
 variable {k : Type} [RCLike k] {C : Type} {G : Type} [Group G]
     {V : C → Type} [∀ c, AddCommGroup (V c)] [∀ c, Module k (V c)]
     {basisIdx : C → Type} [∀ c, Fintype (basisIdx c)] [∀ c, DecidableEq (basisIdx c)]
@@ -17027,8 +17912,11 @@ lemma unit_fromSingleTContrFromPairT_eq_fromSingleT {c : C} (x : V c) :
     fromSingleTContrFromPairT x ((S.unit c) (1 : k)) =
   conv_rhs => rw [← S.contr_unit c x]
   rfl
+```
 
-=== Physlib/SpaceAndTime/GalileanGroup/Basic.lean ===
+## `Physlib/SpaceAndTime/GalileanGroup/Basic.lean`
+
+```
 /-
 Copyright (c) 2026 Rob Sneiderman. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
@@ -17358,8 +18246,11 @@ def timeTranslation.incl : Multiplicative Time →* GalileanGroup d where
     ext i <;> simp [ofTimeTranslation]
 
 end GalileanGroup
+```
 
-=== Physlib/SpaceAndTime/Space/API-map.yaml ===
+## `Physlib/SpaceAndTime/Space/API-map.yaml`
+
+```
 version: v0.1
 
 Title: Space
@@ -17453,8 +18344,11 @@ Requirements:
   - description: "The API contains the derivatives of distributions from `Space` to manifolds."
     done: false
     location: N/A
+```
 
-=== Physlib/SpaceAndTime/Space/Basic.lean ===
+## `Physlib/SpaceAndTime/Space/Basic.lean`
+
+```
 public import Mathlib.Geometry.Manifold.Instances.Real
 instance instNontrivial {d : ℕ} [NeZero d] : Nontrivial (Space d) where
     obtain ⟨v1, hv⟩ := exists_ne (0 : EuclideanSpace ℝ (Fin d))
@@ -17484,8 +18378,11 @@ lemma chartAt_eq (d : ℕ) (p : Space d) :
     chartAt (EuclideanSpace ℝ (Fin d)) p =
     (homEuclideanSpaceSpace d).symm.toOpenPartialHomeomorph :=
   rfl
+```
 
-=== Physlib/SpaceAndTime/Space/ConstantSliceDist.lean ===
+## `Physlib/SpaceAndTime/Space/ConstantSliceDist.lean`
+
+```
 public import Mathlib.Analysis.Calculus.ParametricIntegral
     have heq : fderiv ℝ (fun x => (slice i).symm (r, x)) x =
         (slice i).symm.toContinuousLinearMap.comp
@@ -17543,8 +18440,11 @@ public import Mathlib.Analysis.Calculus.ParametricIntegral
     obtain ⟨hrt1, hbound⟩ := hrt η x
         exact η.differentiable.differentiableAt
   · exact η.differentiable.differentiableAt
+```
 
-=== Physlib/SpaceAndTime/Space/CrossProduct.lean ===
+## `Physlib/SpaceAndTime/Space/CrossProduct.lean`
+
+```
     · simp only [FunLike.coe_sub, FunLike.coe_smul, Pi.sub_apply,
         Pi.smul_apply, smul_eq_mul]
       rw [Time.fderiv_euclid, Time.fderiv_euclid]
@@ -17560,8 +18460,11 @@ public import Mathlib.Analysis.Calculus.ParametricIntegral
     · simp [Fin.isValue]
       fun_prop
     · simp [Fin.isValue]
+```
 
-=== Physlib/SpaceAndTime/Space/Derivatives/Basic.lean ===
+## `Physlib/SpaceAndTime/Space/Derivatives/Basic.lean`
+
+```
 public import Mathlib.Analysis.InnerProductSpace.Calculus
     MDifferentiableAt (𝓡 d) 𝓘(ℝ, M) f x ↔ DifferentiableAt ℝ f x := by
     apply h.comp (I' := 𝓡 d)
@@ -17601,8 +18504,11 @@ macro "∂ᵈ[" i:term "]" : term => `(distDeriv $i)
 
     (∂ᵈ[μ] f) ε = fderivD ℝ f ε (basis μ) := by
     (∂ᵈ[ν] (∂ᵈ[μ] f)) = (∂ᵈ[μ] (∂ᵈ[ν] f)) := by
+```
 
-=== Physlib/SpaceAndTime/Space/Derivatives/Curl.lean ===
+## `Physlib/SpaceAndTime/Space/Derivatives/Curl.lean`
+
+```
   WithLp.toLp 2 fun i => ∂[(i+1)] (fi (i+2)) x - ∂[(i+2)] (fi (i+1)) x
   simp only [Fin.isValue, Pi.zero_apply, PiLp.zero_apply, fderiv_fun_const,
     _root_.zero_apply, sub_self]
@@ -17680,8 +18586,11 @@ lemma distCurl_coord_apply {i : Fin 3}
   simp only [Fin.isValue, _root_.add_apply, _root_.neg_apply, _root_.zero_apply]
   rw [schwartMap_fderiv_comm]
   simp
+```
 
-=== Physlib/SpaceAndTime/Space/Derivatives/Div.lean ===
+## `Physlib/SpaceAndTime/Space/Derivatives/Div.lean`
+
+```
   -- ∂fᵢ/∂xᵢ
   ∑ i, ∂[i] (fun x => (f x) i) x
   simp only [Pi.ofNat_apply, fderiv_fun_const, _root_.zero_apply, Multiset.map_const',
@@ -17705,8 +18614,11 @@ lemma distDiv_ofFunction {d : ℕ} {f : Space d → EuclideanSpace ℝ (Fin d)}
   rw [MeasureTheory.integral_finsetSum]
     simp only [inner_smul_right, EuclideanSpace.inner_single_right, conj_trivial, one_mul]
     simp only [evalCLM_apply_apply, fderivCLM_apply, PiLp.smul_apply, smul_eq_mul,
+```
 
-=== Physlib/SpaceAndTime/Space/Derivatives/Grad.lean ===
+## `Physlib/SpaceAndTime/Space/Derivatives/Grad.lean`
+
+```
   - B.6. Gradient of constant distributions
   - B.7. The gradient of a Schwartz map
   simp only [fderiv_zero, Pi.zero_apply, _root_.zero_apply]
@@ -17770,8 +18682,11 @@ lemma distGrad_const {d} (c : ℝ) :
 
 ### B.7. The gradient of a Schwartz map
     gradSchwartz η x = ∇ η x := by
+```
 
-=== Physlib/SpaceAndTime/Space/Derivatives/Iterated.lean ===
+## `Physlib/SpaceAndTime/Space/Derivatives/Iterated.lean`
+
+```
   | nil => simpa using hf
   | cons i L ih => exact (contDiff_apply ℝ ℝ i).comp (Space.deriv_contDiff (n := ∞) (ih hf))
   | nil => rfl
@@ -17793,8 +18708,11 @@ lemma iteratedDeriv_increment_zero [NeZero d] [AddCommGroup M] [Module ℝ M] [T
   | cons i L ih => simpa [List.foldr] using (tsupport_deriv_subset i).trans ih
     ∂^[I] f x = 0 :=
   image_eq_zero_of_notMem_tsupport fun h => hx (tsupport_iteratedDeriv_subset I h)
+```
 
-=== Physlib/SpaceAndTime/Space/Derivatives/Laplacian.lean ===
+## `Physlib/SpaceAndTime/Space/Derivatives/Laplacian.lean`
+
+```
 - `distLaplacian` : The Laplacian operator on distributions on `Space d`.
 - C. Laplacian of distributions
   - C.1. Laplacian of constant distributions
@@ -17833,8 +18751,11 @@ scoped[Space] notation "Δᵈ" => distLaplacian
 lemma distLaplacian_const {d : ℕ} (c : ℝ) :
     Δᵈ (Distribution.const ℝ (Space d) c) = 0 := by
   simp [distLaplacian, distGrad_const]
+```
 
-=== Physlib/SpaceAndTime/Space/DistOfFunction.lean ===
+## `Physlib/SpaceAndTime/Space/DistOfFunction.lean`
+
+```
 public import Physlib.SpaceAndTime.Space.Derivatives.Basic
 - D. Derivatives
 - E. Components
@@ -17865,8 +18786,11 @@ lemma distDeriv_distOfFunction {d : ℕ} (μ : Fin d) (f : Space d → F)
   · intro x _
     exact hf_diff.differentiableAt
 ## E. Components
+```
 
-=== Physlib/SpaceAndTime/Space/EuclideanGroup/Action.lean ===
+## `Physlib/SpaceAndTime/Space/EuclideanGroup/Action.lean`
+
+```
 /-
 Copyright (c) 2026 Shaopeng Zhu. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
@@ -18014,8 +18938,11 @@ lemma chartEuclidean_smul (g : EuclideanGroup d) (p : Space d) :
   simp [h_left]
   exact add_comm' (g.linear • (p -ᵥ (0 : Space d))) g.translation
 end EuclideanGroup
+```
 
-=== Physlib/SpaceAndTime/Space/EuclideanGroup/AffineGroup.lean ===
+## `Physlib/SpaceAndTime/Space/EuclideanGroup/AffineGroup.lean`
+
+```
 /-
 Copyright (c) 2026 Shaopeng Zhu. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
@@ -18226,8 +19153,11 @@ noncomputable def toAffineIsometryMulEquiv :
     toAffineIsometryMulEquiv A = toAffineIsometryHom A := rfl
 
 end EuclideanGroup
+```
 
-=== Physlib/SpaceAndTime/Space/EuclideanGroup/Basic.lean ===
+## `Physlib/SpaceAndTime/Space/EuclideanGroup/Basic.lean`
+
+```
 /-
 Copyright (c) 2026 Shaopeng Zhu. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
@@ -18611,8 +19541,11 @@ noncomputable def specialOrthogonalEquiv :
     specialOrthogonal.fromRotation_comp_toRotation specialOrthogonal.toRotation_comp_fromRotation
 
 end EuclideanGroup
+```
 
-=== Physlib/SpaceAndTime/Space/Integrals/Basic.lean ===
+## `Physlib/SpaceAndTime/Space/Integrals/Basic.lean`
+
+```
 - `integral_volume_eq_spherical` : The integral of a function over `Space d` with
 - `lintegral_volume_eq_spherical` : The lower Lebesgue integral of a function over `Space d`
 lemma integral_volume_eq_spherical (d : ℕ) [NeZero d] (f : Space d → F)
@@ -18694,8 +19627,11 @@ lemma lintegral_volume_eq_spherical_mul (d : ℕ) [NeZero d]
     ∫⁻ x, f x ∂volume = ∫⁻ x, f (x.2.1 • x.1.1) * .ofReal (x.2.1 ^ (d - 1))
       ∂(volume (α := Space d).toSphere.prod (Measure.volumeIoiPow 0)) := by
     simp only [finrank_eq_dim, pow_zero, ENNReal.ofReal_one]
+```
 
-=== Physlib/SpaceAndTime/Space/Integrals/NormPow.lean ===
+## `Physlib/SpaceAndTime/Space/Integrals/NormPow.lean`
+
+```
 public import Physlib.SpaceAndTime.Space.IsDistBounded
 - `radial_norm_power_spherical_integral_eq_space_integral`: The spherical-coordinate integral
     identity for integer powers of the norm against a Schwartz map.
@@ -18764,8 +19700,11 @@ lemma integrableOn_norm_rpow_iff_of_isBounded_nhds {d : ℕ} [NeZero d] {s : Set
   · exact IntegrableOn.mono_set ((integrableOn_norm_rpow_ball_iff hb p).mpr h) hb'
 lemma integrableOn_norm_rpow_of_compl_nhds {d : ℕ} [NeZero d] {s : Set (Space d)}
   exact IntegrableOn.mono_set ((integrableOn_norm_rpow_ball_compl_iff ha p).mpr h) hs'
+```
 
-=== Physlib/SpaceAndTime/Space/Integrals/RadialAngularMeasure.lean ===
+## `Physlib/SpaceAndTime/Space/Integrals/RadialAngularMeasure.lean`
+
+```
   rw [NNReal.smul_def, Real.coe_toNNReal _ (by positivity)]
   all_goals fun_prop
 lemma lintegral_radialMeasure_eq_spherical_mul (d : ℕ) [NeZero d]
@@ -18802,8 +19741,11 @@ lemma integrable_radialAngularMeasure_of_spherical {d : ℕ} [NeZero d] (f : Spa
   rw [abs_of_pos hy, abs_of_nonneg (Real.rpow_nonneg (by linarith) _)]
   congr 1
   ring
+```
 
-=== Physlib/SpaceAndTime/Space/IsDistBounded.lean ===
+## `Physlib/SpaceAndTime/Space/IsDistBounded.lean`
+
+```
 /-- The boundedness condition on a function `Space d → F`
     · apply MeasureTheory.integrable_finsetSum
     · apply MeasureTheory.integrable_finsetSum
@@ -18839,8 +19781,11 @@ lemma log_norm {d : ℕ} (hd : 2 ≤ d := by omega) :
     IsDistBounded (fun x => ⟪y, x⟫_ℝ * f x) := hf.isDistBounded_smul_inner_of_smul_norm hae y
 lemma mul_inner_pow_neg_two {d : ℕ} (y : Space d) (hd : 2 ≤ d := by omega) :
     · apply IsDistBounded.pow (d := d) (-1) (by omega)
+```
 
-=== Physlib/SpaceAndTime/Space/LengthUnit.lean ===
+## `Physlib/SpaceAndTime/Space/LengthUnit.lean`
+
+```
   simp [toReal]
   · exact zero_le
   rfl
@@ -18866,8 +19811,11 @@ The references for the numerical definitions used below are:
 
   NNReal.eq <| by simp [miles, yards]; rw [toReal]; norm_num
   simp [furlongs, yards]; rw [toReal]; norm_num
+```
 
-=== Physlib/SpaceAndTime/Space/Module.lean ===
+## `Physlib/SpaceAndTime/Space/Module.lean`
+
+```
 public import Physlib.SpaceAndTime.Space.Origin
 public import Mathlib.Analysis.Calculus.ContDiff.WithLp
 public import Mathlib.Analysis.Calculus.FDeriv.WithLp
@@ -18937,8 +19885,11 @@ lemma modelDiffeo_apply {d : ℕ} (p : Space d) :
     PiLp.continuousLinearEquiv_apply, Homeomorph.homeomorph_mk_coe_symm, Equiv.symm_mk]
   change _ = fderiv ℝ (EuclideanSpace.proj i) _ (EuclideanSpace.single μ 1)
   simp only [ContinuousLinearMap.fderiv, PiLp.proj_apply, PiLp.single_apply]
+```
 
-=== Physlib/SpaceAndTime/Space/Norm/Basic.lean ===
+## `Physlib/SpaceAndTime/Space/Norm/Basic.lean`
+
+```
 public import Physlib.SpaceAndTime.Space.Derivatives.Laplacian
 public import Physlib.SpaceAndTime.Space.Integrals.NormPow
 public import Physlib.Mathematics.Distribution.PowMul
@@ -19507,8 +20458,11 @@ lemma distLaplacian_fundamentalSolution_log_norm :
     IsDistBounded.log_norm)) = _
   rw [distGrad_distOfFunction_log_norm (by norm_num)]
   simpa only [Nat.cast_ofNat] using distDiv_inv_pow_eq_dim (d := 2)
+```
 
-=== Physlib/SpaceAndTime/Space/Norm/IteratedLaplacian.lean ===
+## `Physlib/SpaceAndTime/Space/Norm/IteratedLaplacian.lean`
+
+```
 /-
 Copyright (c) 2026 Lazar Milikic. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
@@ -19666,8 +20620,11 @@ lemma iterated_distLaplacian_norm_zpow_odd_eq_smul_diracDelta (m : ℕ) :
   rfl
 
 end Space
+```
 
-=== Physlib/SpaceAndTime/Space/Norm/Regularized.lean ===
+## `Physlib/SpaceAndTime/Space/Norm/Regularized.lean`
+
+```
 /-
 Copyright (c) 2026 Gregory J. Loges. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
@@ -19752,8 +20709,11 @@ lemma normRegularizedPow_measurable (d : ℕ) (ε s : ℝ) :
   fun_prop
 
 end Space
+```
 
-=== Physlib/SpaceAndTime/Space/Origin.lean ===
+## `Physlib/SpaceAndTime/Space/Origin.lean`
+
+```
 /-
 Copyright (c) 2026 Shaopeng Zhu. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
@@ -19817,8 +20777,11 @@ noncomputable def chartEuclidean (d : ℕ) :
     chartEuclidean d p = p -ᵥ (0 : Space d) := rfl
 
 end Space
+```
 
-=== Physlib/SpaceAndTime/Space/Slice.lean ===
+## `Physlib/SpaceAndTime/Space/Slice.lean`
+
+```
   rw [fderiv_fun_comp, DifferentiableAt.fderiv_prodMk (by fun_prop)]
   simp only [Nat.succ_eq_add_one, fderiv_slice_symm, fderiv_fun_id, fderiv_fun_const, Pi.zero_apply,
     ContinuousLinearMap.coe_comp, ContinuousLinearEquiv.coe_coe, Function.comp_apply,
@@ -19831,21 +20794,30 @@ end Space
   simp only [Nat.succ_eq_add_one, ContinuousLinearMap.coe_comp, Function.comp_apply,
   rw [fderiv_fun_comp _ _ (by fun_prop)]
   simp only [Nat.succ_eq_add_one, ContinuousLinearMap.coe_comp, Function.comp_apply,
+```
 
-=== Physlib/SpaceAndTime/Space/Translations.lean ===
+## `Physlib/SpaceAndTime/Space/Translations.lean`
+
+```
             simp only [fderiv_fun_id, fderiv_fun_const, Pi.zero_apply, sub_zero]
 lemma distTranslate_ofFunction {d : ℕ} (a : EuclideanSpace ℝ (Fin d))
     (f : Space d → X) (hf : IsDistBounded f) :
   trans ∫ (x : Space d), η ((x - basis.repr.symm a) + basis.repr.symm a) •
   let f' := fun x : Space d => η (x + basis.repr.symm a) • f (x)
   change _ = ∫ (x : Space d), f' (x - basis.repr.symm a)
+```
 
-=== Physlib/SpaceAndTime/SpaceTime/Basic.lean ===
+## `Physlib/SpaceAndTime/SpaceTime/Basic.lean`
+
+```
 public import Physlib.Relativity.Tensors.RealTensor.Vector.Tensorial
 public import Physlib.Meta.Informal.Basic
   ext1 μ
+```
 
-=== Physlib/SpaceAndTime/SpaceTime/Boosts.lean ===
+## `Physlib/SpaceAndTime/SpaceTime/Boosts.lean`
+
+```
   fin_cases i <;>
     simp [Lorentz.Vector.smul_eq_sum, Fin.sum_univ_three, boost_inl_0_inr_other,
       boost_inr_other_inr, boost_inr_inr_other, boost_inr_other_inl_0] <;>
@@ -19856,8 +20828,11 @@ public import Physlib.Meta.Informal.Basic
     simp [γ_neg]
     rw [Finset.sum_eq_single ⟨n, by omega⟩] <;>
       simp +contextual [boost_inr_inr_other, Fin.ext_iff]
+```
 
-=== Physlib/SpaceAndTime/SpaceTime/Derivatives.lean ===
+## `Physlib/SpaceAndTime/SpaceTime/Derivatives.lean`
+
+```
 public import Physlib.Relativity.Tensors.RealTensor.CoVector.Tensorial
 - `manifoldDeriv` : The derivative of a function from `SpaceTime d` to a manifold along
   the `μ` coordinate.
@@ -19995,20 +20970,29 @@ lemma deriv_commute {M : Type} [NormedAddCommGroup M] [NormedSpace ℝ M] {d : �
     simp only [FunLike.coe_sum, FunLike.coe_smul, Finset.sum_apply,
   simp only [Nat.succ_eq_add_one, Nat.reduceAdd, ContinuousLinearMap.coe_comp,
     exact absurd (CoVector.indexEquiv.symm_apply_eq.mp hx) hb
+```
 
-=== Physlib/SpaceAndTime/SpaceTime/LorentzAction.lean ===
+## `Physlib/SpaceAndTime/SpaceTime/LorentzAction.lean`
+
+```
 set_option synthInstance.maxHeartbeats 40000
     simp only [_root_.add_apply, smul_add, lorentzGroup_smul_dist_apply]
     simp [lorentzGroup_smul_dist_apply, _root_.add_apply, smul_add]
+```
 
-=== Physlib/SpaceAndTime/SpaceTime/TimeSlice.lean ===
+## `Physlib/SpaceAndTime/SpaceTime/TimeSlice.lean`
+
+```
     simp only [ContinuousLinearMap.coe_comp, Function.comp_apply]
     simp only [ContinuousLinearMap.coe_comp, Function.comp_apply]
   simp only [Fin.isValue, one_div, FunLike.coe_smul, Pi.smul_apply]
   simp only [toTimeAndSpace_fderiv, Fin.isValue, ContinuousLinearMap.coe_comp,
   simp only [toTimeAndSpace_fderiv, ContinuousLinearMap.coe_comp, ContinuousLinearEquiv.coe_coe,
+```
 
-=== Physlib/SpaceAndTime/Time/Derivatives.lean ===
+## `Physlib/SpaceAndTime/Time/Derivatives.lean`
+
+```
 Authors: Nikolai Kashcheev, Joseph Tooby-Smith
 public import Mathlib.Analysis.Calculus.Deriv.Inv
 public import Mathlib.Analysis.InnerProductSpace.Calculus
@@ -20072,16 +21056,25 @@ lemma manifoldDeriv_const {E H N : Type} [NormedAddCommGroup E] [NormedSpace ℝ
   ring
   apply ContDiff.comp <;> fun_prop
   · simp only [ContinuousLinearMap.fderiv, ContinuousLinearMap.coe_comp, Function.comp_apply,
+```
 
-=== Physlib/SpaceAndTime/Time/TimeMan.lean ===
+## `Physlib/SpaceAndTime/Time/TimeMan.lean`
+
+```
   exact contMDiffOn_chart (x := (⟨0⟩ : TimeMan))
     exact contMDiffOn_chart_symm (x := (⟨0⟩ : TimeMan))
+```
 
-=== Physlib/SpaceAndTime/Time/TimeTransMan.lean ===
+## `Physlib/SpaceAndTime/Time/TimeTransMan.lean`
+
+```
   exact contMDiffOn_chart (x := (⟨0⟩ : TimeTransMan))
     exact contMDiffOn_chart_symm (x := (⟨0⟩ : TimeTransMan))
+```
 
-=== Physlib/SpaceAndTime/Time/TimeUnit.lean ===
+## `Physlib/SpaceAndTime/Time/TimeUnit.lean`
+
+```
   simp [toReal]
   · exact zero_le
   rfl
@@ -20100,8 +21093,11 @@ lemma minutes_div_seconds : minutes / seconds = (60 : ℝ≥0) := NNReal.eq <| b
 lemma days_div_hours : days / hours = (24 : ℝ≥0) := NNReal.eq <| by
   simp [hours, days]; rw [toReal]; norm_num
   simp [weeks, hours]; rw [toReal]; norm_num
+```
 
-=== Physlib/SpaceAndTime/TimeAndSpace/Basic.lean ===
+## `Physlib/SpaceAndTime/TimeAndSpace/Basic.lean`
+
+```
 Authors: Zhi Kai Pong, Joseph Tooby-Smith, Rob Sneiderman
 In this module we define `TimeAndSpace d` as the product of `Time` and `Space d`, and
 prove basic lemmas about derivatives of functions and distributions on both coordinates.
@@ -20222,8 +21218,11 @@ namespace Space
   all_goals fun_prop
       simp only [Fin.isValue, map_add, _root_.add_apply, PiLp.add_apply, Fin.zero_eta,
       simp only [Fin.isValue, map_smul, FunLike.coe_smul, Pi.smul_apply,
+```
 
-=== Physlib/SpaceAndTime/TimeAndSpace/ConstantTimeDist.lean ===
+## `Physlib/SpaceAndTime/TimeAndSpace/ConstantTimeDist.lean`
+
+```
     convert! h0' using 1
     convert! h0' using 1
       rw [fderiv_fun_comp, DifferentiableAt.fderiv_prodMk]
@@ -20277,8 +21276,11 @@ lemma time_integral_differentiable {d : ℕ} (η : 𝓢(Time × Space d, ℝ)) :
           simp only [fderiv_fun_id, fderiv_fun_const, Pi.ofNat_apply,
             ContinuousLinearMap.comp_apply, ContinuousLinearMap.prod_apply,
             ContinuousLinearMap.id_apply, _root_.zero_apply]
+```
 
-=== Physlib/SpaceAndTime/TimeAndSpace/EuclideanGroup/Action.lean ===
+## `Physlib/SpaceAndTime/TimeAndSpace/EuclideanGroup/Action.lean`
+
+```
 /-
 Copyright (c) 2026 Rob Sneiderman. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
@@ -20431,8 +21433,11 @@ lemma antilipschitz_smul (g : EuclideanGroup d) :
   (isometry_smul g).antilipschitz
 
 end TimeAndSpace
+```
 
-=== Physlib/SpaceAndTime/TimeAndSpace/EuclideanGroup/SchwartzAction.lean ===
+## `Physlib/SpaceAndTime/TimeAndSpace/EuclideanGroup/SchwartzAction.lean`
+
+```
 /-
 Copyright (c) 2026 Rob Sneiderman. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
@@ -20564,14 +21569,20 @@ lemma schwartzEuclideanAction_surjective {d : ℕ} (g : EuclideanGroup d) :
 end TimeAndSpace
 
 end
+```
 
-=== Physlib/StatisticalMechanics/CanonicalEnsemble/Basic.lean ===
+## `Physlib/StatisticalMechanics/CanonicalEnsemble/Basic.lean`
+
+```
     apply Integrable.mul_prod (f := (fun (i : ι) => 1)) (g := 𝓒1.energy) <;> fun_prop
   · have h1 := integrable_energy_add 𝓒 𝓒1 T h1 h2
     simp_all only [μProd_add]
     exact h1
+```
 
-=== Physlib/StatisticalMechanics/CanonicalEnsemble/Finite.lean ===
+## `Physlib/StatisticalMechanics/CanonicalEnsemble/Finite.lean`
+
+```
       have h_cases : ∀ s : Set (Fin 0 → ι), s = ∅ ∨ s = Set.univ := fun s =>
         s.eq_empty_or_nonempty.imp_right fun ⟨y, hy⟩ =>
           Set.eq_univ_of_forall fun x => by rwa [Subsingleton.elim x y]
@@ -20630,8 +21641,11 @@ end
   set S2 := ∑ i, (𝓒.energy i) ^ 2 * Real.exp (-b * 𝓒.energy i)
   field_simp
   ring
+```
 
-=== Physlib/StatisticalMechanics/CanonicalEnsemble/Lemmas.lean ===
+## `Physlib/StatisticalMechanics/CanonicalEnsemble/Lemmas.lean`
+
+```
   rw [NNReal.toReal]
   field_simp
   simp [toReal, hT0]
@@ -20644,12 +21658,18 @@ end
   linear_combination 𝓒.meanEnergy T * hkβT
 
     exact (mathematicalPartitionFunction_eq_integral (𝓒:=𝓒) (T:=T))
+```
 
-=== Physlib/StatisticalMechanics/MicroCanonicalEnsemble/Basic.lean ===
+## `Physlib/StatisticalMechanics/MicroCanonicalEnsemble/Basic.lean`
+
+```
   /-- The number of degrees of freedom is finite. -/
 /-- The dim_fin to the instance cache is added so that things like the measure can be synthesized -/
+```
 
-=== Physlib/StatisticalMechanics/MicroCanonicalEnsemble/IdealGas.lean ===
+## `Physlib/StatisticalMechanics/MicroCanonicalEnsemble/IdealGas.lean`
+
+```
     · simp_rw [Set.setOf_forall]
       exact MeasurableSet.iInter fun i => MeasurableSet.iInter fun ax =>
         measurableSet_le (by fun_prop) measurable_const
@@ -20686,14 +21706,20 @@ end
       h_integral_1d, ← Real.rpow_mul_natCast hV.le]
   · have h_gaussian :=
 /-- The ideal gas law: PV = nRT. In our unitsless system, R = 1. -/
+```
 
-=== Physlib/StatisticalMechanics/MicroCanonicalEnsemble/ThermoQuantities.lean ===
+## `Physlib/StatisticalMechanics/MicroCanonicalEnsemble/ThermoQuantities.lean`
+
+```
 public import QuantumInfo.ForMathlib.ComplexLaplaceTransform
   * Ideally this would be an NNReal, but ∫ (NNReal) doesn't work right now, so it would just be a
     separate proof anyway
     if h : E = ⊤ then 0 else Real.exp (-β * (E.untop h))) ∧ (H.partitionZ d β ≠ 0)
+```
 
-=== Physlib/StringTheory/FTheory/SU5/Fluxes/Basic.lean ===
+## `Physlib/StringTheory/FTheory/SU5/Fluxes/Basic.lean`
+
+```
   simpa only [numChiralD, numAntiChiralD, not_le, eq_sub_iff_add_eq] using
     Multiset.sum_filter_add_sum_filter_not (s := chiralIndicesOfD F) (fun x => 0 ≤ x)
   simpa only [numChiralL, numAntiChiralL, not_le, eq_sub_iff_add_eq] using
@@ -20704,8 +21730,11 @@ public import QuantumInfo.ForMathlib.ComplexLaplaceTransform
     Multiset.sum_filter_add_sum_filter_not (s := chiralIndicesOfU F) (fun x => 0 ≤ x)
   simpa only [numChiralE, numAntiChiralE, not_le, eq_sub_iff_add_eq] using
     Multiset.sum_filter_add_sum_filter_not (s := chiralIndicesOfE F) (fun x => 0 ≤ x)
+```
 
-=== Physlib/StringTheory/FTheory/SU5/Fluxes/NoExotics/ChiralIndices.lean ===
+## `Physlib/StringTheory/FTheory/SU5/Fluxes/NoExotics/ChiralIndices.lean`
+
+```
   by_contra hn
   simp only [not_le] at hn
   have h1 := Multiset.sum_le_card_nsmul
@@ -20826,8 +21855,11 @@ public import QuantumInfo.ForMathlib.ComplexLaplaceTransform
       (F.chiralIndicesOfE - S.map (fun x => (x.1 + x.2))).sum = 3 := by
     rw [← Multiset.sum_add, add_tsub_cancel_of_le hs,
       F.chiralIndicesOfE_sum_eq_three_of_noExotics hF]
+```
 
-=== Physlib/StringTheory/FTheory/SU5/Quanta/FiveQuanta.lean ===
+## `Physlib/StringTheory/FTheory/SU5/Quanta/FiveQuanta.lean`
+
+```
   have hl : Multiset.filter (fun p => p.1 = z) x = 0 := by
     rw [Multiset.filter_eq_nil]
     rintro ⟨a, b⟩ hab rfl
@@ -20903,8 +21935,11 @@ public import QuantumInfo.ForMathlib.ComplexLaplaceTransform
           simp [add_mul] }
   simp [anomalyCoefficient]
   exact ⟨reduce_sum_N_mul_eq fun q => q, reduce_sum_N_mul_eq fun q => q * q⟩
+```
 
-=== Physlib/StringTheory/FTheory/SU5/Quanta/TenQuanta.lean ===
+## `Physlib/StringTheory/FTheory/SU5/Quanta/TenQuanta.lean`
+
+```
   have hl : x.filter (fun p => p.1 = z) = 0 := by
     rw [Multiset.filter_eq_nil]
     rintro ⟨a, b⟩ hp rfl
@@ -21006,8 +22041,11 @@ public import QuantumInfo.ForMathlib.ComplexLaplaceTransform
         map_zero' := by simp
         map_add' := fun x y => by simp [add_mul] }
   exact ⟨weighted_N_sum_eq fun q => q, congrArg (3 * ·) (weighted_N_sum_eq fun q => q * q)⟩
+```
 
-=== Physlib/Thermodynamics/IdealGas/Basic.lean ===
+## `Physlib/Thermodynamics/IdealGas/Basic.lean`
+
+```
   -- Unfold the entropy and expand every `log (x / y)` into `log x - log y`,
   -- so both `hS` and the goal become linear in the individual logarithms.
   unfold entropy at hS
@@ -21024,8 +22062,11 @@ public import QuantumInfo.ForMathlib.ComplexLaplaceTransform
     show (Ua / Ub) ^ c * (Va / Vb) = 1
     rw [Real.rpow_def_of_pos (div_pos hUa hUb), ← Real.exp_log (div_pos hVa hVb),
         ← Real.exp_add, mul_comm (log (Ua / Ub)) c, hlog, Real.exp_zero]
+```
 
-=== Physlib/Thermodynamics/Temperature/Basic.lean ===
+## `Physlib/Thermodynamics/Temperature/Basic.lean`
+
+```
   ⟨1 / (kB * (T : ℝ)), div_nonneg zero_le_one (mul_nonneg kB_nonneg T.val.2)⟩
 
 lemma β_toReal (T : Temperature) : (β T : ℝ) = 1 / (kB * (T : ℝ)) := rfl
@@ -21084,8 +22125,11 @@ lemma ofβ_toReal (β : ℝ≥0) : (ofβ β).toReal = 1 / (kB * (β : ℝ)) := r
     rw [h_beta_at_T]
     exact hF_deriv
   exact hF_deriv'.comp (T.val : ℝ) (deriv_beta_wrt_T (T := T) hT_pos) h_map
+```
 
-=== Physlib/Thermodynamics/Temperature/TemperatureUnits.lean ===
+## `Physlib/Thermodynamics/Temperature/TemperatureUnits.lean`
+
+```
   simp [toReal]
   · exact zero_le
   rfl
@@ -21093,13 +22137,19 @@ lemma ofβ_toReal (β : ℝ≥0) : (ofβ β).toReal = 1 / (kB * (β : ℝ)) := r
   rw [toReal, inv_div]
   simp [div_eq_val, toReal]
   rw [toReal]
+```
 
-=== Physlib/Units/Basic.lean ===
+## `Physlib/Units/Basic.lean`
+
+```
 public import Physlib.Meta.TODO.Basic
     TemperatureUnit.div_eq_val, NNReal.coe_mul, coe_rpow]
   rw [toReal]
+```
 
-=== Physlib/Units/Dimension.lean ===
+## `Physlib/Units/Dimension.lean`
+
+```
   simp [div_eq_mul_inv, sub_eq_add_neg]
   simp [div_eq_mul_inv, sub_eq_add_neg]
   simp [div_eq_mul_inv, sub_eq_add_neg]
@@ -21110,8 +22160,11 @@ public import Physlib.Meta.TODO.Basic
   | succ n ih => rw [pow_succ, mass_mul, ih, succ_nsmul]
   | succ n ih => rw [pow_succ, charge_mul, ih, succ_nsmul]
   | succ n ih => rw [pow_succ, temperature_mul, ih, succ_nsmul]
+```
 
-=== Physlib/Units/Examples.lean ===
+## `Physlib/Units/Examples.lean`
+
+```
   show (1609.344 : ℝ)⁻¹ * 400 = _
   norm_num [WithDim.scaleUnit_val, M𝓭, NNReal.smul_def]
   unfold EnergyMass
@@ -21123,8 +22176,11 @@ public import Physlib.Meta.TODO.Basic
   simp [mul_assoc, mul_eq_mul_left_iff, dimScale_ne_zero]
   simp [EnergyMass, speedOfLight, toDimensionful_apply_apply, dimScale, SI]
   rw [← energyMass_isDimensionallyCorrect SI u]
+```
 
-=== Physlib/Units/UnitDependent.lean ===
+## `Physlib/Units/UnitDependent.lean`
+
+```
 public import Mathlib.Topology.Algebra.Module.Spaces.ContinuousLinearMap
     · simp [LengthUnit.div_eq_val, toReal]
     · simp [TimeUnit.div_eq_val, toReal]
@@ -21147,8 +22203,11 @@ public import Mathlib.Topology.Algebra.Module.Spaces.ContinuousLinearMap
   rfl
   simp only [IsDimensionallyCorrect, funext_iff]
   rfl
+```
 
-=== Physlib/Units/WithDim/Area.lean ===
+## `Physlib/Units/WithDim/Area.lean`
+
+```
   simp [squareFoot, dimScale, LengthUnit.feet, toDimensionful_apply_apply,]
   simp [NNReal.coe_ofScientific]
   rw [toReal]
@@ -21156,8 +22215,11 @@ public import Mathlib.Topology.Algebra.Module.Spaces.ContinuousLinearMap
   rw [toReal]
   simp [NNReal.coe_ofScientific]
   rw [toReal]
+```
 
-=== Physlib/Units/WithDim/Basic.lean ===
+## `Physlib/Units/WithDim/Basic.lean`
+
+```
 /-!
 ## Inherited instances
 -/
@@ -21270,8 +22332,11 @@ instance (d : Dimension) (M : Type) [PartialOrder M] :
 
 TODO "Induce further non-additive algebraic, additional order, and topological instances
   on `WithDim d M` from instances on `M`."
+```
 
-=== Physlib/Units/WithDim/Speed.lean ===
+## `Physlib/Units/WithDim/Speed.lean`
+
+```
   simp [NNReal.coe_ofScientific]
   rw [toReal]
   simp only [WithDim.smul_val, smul_eq_mul, mul_one, NNReal.coe_mul, coe_rpow, NNReal.coe_div,
@@ -21280,8 +22345,11 @@ TODO "Induce further non-additive algebraic, additional order, and topological i
   simp only [WithDim.smul_val, smul_eq_mul, mul_one, NNReal.coe_mul, coe_rpow, NNReal.coe_div,
     NNReal.coe_ofNat]
   rw [toReal]
+```
 
-=== PhyslibAlpha.lean ===
+## `PhyslibAlpha.lean`
+
+```
 module
 
 public import PhyslibAlpha.Basic
@@ -21314,8 +22382,11 @@ public import PhyslibAlpha.QuantumMechanics.QuantumHarmonicOscillator
 public import PhyslibAlpha.QuantumMechanics.StinespringDilation
 public import PhyslibAlpha.Mathematics.PartialDerivativeTest
 public import PhyslibAlpha.ClassicalMechanics.CoupledSpringPotential
+```
 
-=== PhyslibAlpha/Basic.lean ===
+## `PhyslibAlpha/Basic.lean`
+
+```
 /-
 Copyright (c) 2026 Joseph Tooby-Smith. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
@@ -21346,8 +22417,11 @@ undertaking the more rigorous review process.
 -/
 
 @[expose] public section
+```
 
-=== PhyslibAlpha/ClassicalFieldTheory/Local/Action.lean ===
+## `PhyslibAlpha/ClassicalFieldTheory/Local/Action.lean`
+
+```
 /-
 Copyright (c) 2026 Juan Jose Fernandez Morales. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
@@ -21571,8 +22645,11 @@ def IsCritical (L : Lagrangian d m k) (f : Space d → EuclideanSpace ℝ (Fin m
 
 end Local
 end ClassicalFieldTheory
+```
 
-=== PhyslibAlpha/ClassicalFieldTheory/Local/EulerLagrange.lean ===
+## `PhyslibAlpha/ClassicalFieldTheory/Local/EulerLagrange.lean`
+
+```
 /-
 Copyright (c) 2026 Juan Jose Fernandez Morales. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
@@ -21674,8 +22751,11 @@ lemma eulerLagrangeOp_eq (L : Lagrangian d m k) (f : Space d → EuclideanSpace 
 
 end Local
 end ClassicalFieldTheory
+```
 
-=== PhyslibAlpha/ClassicalFieldTheory/Local/FirstOrder.lean ===
+## `PhyslibAlpha/ClassicalFieldTheory/Local/FirstOrder.lean`
+
+```
 /-
 Copyright (c) 2026 Juan Jose Fernandez Morales. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
@@ -21844,8 +22924,11 @@ theorem firstOrder_isCritical_iff_eulerLagrange_zero
 
 end Local
 end ClassicalFieldTheory
+```
 
-=== PhyslibAlpha/ClassicalFieldTheory/Local/FirstVariation.lean ===
+## `PhyslibAlpha/ClassicalFieldTheory/Local/FirstVariation.lean`
+
+```
 /-
 Copyright (c) 2026 Juan Jose Fernandez Morales. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
@@ -21925,8 +23008,11 @@ theorem isCritical_iff_eulerLagrange_zero_of_admissibleForAction_and_smoothInCoo
 
 end Local
 end ClassicalFieldTheory
+```
 
-=== PhyslibAlpha/ClassicalFieldTheory/Local/FirstVariation/Basic.lean ===
+## `PhyslibAlpha/ClassicalFieldTheory/Local/FirstVariation/Basic.lean`
+
+```
 /-
 Copyright (c) 2026 Juan Jose Fernandez Morales. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
@@ -22027,8 +23113,11 @@ lemma firstVariationValue_eq_zero_of_eulerLagrange_zero
 
 end Local
 end ClassicalFieldTheory
+```
 
-=== PhyslibAlpha/ClassicalFieldTheory/Local/FirstVariation/Criterion.lean ===
+## `PhyslibAlpha/ClassicalFieldTheory/Local/FirstVariation/Criterion.lean`
+
+```
 /-
 Copyright (c) 2026 Juan Jose Fernandez Morales. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
@@ -22328,8 +23417,11 @@ theorem isCritical_iff_eulerLagrange_zero_of_hasFiniteAction_and_continuousInCoo
 
 end Local
 end ClassicalFieldTheory
+```
 
-=== PhyslibAlpha/ClassicalFieldTheory/Local/FirstVariation/Density.lean ===
+## `PhyslibAlpha/ClassicalFieldTheory/Local/FirstVariation/Density.lean`
+
+```
 /-
 Copyright (c) 2026 Juan Jose Fernandez Morales. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
@@ -22691,8 +23783,11 @@ lemma hasActionVariationDerivativeUnderIntegral_of_contDiff_of_regular
 
 end Local
 end ClassicalFieldTheory
+```
 
-=== PhyslibAlpha/ClassicalFieldTheory/Local/FirstVariation/IntegrationByParts.lean ===
+## `PhyslibAlpha/ClassicalFieldTheory/Local/FirstVariation/IntegrationByParts.lean`
+
+```
 /-
 Copyright (c) 2026 Juan Jose Fernandez Morales. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
@@ -22947,8 +24042,11 @@ lemma hasIntegratedByPartsFormula_of_termwise (L : Lagrangian d m k)
 
 end Local
 end ClassicalFieldTheory
+```
 
-=== PhyslibAlpha/ClassicalFieldTheory/Local/FirstVariation/Regularity.lean ===
+## `PhyslibAlpha/ClassicalFieldTheory/Local/FirstVariation/Regularity.lean`
+
+```
 /-
 Copyright (c) 2026 Juan Jose Fernandez Morales. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
@@ -23063,8 +24161,11 @@ theorem hasSmoothEulerLagrangeRegularity_of_contDiffCoordDerivInCoordinates
 
 end Local
 end ClassicalFieldTheory
+```
 
-=== PhyslibAlpha/ClassicalFieldTheory/Local/FirstVariation/Support.lean ===
+## `PhyslibAlpha/ClassicalFieldTheory/Local/FirstVariation/Support.lean`
+
+```
 /-
 Copyright (c) 2026 Juan Jose Fernandez Morales. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
@@ -23241,8 +24342,11 @@ lemma continuous_jetBaseCoordinates_variedField
 
 end Local
 end ClassicalFieldTheory
+```
 
-=== PhyslibAlpha/ClassicalFieldTheory/Local/JetPoint.lean ===
+## `PhyslibAlpha/ClassicalFieldTheory/Local/JetPoint.lean`
+
+```
 /-
 Copyright (c) 2026 Juan Jose Fernandez Morales. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
@@ -23445,8 +24549,11 @@ lemma jetAt_eq_ofBaseCoordinates (k : ℕ) (f : Space d → EuclideanSpace ℝ (
 
 end Local
 end ClassicalFieldTheory
+```
 
-=== PhyslibAlpha/ClassicalFieldTheory/Local/JetPointFiber.lean ===
+## `PhyslibAlpha/ClassicalFieldTheory/Local/JetPointFiber.lean`
+
+```
 /-
 Copyright (c) 2026 Juan Jose Fernandez Morales. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
@@ -23683,8 +24790,11 @@ lemma jetAt_add_smul (k : ℕ) (f g : Space d → EuclideanSpace ℝ (Fin m))
 
 end Local
 end ClassicalFieldTheory
+```
 
-=== PhyslibAlpha/ClassicalFieldTheory/Local/JetPointRegularity.lean ===
+## `PhyslibAlpha/ClassicalFieldTheory/Local/JetPointRegularity.lean`
+
+```
 /-
 Copyright (c) 2026 Juan Jose Fernandez Morales. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
@@ -23786,8 +24896,11 @@ lemma jetDirectionAt_eq_zero_of_notMem_tsupport (k : ℕ)
 
 end Local
 end ClassicalFieldTheory
+```
 
-=== PhyslibAlpha/ClassicalFieldTheory/Local/Lagrangian.lean ===
+## `PhyslibAlpha/ClassicalFieldTheory/Local/Lagrangian.lean`
+
+```
 /-
 Copyright (c) 2026 Juan Jose Fernandez Morales. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
@@ -23960,8 +25073,11 @@ lemma alongField_apply (L : Lagrangian d m k)
 end Lagrangian
 end Local
 end ClassicalFieldTheory
+```
 
-=== PhyslibAlpha/ClassicalFieldTheory/Local/TotalDerivative.lean ===
+## `PhyslibAlpha/ClassicalFieldTheory/Local/TotalDerivative.lean`
+
+```
 /-
 Copyright (c) 2026 Juan Jose Fernandez Morales. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
@@ -24058,8 +25174,11 @@ lemma iteratedTotalDerivative_single (k : ℕ) (i : Fin d) (F : JetPoint d m k �
 
 end Local
 end ClassicalFieldTheory
+```
 
-=== PhyslibAlpha/ClassicalFieldTheory/Local/TotalDivergence.lean ===
+## `PhyslibAlpha/ClassicalFieldTheory/Local/TotalDivergence.lean`
+
+```
 /-
 Copyright (c) 2026 Juan Jose Fernandez Morales. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
@@ -24187,8 +25306,11 @@ end TotalDivergence
 
 end Local
 end ClassicalFieldTheory
+```
 
-=== PhyslibAlpha/ClassicalFieldTheory/Local/TotalDivergenceEquivalence.lean ===
+## `PhyslibAlpha/ClassicalFieldTheory/Local/TotalDivergenceEquivalence.lean`
+
+```
 /-
 Copyright (c) 2026 Juan Jose Fernandez Morales. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
@@ -24416,8 +25538,11 @@ end TotalDivergenceEquivalence
 
 end Local
 end ClassicalFieldTheory
+```
 
-=== PhyslibAlpha/ClassicalFieldTheory/Local/Variation.lean ===
+## `PhyslibAlpha/ClassicalFieldTheory/Local/Variation.lean`
+
+```
 /-
 Copyright (c) 2026 Juan Jose Fernandez Morales. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
@@ -24465,8 +25590,11 @@ end AdmissibleVariation
 
 end Local
 end ClassicalFieldTheory
+```
 
-=== PhyslibAlpha/ClassicalMechanics/CoupledSpringPotential.lean ===
+## `PhyslibAlpha/ClassicalMechanics/CoupledSpringPotential.lean`
+
+```
 /-
 Copyright (c) 2026 Bjørn Kjos-Hanssen. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
@@ -24589,8 +25717,11 @@ lemma coupled_spring_potential :
   show IsLocalMin couplingPotential (!₂[0, 0] : EuclideanSpace ℝ (Fin 2))
   exact second_derivative_test_analyticAt couplingPotential_gradient_zero
     (couplingPotential_analyticAt _) couplingPotential_posDef
+```
 
-=== PhyslibAlpha/Mathematics/PartialDerivativeTest.lean ===
+## `PhyslibAlpha/Mathematics/PartialDerivativeTest.lean`
+
+```
 /-
 Copyright (c) 2026 Bjørn Kjos-Hanssen. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
@@ -25156,8 +26287,11 @@ theorem second_derivative_test_analyticAt {V : Type*} [NormedAddCommGroup V]
   obtain ⟨p, r, hr⟩ := han
   obtain ⟨r', hr'0, hr'lt⟩ := ENNReal.lt_iff_exists_nnreal_btwn.mp hr.r_pos
   exact second_derivative_test h₀ (hr.mono (by exact_mod_cast hr'0) hr'lt.le) hf
+```
 
-=== PhyslibAlpha/QuantumMechanics/QuantumHarmonicOscillator.lean ===
+## `PhyslibAlpha/QuantumMechanics/QuantumHarmonicOscillator.lean`
+
+```
 /-
 Copyright (c) 2026 Bjørn Kjos-Hanssen. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
@@ -25566,8 +26700,11 @@ def coherentState_ℓ2 (α : ℂ) : lp (fun _ : ℕ => ℂ) 2 := {
       field_simp
     · exact Real.exp_eq_exp_ℝ
 }
+```
 
-=== PhyslibAlpha/QuantumMechanics/StinespringDilation.lean ===
+## `PhyslibAlpha/QuantumMechanics/StinespringDilation.lean`
+
+```
 /-
 Copyright (c) 2026 Bjørn Kjos-Hanssen. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
@@ -26468,8 +27605,11 @@ theorem stinespringForm_eq {R : Type*} [RCLike R] {m r : ℕ}
   simp only [stinespringOp, Fin.isValue, Matrix.mul_apply, conjTranspose_apply, star_def]
   simp [Matrix.mul_apply, Finset.sum_mul, Matrix.sum_apply, kroneckerMap_apply,
     Matrix.single]
+```
 
-=== PhyslibAlpha/SpaceAndTime/Space/Surfaces/HalfPlane.lean ===
+## `PhyslibAlpha/SpaceAndTime/Space/Surfaces/HalfPlane.lean`
+
+```
 /-
 Copyright (c) 2026 Robert Sneiderman. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
@@ -26617,8 +27757,11 @@ lemma volume_halfPlane_image_domain :
     halfPlaneSubmodule halfPlaneSubmodule_ne_top
 
 end Space
+```
 
-=== PhyslibAlpha/SpaceAndTime/Space/Surfaces/Line.lean ===
+## `PhyslibAlpha/SpaceAndTime/Space/Surfaces/Line.lean`
+
+```
 /-
 Copyright (c) 2026 Robert Sneiderman. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
@@ -26756,8 +27899,11 @@ lemma volume_line_range (d : ℕ) [NeZero d] (hd : 2 ≤ d) :
     (lineSubmodule d) (lineSubmodule_ne_top d hd)
 
 end Space
+```
 
-=== PhyslibAlpha/SpaceAndTime/Space/Surfaces/Ring.lean ===
+## `PhyslibAlpha/SpaceAndTime/Space/Surfaces/Ring.lean`
+
+```
 /-
 Copyright (c) 2026 Joseph Tooby-Smith. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
@@ -26896,8 +28042,11 @@ lemma ringDist_eq_integral_delta (f : 𝓢(Space 3, ℝ)) :
   simp
 
 end Space
+```
 
-=== PhyslibAlpha/SpaceAndTime/Space/Surfaces/SolidCylinder.lean ===
+## `PhyslibAlpha/SpaceAndTime/Space/Surfaces/SolidCylinder.lean`
+
+```
 /-
 Copyright (c) 2026 Robert Sneiderman. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
@@ -27042,8 +28191,11 @@ lemma solidCylinderMeasure_univ_pos : 0 < solidCylinderMeasure Set.univ := by
   simp
 
 end Space
+```
 
-=== PhyslibAlpha/SpaceAndTime/Space/Surfaces/SolidSphere.lean ===
+## `PhyslibAlpha/SpaceAndTime/Space/Surfaces/SolidSphere.lean`
+
+```
 /-
 Copyright (c) 2026 Robert Sneiderman. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
@@ -27160,8 +28312,11 @@ lemma solidSphereMeasure_univ_pos (d : ℕ) : 0 < solidSphereMeasure d Set.univ 
   exact solidSphere_volume_pos d
 
 end Space
+```
 
-=== PhyslibAlpha/SpaceAndTime/Space/Surfaces/SphericalCylinder.lean ===
+## `PhyslibAlpha/SpaceAndTime/Space/Surfaces/SphericalCylinder.lean`
+
+```
 /-
 Copyright (c) 2026 Robert Sneiderman. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
@@ -27288,8 +28443,11 @@ lemma sphericalCylinderDist_apply_eq_integral_sphere_volume (f : 𝓢(Space 3, �
     MeasurableEmbedding.integral_map sphericalCylinder_measurableEmbedding]
 
 end Space
+```
 
-=== PhyslibAlpha/SpaceAndTime/Space/Surfaces/SphericalShell.lean ===
+## `PhyslibAlpha/SpaceAndTime/Space/Surfaces/SphericalShell.lean`
+
+```
 /-
 Copyright (c) 2026 Joseph Tooby-Smith. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
@@ -27385,8 +28543,11 @@ lemma sphericalShellDist_apply_eq_integral_sphere_volume (d : ℕ) (f : 𝓢(Spa
    MeasurableEmbedding.integral_map (sphericalShell_measurableEmbedding d)]
 
 end Space
+```
 
-=== QuantumInfo/Channels/Bundled.lean ===
+## `QuantumInfo/Channels/Bundled.lean`
+
+```
   coe_injective x y h := funext_hermitian fun M ↦
   coe_injective := DFunLike.coe_injective.comp injective_toHPMap
     have h1 := f.pos h
@@ -27407,8 +28568,11 @@ def of_kraus_CPTPMap {κ : Type*} [Fintype κ]
     have := f.pos h
     simp_all only [HermitianMat.val_eq_coe, map_sub, ge_iff_le]
     exact this
+```
 
-=== QuantumInfo/Channels/CPTP.lean ===
+## `QuantumInfo/Channels/CPTP.lean`
+
+```
           convert! Λ₂.map.IsTracePreserving_iff_trace_choi.1 Λ₂.TP;
   exact
   convert! rfl
@@ -27420,13 +28584,19 @@ def of_kraus_CPTPMap {κ : Type*} [Fintype κ]
     exact this
     convert! congr_arg (fun m : Matrix (dIn × dOut × dOut) (dIn × dOut × dOut) ℂ => m i j) (show (U.val * (Matrix.of fun i j => X i.1 j.1 * ((Ket.basis default) i.2 * (starRingEnd ℂ) ((Ket.basis default) j.2))) * U.val.conjTranspose) = _ from rfl) using 1
     convert! congr_arg (fun f => (U.val * f * U.val.conjTranspose)) ‹_› using 1
+```
 
-=== QuantumInfo/Channels/Dual.lean ===
+## `QuantumInfo/Channels/Dual.lean`
+
+```
     convert! LinearEquiv.apply_symm_apply b.toDualEquiv f;
   convert! congr_arg ( fun g => g x ) h_inv using 1;
 omit [Fintype dOut] in
+```
 
-=== QuantumInfo/Channels/Pinching.lean ===
+## `QuantumInfo/Channels/Pinching.lean`
+
+```
   convert! (HermitianMat.mat_cfc_mul ρ.M _ _).symm
   convert! congr($((ρ.M.cfc_const 0).symm).mat)
   · simp
@@ -27437,8 +28607,11 @@ omit [Fintype dOut] in
       Submodule.mem_comap] at h1 ⊢
     exact h1
 
+```
 
-=== QuantumInfo/Channels/Unbundled.lean ===
+## `QuantumInfo/Channels/Unbundled.lean`
+
+```
   simp only [add_kron, LinearMap.add_apply]
   exact Matrix.PosSemidef.add (h₁ n h) (h₂ n h)
   have h1 :=
@@ -27446,11 +28619,17 @@ omit [Fintype dOut] in
   exact h1
         (hM (by exact hXle :
   convert! Matrix.PosSemidef.submatrix
+```
 
-=== QuantumInfo/ClassicalInfo/Distribution.lean ===
+## `QuantumInfo/ClassicalInfo/Distribution.lean`
+
+```
   coe_injective _ _ h :=
+```
 
-=== QuantumInfo/ClassicalInfo/Prob.lean ===
+## `QuantumInfo/ClassicalInfo/Prob.lean`
+
+```
   isBot_zero a := a.2.1
   norm_cast
   · rw [ENNReal.coe_le_coe, toReal_le, toReal, neg_le_neg_iff]
@@ -27468,8 +28647,11 @@ omit [Fintype dOut] in
   · simp [h₂]; rfl
     simp only [ENNReal.coe_lt_coe, ← NNReal.coe_lt_coe]
     show x < -Real.log a
+```
 
-=== QuantumInfo/Entropy/DPI.lean ===
+## `QuantumInfo/Entropy/DPI.lean`
+
+```
   next h => simp_all only; norm_cast
           convert! congr_arg (fun f => f i j) h_support using 1)
   convert! h_jensen using 1
@@ -27481,8 +28663,11 @@ omit [Fintype dOut] in
     congr 3
     convert! congr_arg Real.log (sandwichedTraceFunctional_conj_unitary_MState U ρ σ) using 1
           exact congr($Φ.purify_trace ξ)
+```
 
-=== QuantumInfo/Entropy/Relative.lean ===
+## `QuantumInfo/Entropy/Relative.lean`
+
+```
     convert! congr_arg Complex.re h_trace using 1;
   convert! congr_arg ( fun x : HermitianMat d ℂ => x.val ) h_cfc_eq using 1;
       have h_supportProj_mul_A : (A.supportProj.val.toEuclideanLin v) = (Submodule.orthogonalProjectionOnto (LinearMap.range A.val.toEuclideanLin) v) := by
@@ -27581,8 +28766,11 @@ omit [Fintype dOut] in
   simpa [P, HermitianMat.lin, HermitianMat.mat_add, map_add, LinearMap.add_apply,
     Matrix.toLpLin_apply, (K.mem_ker_iff_mulVec_zero x).1 hKx] using key
   refine tendsto_finsetSum _ fun i _ ↦ ?_
+```
 
-=== QuantumInfo/Entropy/SSA.lean ===
+## `QuantumInfo/Entropy/SSA.lean`
+
+```
 noncomputable def Matrix.opNorm (A : Matrix m n 𝕜) : ℝ :=
   rw [V_sigma, Matrix.reindex_apply, Matrix.conjTranspose_submatrix, Matrix.submatrix_mul_equiv,
     V_rho_isometry (σBC.reindex (Equiv.prodComm dB dC))
@@ -27622,12 +28810,18 @@ noncomputable def Matrix.opNorm (A : Matrix m n 𝕜) : ℝ :=
   simp_all only [MState.traceRight_assoc, MState.traceRight_SWAP, MState.traceLeft_right_assoc,
     MState.traceLeft_left_assoc, MState.traceLeft_SWAP, MState.assoc'_assoc, ge_iff_le]
   exact this
+```
 
-=== QuantumInfo/Entropy/VonNeumann.lean ===
+## `QuantumInfo/Entropy/VonNeumann.lean`
+
+```
   convert! traceLeft_eq_transpose_mul_conj ψ using 1
     convert! Matrix.IsHermitian.charpoly_eq hA using 1;
+```
 
-=== QuantumInfo/ForMathlib/ComplexLaplaceTransform.lean ===
+## `QuantumInfo/ForMathlib/ComplexLaplaceTransform.lean`
+
+```
 public import Mathlib.Algebra.Order.Star.Real
 def ComplexLaplaceTransform {α : Type*} [MeasureTheory.MeasureSpace α]
 def ComplexLaplaceConvergenceDomain {α : Type*} [MeasureTheory.MeasureSpace α]
@@ -27636,8 +28830,11 @@ def ComplexLaplaceConvergenceDomain {α : Type*} [MeasureTheory.MeasureSpace α]
     exact (hint (by
   exact
     {α : Type*} [MeasureTheory.MeasureSpace α] {E : α → WithTop ℝ} :
+```
 
-=== QuantumInfo/ForMathlib/ContinuousLinearMap.lean ===
+## `QuantumInfo/ForMathlib/ContinuousLinearMap.lean`
+
+```
 /-!
 # Continuous linear maps
 
@@ -27653,11 +28850,17 @@ Mathlib.
   nonzero eigenvalues.
 -/
 
+```
 
-=== QuantumInfo/ForMathlib/ContinuousSup.lean ===
+## `QuantumInfo/ForMathlib/ContinuousSup.lean`
+
+```
 public import Mathlib.Algebra.Order.Star.Real
+```
 
-=== QuantumInfo/ForMathlib/HayataGroup/TraceInequality/BlockDiagonal.lean ===
+## `QuantumInfo/ForMathlib/HayataGroup/TraceInequality/BlockDiagonal.lean`
+
+```
 
 /-!
 # `2 × 2` block operators on a Hilbert sum
@@ -27696,12 +28899,18 @@ block-diagonal operator `diag(A, B)` on the Hilbert sum. -/
       simp [blockDiagonal, hsumProj, hsumIncl, hsumEquiv, add_apply]
     erw [inner_add_left, hz0, hz1]
     erw [inner_add_left, hz0, hz1]
+```
 
-=== QuantumInfo/ForMathlib/HayataGroup/TraceInequality/GeneralizedPerspectiveFunction.lean ===
+## `QuantumInfo/ForMathlib/HayataGroup/TraceInequality/GeneralizedPerspectiveFunction.lean`
+
+```
       exact (hfconc (K := K))
       exact (hfconc (K := K))
+```
 
-=== QuantumInfo/ForMathlib/HayataGroup/TraceInequality/HilbertSchmidtOperatorSpace.lean ===
+## `QuantumInfo/ForMathlib/HayataGroup/TraceInequality/HilbertSchmidtOperatorSpace.lean`
+
+```
     exact
 omit [CompleteSpace ℋ] in
 omit [CompleteSpace ℋ] in
@@ -27709,23 +28918,35 @@ omit [CompleteSpace ℋ] in
     exact
   exact hmap
     exact
+```
 
-=== QuantumInfo/ForMathlib/HayataGroup/TraceInequality/JensenOperatorInequality.lean ===
+## `QuantumInfo/ForMathlib/HayataGroup/TraceInequality/JensenOperatorInequality.lean`
+
+```
 omit [CompleteSpace ℋ] in
+```
 
-=== QuantumInfo/ForMathlib/HayataGroup/TraceInequality/JensenOperatorInequalityIImpIV.lean ===
+## `QuantumInfo/ForMathlib/HayataGroup/TraceInequality/JensenOperatorInequalityIImpIV.lean`
+
+```
     simp only [blockOp, add_apply, ContinuousLinearMap.comp_apply,
 omit [CompleteSpace ℋ] in
 omit [CompleteSpace ℋ] in
 omit [CompleteSpace ℋ] in
 omit [CompleteSpace ℋ] in
 omit [CompleteSpace ℋ] in
+```
 
-=== QuantumInfo/ForMathlib/HayataGroup/TraceInequality/JensenOperatorInequalityIVtoV.lean ===
+## `QuantumInfo/ForMathlib/HayataGroup/TraceInequality/JensenOperatorInequalityIVtoV.lean`
+
+```
 omit [CompleteSpace ℋ] in
 omit [Nontrivial ℋ] [CompleteSpace ℋ] in
+```
 
-=== QuantumInfo/ForMathlib/HayataGroup/TraceInequality/LiebAndoTrace.lean ===
+## `QuantumInfo/ForMathlib/HayataGroup/TraceInequality/LiebAndoTrace.lean`
+
+```
 omit [Nontrivial ℋ] [CompleteSpace ℋ] in
             exact congrArg (fun X => X * (1 : L ℋ)) hcomm.symm
     have h1 := (mul_add (toOp T) B (-A)).symm
@@ -27733,8 +28954,11 @@ omit [Nontrivial ℋ] [CompleteSpace ℋ] in
     exact h1
   exact
   exact
+```
 
-=== QuantumInfo/ForMathlib/HayataGroup/TraceInequality/LownerHeinzCore.lean ===
+## `QuantumInfo/ForMathlib/HayataGroup/TraceInequality/LownerHeinzCore.lean`
+
+```
       exact hp.1
       exact hp.2
   exact (CFC.nnrpow_eq_rpow (A := 𝓐) (a := A) (x := q) hq0)
@@ -27744,8 +28968,11 @@ omit [Nontrivial ℋ] [CompleteSpace ℋ] in
       exact_mod_cast sub_pos.mpr hp.1
       exact this
     norm_cast
+```
 
-=== QuantumInfo/ForMathlib/HayataGroup/TraceInequality/LownerHeinzTheorem.lean ===
+## `QuantumInfo/ForMathlib/HayataGroup/TraceInequality/LownerHeinzTheorem.lean`
+
+```
   exact (LownerHeinzCore.one_div_operatorAntitoneOn_Ioi (𝓐 := L ℋ))
   exact (LownerHeinzCore.one_div_operatorConvexOn_Ioi (𝓐 := L ℋ))
   exact (LownerHeinzCore.one_div_add_t_operatorAntitoneOn_Ici (𝓐 := L ℋ) t ht)
@@ -27757,14 +28984,20 @@ omit [Nontrivial ℋ] [CompleteSpace ℋ] in
   exact (LownerHeinzCore.power_Icc_one_two_operatorConvexOn_Ici (𝓐 := L ℋ) p hp)
   exact (LownerHeinzCore.power_Icc_neg_one_zero_neg_operatorMonotoneOn_Ioi (𝓐 := L ℋ) p hp)
   exact (LownerHeinzCore.power_Icc_neg_one_zero_neg_operatorConcaveOn_Ioi (𝓐 := L ℋ) p hp)
+```
 
-=== QuantumInfo/ForMathlib/HermitianMat/Basic.lean ===
+## `QuantumInfo/ForMathlib/HermitianMat/Basic.lean`
+
+```
   coe_injective _ _ h := HermitianMat.ext h
   apply AddSubgroup.val_finsetSum
   Matrix.isSymmetric_toEuclideanLin_iff.symm.mp A.H
   convert! ContinuousLinearMap.orthogonal_range A.lin
+```
 
-=== QuantumInfo/ForMathlib/HermitianMat/CFC.lean ===
+## `QuantumInfo/ForMathlib/HermitianMat/CFC.lean`
+
+```
   apply continuous_finsetSum _
   -- Let `M = ‖A₀‖ + 1`. For `B` with `‖B - A₀‖ < 1` we get `‖B‖ ≤ M`, so `σ(B) ⊆ closedBall 0 M`.
   obtain ⟨M, hM⟩ : ∃ M : ℝ, ∀ B : HermitianMat d ℂ, ‖B - A₀‖ < 1 →
@@ -27826,8 +29059,11 @@ omit [Nontrivial ℋ] [CompleteSpace ℋ] in
         le_of_lt;
     convert! h1 using 1
   convert! congr_arg ( fun y => ∑ j, x.ofLp j * y j ) h_cfc_def using 1
+```
 
-=== QuantumInfo/ForMathlib/HermitianMat/Inner.lean ===
+## `QuantumInfo/ForMathlib/HermitianMat/Inner.lean`
+
+```
   convert! (Matrix.trace_conjTranspose (A.mat * B.mat)).symm using 1
   -- The kernel inclusion `range ≤ ker` says `(toEuclideanLin B) ∘ (toEuclideanLin A) = 0`, i.e.
   -- `B * A = 0`, which by Hermitianness of `A` and `B` is `A * B = 0`.
@@ -27901,8 +29137,11 @@ omit [Nontrivial ℋ] [CompleteSpace ℋ] in
       simp only [RCLike.ofReal_eq_complex_ofReal]; ring
   rw [inner_eq_re_trace, key, Matrix.trace_mul_cycle, hUU, one_mul, hC_trace]
   exact Complex.ofReal_re _
+```
 
-=== QuantumInfo/ForMathlib/HermitianMat/LiebConcavity.lean ===
+## `QuantumInfo/ForMathlib/HermitianMat/LiebConcavity.lean`
+
+```
 public import QuantumInfo.ForMathlib.HermitianMat.Schatten
     constructor
     · intro h x
@@ -27916,8 +29155,11 @@ set_option synthInstance.maxHeartbeats 80000 in
 omit [Fintype d] in
 omit [Fintype d] in
   convert! h_joint_concave (Φ_mem_pdSet σ₁ hσ₁) (Φ_mem_pdSet σ₂ hσ₂)
+```
 
-=== QuantumInfo/ForMathlib/HermitianMat/LogExp.lean ===
+## `QuantumInfo/ForMathlib/HermitianMat/LogExp.lean`
+
+```
   convert! A.H.log_smul_of_ne_zero hx
     simp_all only [sub_nonneg]
     exact h
@@ -27926,12 +29168,18 @@ omit [Fintype d] in
   exact ⟨1, fun T hT => by exact logApprox_mono hA hB hAB T ( zero_lt_one.trans_le hT )⟩
       convert! hA.add_posSemidef _ using 1
   convert! h_integral_mono using 1;
+```
 
-=== QuantumInfo/ForMathlib/HermitianMat/Order.lean ===
+## `QuantumInfo/ForMathlib/HermitianMat/Order.lean`
+
+```
       simp [Matrix.smul_mulVec, hv]
   exact
+```
 
-=== QuantumInfo/ForMathlib/HermitianMat/Peierls.lean ===
+## `QuantumInfo/ForMathlib/HermitianMat/Peierls.lean`
+
+```
       convert! hg.map_sum_le _ _ _ <;> simp_all [mul_comm]
     convert! Finset.sum_le_sum fun i _ => h_jensen i using 1
       convert! hg.map_sum_le _ _ _
@@ -27942,8 +29190,11 @@ omit [Fintype d] in
   have h1 := h_sum.trans
   simp_all only
   exact h1
+```
 
-=== QuantumInfo/ForMathlib/HermitianMat/Proj.lean ===
+## `QuantumInfo/ForMathlib/HermitianMat/Proj.lean`
+
+```
   let P := S.subtypeL.comp S.orthogonalProjectionOnto
     have h1 := S.inner_starProjection_left_eq_right (EuclideanSpace.single i 1) (EuclideanSpace.single j 1)
     simp_all [EuclideanSpace.inner_single_right, EuclideanSpace.inner_single_left]
@@ -27959,11 +29210,17 @@ omit [Fintype d] in
     convert! h_proj using 3
   convert! congr_arg ( fun x : EuclideanSpace ( _ ) n => x i ) ( h_proj j ) using 1
     convert! projector_eq_sum_rankOne _ b using 1
+```
 
-=== QuantumInfo/ForMathlib/HermitianMat/Reindex.lean ===
+## `QuantumInfo/ForMathlib/HermitianMat/Reindex.lean`
+
+```
   ext1; simp
+```
 
-=== QuantumInfo/ForMathlib/HermitianMat/Rpow.lean ===
+## `QuantumInfo/ForMathlib/HermitianMat/Rpow.lean`
+
+```
 public import QuantumInfo.ForMathlib.HermitianMat.LogExp
   convert! cfc_pos_of_pos hA _ _
   convert! congr_fun ( congr_fun h_inv_def i ) j using 1
@@ -27983,22 +29240,31 @@ public import QuantumInfo.ForMathlib.HermitianMat.LogExp
             exact hprod.trans hrpow.symm
             rw [intervalIntegral.integral_finsetSum]
     (tendsto_finsetSum Finset.univ fun i _ =>
+```
 
-=== QuantumInfo/ForMathlib/HermitianMat/Schatten.lean ===
+## `QuantumInfo/ForMathlib/HermitianMat/Schatten.lean`
+
+```
   convert! congr_arg (· ^ (1 / p)) _ using 1
   convert! congr_arg _ (A.cfc_sq_rpow_eq_cfc_rpow hA p hp.le) using 1
   convert! rfl
   convert! (A ^ 2).mat_cfc (· ^ (p / 2))
     convert! Finset.sum_nonneg fun i _ => h_nonneg i using 1;
   convert! Finset.sum_le_sum fun i _ => Finset.sum_le_sum fun j _ => mul_le_mul_of_nonneg_right ( h_schatten i j ) ( show 0 ≤ ‖(A.H.eigenvectorUnitary.val.conjTranspose * B.H.eigenvectorUnitary.val) i j‖ ^ 2 by positivity ) using 1;
+```
 
-=== QuantumInfo/ForMathlib/HermitianMat/Trace.lean ===
+## `QuantumInfo/ForMathlib/HermitianMat/Trace.lean`
+
+```
 set_option linter.overlappingInstances false in
 set_option linter.overlappingInstances false in
 set_option linter.overlappingInstances false in
   convert! congrArg RCLike.re A.H.sum_eigenvalues_eq_trace
+```
 
-=== QuantumInfo/ForMathlib/IsMaximalSelfAdjoint.lean ===
+## `QuantumInfo/ForMathlib/IsMaximalSelfAdjoint.lean`
+
+```
 /-!
 # Maximal self-adjoint subrings
 
@@ -28021,8 +29287,11 @@ instance instTrivialStar_IsMaximalSelfAdjoint {R} [Star R] [TrivialStar R] [Comm
     IsMaximalSelfAdjoint R R where
 theorem trivial_selfadjMap {R} [Star R] [TrivialStar R] [CommSemiring R] :
     (selfadjMap : R →+ R) = .id R := by
+```
 
-=== QuantumInfo/ForMathlib/Isometry.lean ===
+## `QuantumInfo/ForMathlib/Isometry.lean`
+
+```
     convert! h_perm_ortho using 2;
   have h1 := cfc_conj_unitary (A := A) f u⁻¹
   simp_all only [inv_inv]
@@ -28044,8 +29313,11 @@ theorem trivial_selfadjMap {R} [Star R] [TrivialStar R] [CommSemiring R] :
     simp [Matrix.mulVec, dotProduct ];
   · convert! Matrix.SharedEigenbasis.star_shared_mul_A_mul_IsDiag hA hB hAB
   · convert! Matrix.SharedEigenbasis.star_shared_mul_B_mul_IsDiag hA hB hAB
+```
 
-=== QuantumInfo/ForMathlib/LimSupInf.lean ===
+## `QuantumInfo/ForMathlib/LimSupInf.lean`
+
+```
 public import Mathlib.Algebra.Order.Star.Real
     simp only [Filter.eventually_atTop, sSup_le_iff, Set.mem_setOf_eq, forall_exists_index] at hf
     · exact ⟨ 0, ⟨ 0, fun _ _ => zero_le ⟩ ⟩;
@@ -28060,8 +29332,11 @@ public import Mathlib.Algebra.Order.Star.Real
       · simp_all only [gt_iff_lt, Filter.eventually_atTop]
   simp only [Filter.limsup_eq, Filter.eventually_atTop, le_sInf_iff, Set.mem_setOf_eq,
     forall_exists_index]
+```
 
-=== QuantumInfo/ForMathlib/LinearEquiv.lean ===
+## `QuantumInfo/ForMathlib/LinearEquiv.lean`
+
+```
 /-!
 # Relabelling linear equivalences
 
@@ -28094,8 +29369,11 @@ function along an index equivalence `e : d ≃ d₂`. This is the linear-equival
 coordinates of a vector along an index equivalence `e : d ≃ d₂`. This is the `EuclideanSpace`
 analogue of `LinearEquiv.of_relabel`, obtained by transporting it across the `WithLp`
 identifications. -/
+```
 
-=== QuantumInfo/ForMathlib/Majorization.lean ===
+## `QuantumInfo/ForMathlib/Majorization.lean`
+
+```
     exact h_det_zero
     show Uᴴ * U = 1 by exact Matrix.mem_unitaryGroup_iff'.mp hU]
           exact fun n i => rfl
@@ -28103,8 +29381,11 @@ identifications. -/
     convert! eigenvalue_le_singularValuesSorted_sq A h i using 1
     norm_num [Real.finsetProd_rpow _ _ fun i _ => hx_nn _,
               Real.finsetProd_rpow _ _ fun i _ => hy_nn _]
+```
 
-=== QuantumInfo/ForMathlib/Matrix.lean ===
+## `QuantumInfo/ForMathlib/Matrix.lean`
+
+```
     convert! congrFun (h₂ (Pi.single j 1)) i using 1
   rw [isSymmetric_toEuclideanLin_iff.symm] at hA hB
   convert! (Fintype.sum_prod_type_right _).symm
@@ -28125,25 +29406,37 @@ identifications. -/
     obtain ⟨a, ha, b, hb, hx_eq⟩ := spectrum_prod_complex hA hB x (by exact hx);
     convert! Finset.sum_nonneg fun i _ => h_sum_nonneg i;
     convert! h
+```
 
-=== QuantumInfo/ForMathlib/MatrixNorm/TraceNorm.lean ===
+## `QuantumInfo/ForMathlib/MatrixNorm/TraceNorm.lean`
+
+```
     rw [conjTranspose_smul, RCLike.star_def, Matrix.mul_smul, smul_mul, smul_smul]
     have h1 := b.sum_inner_mul_inner (EuclideanSpace.single i 1) (EuclideanSpace.single j 1)
     simp_all [inner]
     exact h1⟩
+```
 
-=== QuantumInfo/ForMathlib/Minimax.lean ===
+## `QuantumInfo/ForMathlib/Minimax.lean`
+
+```
 public import Mathlib.Topology.Algebra.Module.Spaces.ContinuousLinearMap
 public import QuantumInfo.ForMathlib.SionMinimax
       refine continuous_finsetSum _ fun i _ ↦ .mul (by fun_prop) ?_;
+```
 
-=== QuantumInfo/ForMathlib/Misc.lean ===
+## `QuantumInfo/ForMathlib/Misc.lean`
+
+```
         simp_all [ eq_comm ]
         exact a
         Equiv.sigmaFiberEquiv_apply]
   exact ⟨ e'.trans σ, by simp_all [ Function.comp ]; grind⟩
+```
 
-=== QuantumInfo/ForMathlib/SionMinimax.lean ===
+## `QuantumInfo/ForMathlib/SionMinimax.lean`
+
+```
       simp only [Subtype.forall, Set.mem_sdiff, Set.mem_inter_iff, and_imp]
       simp_all [Set.range]
       exact hf
@@ -28155,8 +29448,11 @@ public import QuantumInfo.ForMathlib.SionMinimax
         convert! (hfc₂ yₙ hyₙ).bddBelow hS₁
           convert! (hfc₂ yₙ hyₙ).bddBelow hS₁
         convert! (hfc₂ y₀' y₀'.2).bddBelow hS₁
+```
 
-=== QuantumInfo/ForMathlib/ULift.lean ===
+## `QuantumInfo/ForMathlib/ULift.lean`
+
+```
 /-!
 # Typeclass instances for `ULift`
 
@@ -28168,11 +29464,17 @@ and `RCLike` structures, together with the corresponding `simp` lemmas relating 
 
 instance ULift.instInvolutiveStar {𝕜 : Type u} [InvolutiveStar 𝕜] :
     InvolutiveStar (ULift.{v,u} 𝕜) where
+```
 
-=== QuantumInfo/Measurements/POVM.lean ===
+## `QuantumInfo/Measurements/POVM.lean`
+
+```
   convert! Λ.measurementMap_apply_matrix m.mat
+```
 
-=== QuantumInfo/Operators/Unitary.lean ===
+## `QuantumInfo/Operators/Unitary.lean`
+
+```
 This file is intended for lemmas about unitary matrices (`Matrix.unitaryGroup`) and how they
 apply to `Bra`s, `Ket`s, and `MState` mixed states.
 /-- The **No-cloning theorem**, saying that if states `ψ` and `φ` can both be perfectly cloned
@@ -28185,15 +29487,21 @@ states can be simultaneously cloned. -/
   have h2 : (⟪pure (ψ ⊗ᵠ ψ), pure (φ ⊗ᵠ φ)⟫_Prob : ℝ) =
       ⟪U ◃ pure (ψ ⊗ᵠ f), U ◃ pure (φ ⊗ᵠ f)⟫_Prob := by
     convert! ← h2
+```
 
-=== QuantumInfo/ResourceTheory/FreeState.lean ===
+## `QuantumInfo/ResourceTheory/FreeState.lean`
+
+```
   convert! h₂
   convert! ← hm₁
   · simp only [ht₁, relabel_cast_isFree]
     exact free_prod hσ₂f hσ₃f
     exact qRelEntropy_heq_congr ht (statePow_add ρ m n) (by rw [MState.relabel_cast]; exact cast_heq _ _)
+```
 
-=== QuantumInfo/ResourceTheory/HypothesisTesting.lean ===
+## `QuantumInfo/ResourceTheory/HypothesisTesting.lean`
+
+```
       convert! h with T
   push Not at h
   simp at h
@@ -28221,8 +29529,11 @@ states can be simultaneously cloned. -/
   simp only [← coe_le_coe, NNReal.coe_add, NNReal.coe_div, NNReal.coe_mul]
   simp [toReal]
     simp only [sub_add_cancel]
+```
 
-=== QuantumInfo/ResourceTheory/SteinsLemma.lean ===
+## `QuantumInfo/ResourceTheory/SteinsLemma.lean`
+
+```
 public import QuantumInfo.ForMathlib.LimSupInf
 public import QuantumInfo.ResourceTheory.FreeState
 public import QuantumInfo.ResourceTheory.HypothesisTesting
@@ -28264,8 +29575,11 @@ public import QuantumInfo.ResourceTheory.HypothesisTesting
           change (1 - ε' : ℝ) < 1
           simp [hε'.1]
         convert! h 0; simp
+```
 
-=== QuantumInfo/States/Ensemble.lean ===
+## `QuantumInfo/States/Ensemble.lean`
+
+```
 abbrev MEnsemble.states : MEnsemble d α → (α → MState d) := ProbDistribution.RandVar.var
 abbrev PEnsemble.states : PEnsemble d α → (α → Ket d) := ProbDistribution.RandVar.var
   apply AddSubgroup.val_finsetSum -- *laughs in defeq*
@@ -28273,8 +29587,11 @@ abbrev PEnsemble.states : PEnsemble d α → (α → Ket d) := ProbDistribution.
       forall_const]
     exact hne0
   convert! (spectral_decomposition_sum ρ.Hermitian) using 1
+```
 
-=== QuantumInfo/States/Entanglement.lean ===
+## `QuantumInfo/States/Entanglement.lean`
+
+```
     · simp only [pure_average_NNReal, Fin.isValue, ← NNReal.coe_le_coe]
       conv_lhs =>
         enter [1, 1]
@@ -28292,8 +29609,11 @@ abbrev PEnsemble.states : PEnsemble d α → (α → Ket d) := ProbDistribution.
     rfl
   convert! h_partial_trace i j
   simp [traceRight_pure_MES]
+```
 
-=== QuantumInfo/States/Mixed/MState.lean ===
+## `QuantumInfo/States/Mixed/MState.lean`
+
+```
 /-- An MState is a witness that d is nonempty. -/
 @[implicit_reducible]
 def nonempty : Nonempty d := by
@@ -28334,11 +29654,17 @@ def nonempty : Nonempty d := by
   exact Finset.sum_comm
   convert! ρ.SWAP.assoc.SWAP.traceRight_assoc
 theorem traceNorm_eq_one (ρ : MState d) : ρ.m.traceNorm = 1 :=
+```
 
-=== QuantumInfo/States/Mixed/TraceDistance.lean ===
+## `QuantumInfo/States/Mixed/TraceDistance.lean`
+
+```
     ρ.traceNorm_eq_one, σ.traceNorm_eq_one] at htri ⊢
+```
 
-=== QuantumInfo/States/Pure/Braket.lean ===
+## `QuantumInfo/States/Pure/Braket.lean`
+
+```
   coe_injective _ _ h := by rwa [Ket.mk.injEq]
   coe_injective _ _ h := by rwa [Bra.mk.injEq]
   ⟨conj ψ, by simp_all; exact ψ.2⟩
@@ -28346,11 +29672,17 @@ theorem traceNorm_eq_one (ρ : MState d) : ρ.m.traceNorm = 1 :=
   coe_injective x y h := by
   rw [EuclideanSpace.norm_eq]; convert! Real.sqrt_one
   simp only [ketToEuclidean]; convert! ψ.normalized'
+```
 
-=== QuantumInfo/States/Pure/Qubit.lean ===
+## `QuantumInfo/States/Pure/Qubit.lean`
+
+```
     convert! this
+```
 
-=== README.md ===
+## `README.md`
+
+```
 [![](https://img.shields.io/badge/Lean-v4.31.0-blue)](https://github.com/leanprover/lean4/releases/tag/v4.31.0)
 ## PhyslibAlpha
 
@@ -28358,8 +29690,11 @@ PhyslibAlpha sits downstream of `./Physlib` (within the same repository). The co
 
 Because of the lower-review bar for PhyslibAlpha we cannot promise to maintain contributions when they break — we will simply record when this happens.
 
+```
 
-=== docs/references.bib ===
+## `docs/references.bib`
+
+```
 
 @Book{        Reed1972,
   author    = {Reed, Michael and Simon, Barry},
@@ -28383,8 +29718,11 @@ Because of the lower-review bar for PhyslibAlpha we cannot promise to maintain c
   isbn      = {978-94-007-4753-1},
   doi       = {10.1007/978-94-007-4753-1}
 }
+```
 
-=== lake-manifest.json ===
+## `lake-manifest.json`
+
+```
 {"version": "1.2.0",
    "rev": "fabf563a7c95a166b8d7b6efca11c8b4dc9d911f",
    "inputRev": "v4.31.0",
@@ -28412,8 +29750,11 @@ Because of the lower-review bar for PhyslibAlpha we cannot promise to maintain c
    "rev": "a2e430a4c9d3ad24078b8581fe0162fc5b0c9a6c",
  "lakeDir": ".lake",
  "fixedToolchain": false}
+```
 
-=== lakefile.toml ===
+## `lakefile.toml`
+
+```
 name = "Physlib"
 defaultTargets = ["Physlib", "QuantumInfo"]
 
@@ -28539,11 +29880,17 @@ srcDir = "scripts"
 [[lean_exe]]
 name = "no_docs"
 srcDir = "scripts/MetaPrograms"
+```
 
-=== lean-toolchain ===
+## `lean-toolchain`
+
+```
 leanprover/lean4:v4.31.0
+```
 
-=== scripts/LinterExemption.txt ===
+## `scripts/LinterExemption.txt`
+
+```
 QuantumInfo/Capacity/Capacity.lean
 QuantumInfo/Capacity/Capacity_doc.lean
 QuantumInfo/Channels/Bundled.lean
@@ -28621,8 +29968,11 @@ QuantumInfo/States/Pure/BargmannInvariant.lean
 QuantumInfo/States/Pure/BlochSphere.lean
 QuantumInfo/States/Pure/Braket.lean
 QuantumInfo/States/Pure/Qubit.lean
+```
 
-=== scripts/MetaPrograms/TODO_to_yml.lean ===
+## `scripts/MetaPrograms/TODO‗to‗yml.lean`
+
+```
   | PhyslibAlpha
   | PhyslibAlpha => "Physlib Alpha"
   | PhyslibAlpha => "🧪"
@@ -28646,18 +29996,30 @@ QuantumInfo/States/Pure/Qubit.lean
     PhyslibCategory.PhyslibAlpha
   Lean.enableInitializersExecution
   let env ← importModules (loadExts := true) #[`Physlib, `QuantumInfo, `PhyslibAlpha] {} 0
+```
 
-=== scripts/MetaPrograms/check_dup_tags.lean ===
+## `scripts/MetaPrograms/check‗dup‗tags.lean`
+
+```
   Lean.enableInitializersExecution
   let env ← importModules (loadExts := true) #[`Physlib, `QuantumInfo] {} 0
+```
 
-=== scripts/MetaPrograms/informal.lean ===
+## `scripts/MetaPrograms/informal.lean`
+
+```
   Lean.enableInitializersExecution
+```
 
-=== scripts/MetaPrograms/local_stats.lean ===
+## `scripts/MetaPrograms/local‗stats.lean`
+
+```
   Lean.enableInitializersExecution
+```
 
-=== scripts/MetaPrograms/module_doc_lint.lean ===
+## `scripts/MetaPrograms/module‗doc‗lint.lean`
+
+```
 /-- The array of modules exempt from all linters, read from `scripts/LinterExemption.txt`.
   This is used to lint `QuantumInfo` file-by-file. -/
 def linterExemptions : IO (Array FilePath) := do
@@ -28676,14 +30038,23 @@ def main (_ : List String) : IO UInt32 := do
   let filePaths := (← importedFilePaths `Physlib) ++ (← importedFilePaths `QuantumInfo)
   let exemptions ← linterExemptions
   let modulesToCheck := filePaths.filter (fun p ↦ !noLint.contains p ∧ !exemptions.contains p)
+```
 
-=== scripts/MetaPrograms/notes.lean ===
+## `scripts/MetaPrograms/notes.lean`
+
+```
   Lean.enableInitializersExecution
+```
 
-=== scripts/MetaPrograms/redundant_imports.lean ===
+## `scripts/MetaPrograms/redundant‗imports.lean`
+
+```
   Lean.enableInitializersExecution
+```
 
-=== scripts/MetaPrograms/runPhyslibLinters.lean ===
+## `scripts/MetaPrograms/runPhyslibLinters.lean`
+
+```
 /-- The file paths of modules exempt from all linters, read from `scripts/LinterExemption.txt`.
   This is used to lint `QuantumInfo` file-by-file. -/
 def linterExemptions : IO (Array String) := do
@@ -28720,14 +30091,23 @@ unsafe def runLinterOnModule (module : Name) (exemptions : Array String) : IO Bo
     IO.Process.exit 1
   else
     IO.Process.exit 0
+```
 
-=== scripts/MetaPrograms/sorry_lint.lean ===
+## `scripts/MetaPrograms/sorry‗lint.lean`
+
+```
   Lean.enableInitializersExecution
+```
 
-=== scripts/MetaPrograms/spelling.lean ===
+## `scripts/MetaPrograms/spelling.lean`
+
+```
   Lean.enableInitializersExecution
+```
 
-=== scripts/MetaPrograms/spellingWords.txt ===
+## `scripts/MetaPrograms/spellingWords.txt`
+
+```
 DualLeftHandedWeyl
 DualRightHandedWeyl
 comoving
@@ -28754,8 +30134,11 @@ eternal
 fluid
 qualitative
 singularity
+```
 
-=== scripts/MetaPrograms/style_lint.lean ===
+## `scripts/MetaPrograms/style‗lint.lean`
+
+```
     if String.contains l.trimAsciiStart.copy "  " then
     if l.length > 100 ∧ ¬ String.contains l "http" then
     if String.contains l s then
@@ -28778,8 +30161,11 @@ def main (_ : List String) : IO UInt32 := do
   let filePaths := (← importedFilePaths `Physlib) ++ (← importedFilePaths `QuantumInfo)
   let exemptions ← linterExemptions
   let filePaths := filePaths.filter (fun p ↦ !exemptions.contains p.toString)
+```
 
-=== scripts/PhyslibAlpha/README.md ===
+## `scripts/PhyslibAlpha/README.md`
+
+````
 # Meta programs for PhyslibAlpha
 
 As well as passing a one-look review, code in PhyslibAlpha has to pass a number of linters
@@ -28816,8 +30202,11 @@ This checks that no file in `./Physlib` or `./QuantumInfo` imports a file from `
 ./scripts/PhyslibAlpha/alphaPythonLinters.sh
 ```
 Checks things like line length, `simp`s which are not `simp only` or final tactics.
+````
 
-=== scripts/PhyslibAlpha/alphaFileImports.py ===
+## `scripts/PhyslibAlpha/alphaFileImports.py`
+
+```
 #!/usr/bin/env python3
 
 import os
@@ -28875,8 +30264,11 @@ def main():
 if __name__ == "__main__":
     success = main()
     exit(0 if success else 1)
+```
 
-=== scripts/PhyslibAlpha/alphaPythonLinters.sh ===
+## `scripts/PhyslibAlpha/alphaPythonLinters.sh`
+
+```
 #!/usr/bin/env bash
 
 set -exo pipefail
@@ -28914,8 +30306,11 @@ if [ -n "${ignore_case_clashes}" ]; then
 Please, make sure to avoid such clashes!\n' "${ignore_case_clashes}"
 	exit 1
 fi
+```
 
-=== scripts/PhyslibAlpha/noAlphaImports.py ===
+## `scripts/PhyslibAlpha/noAlphaImports.py`
+
+```
 #!/usr/bin/env python3
 """
 This module validates that no files in the Physlib and QuantumInfo directories
@@ -28962,8 +30357,11 @@ def check_no_alpha_imports():
 if __name__ == '__main__':
     success = check_no_alpha_imports()
     sys.exit(0 if success else 1)
+```
 
-=== scripts/PhyslibAlpha/runPhyslibAlphaLinters.lean ===
+## `scripts/PhyslibAlpha/runPhyslibAlphaLinters.lean`
+
+```
 import Batteries.Tactic.Lint
 import Batteries.Data.Array.Basic
 import Lake.CLI.Main
@@ -29030,11 +30428,17 @@ unsafe def runLinterOnModule  (module : Name): IO Unit := do
 unsafe def main (_ : List String) : IO Unit := do
   let modulesToLint := #[`PhyslibAlpha]
   modulesToLint.forM <| runLinterOnModule
+```
 
-=== scripts/README.md ===
+## `scripts/README.md`
+
+```
   - step 3: Checks all files are imported to `Physlib.lean`.
+```
 
-=== scripts/check_file_imports.lean ===
+## `scripts/check‗file‗imports.lean`
+
+```
       -- Only `.lean` files correspond to modules; skip any other files (e.g. an
       -- `API-map.yaml` sitting at the top of an API directory).
       if entry.path.extension == some "lean" then
@@ -29043,8 +30447,11 @@ unsafe def main (_ : List String) : IO Unit := do
         r := r.push (root.mkStr mod)
       else if top.path.extension == some "lean" then
         needed := needed.push root
+```
 
-=== scripts/dag_traversal.py ===
+## `scripts/dag‗traversal.py`
+
+```
 #!/usr/bin/env python3
 """
 Reusable parallel DAG traversal for Lean import graphs.
@@ -29991,8 +31398,11 @@ def _cli_main():
 
 if __name__ == "__main__":
     _cli_main()
+```
 
-=== scripts/lint-style.sh ===
+## `scripts/lint-style.sh`
+
+```
 touch scripts/LinterExemption.txt
 
 # Lint all Lean files in `Physlib` and `QuantumInfo`, except those listed (one path per line)
@@ -30001,12 +31411,18 @@ touch scripts/LinterExemption.txt
 git ls-files 'Physlib/*.lean' 'QuantumInfo/*.lean' \
 	| grep -vxF -f scripts/LinterExemption.txt \
 	| xargs ./scripts/lint-style.py "$@"
+```
 
-=== scripts/openAI_doc_check.lean ===
+## `scripts/openAI‗doc‗check.lean`
+
+```
 unsafe def main (args : List String) : IO UInt32 := do
   Lean.enableInitializersExecution
+```
 
-=== scripts/rm_set_option.py ===
+## `scripts/rm‗set‗option.py`
+
+```
 #!/usr/bin/env python3
 """
 Remove unnecessary `set_option ... false in` from a Lean project.
@@ -30577,8 +31993,11 @@ def main():
 
 if __name__ == "__main__":
     main()
+```
 
-=== scripts/set_option_utils.py ===
+## `scripts/set‗option‗utils.py`
+
+```
 #!/usr/bin/env python3
 """Shared configuration and helpers for set_option scripts."""
 
@@ -30648,6 +32067,10 @@ def lake_build_with_progress(project_dir: Path) -> tuple[int, str]:
     proc.wait()
     print()  # newline after progress
     return proc.returncode, "".join(output_lines)
+```
 
-=== scripts/stats.lean ===
+## `scripts/stats.lean`
+
+```
   Lean.enableInitializersExecution
+```

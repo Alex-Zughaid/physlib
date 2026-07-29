@@ -15,7 +15,7 @@
       "rht"
     ],
     "linesChanged": 2528,
-    "diffFile": "2026-01.diff"
+    "pdfFile": "2026-01.pdf"
   },
   {
     "month": "2026-02",
@@ -34,7 +34,7 @@
       "zhikaip"
     ],
     "linesChanged": 5775,
-    "diffFile": "2026-02.diff"
+    "pdfFile": "2026-02.pdf"
   },
   {
     "month": "2026-03",
@@ -53,7 +53,7 @@
       "zhikaip"
     ],
     "linesChanged": 40754,
-    "diffFile": "2026-03.diff"
+    "pdfFile": "2026-03.pdf"
   },
   {
     "month": "2026-04",
@@ -68,7 +68,7 @@
       "kastch"
     ],
     "linesChanged": 21396,
-    "diffFile": "2026-04.diff"
+    "pdfFile": "2026-04.pdf"
   },
   {
     "month": "2026-05",
@@ -91,7 +91,7 @@
       "wock"
     ],
     "linesChanged": 26295,
-    "diffFile": "2026-05.diff"
+    "pdfFile": "2026-05.pdf"
   },
   {
     "month": "2026-06",
@@ -126,7 +126,7 @@
       "kastch",
       "nateabr"
     ],
-    "linesChanged": 48391,
-    "diffFile": "2026-06.diff"
+    "linesChanged": 48505,
+    "pdfFile": "2026-06.pdf"
   }
 ]

@@ -1,11 +1,15 @@
 #!/usr/bin/env python3
 """
-Generates a monthly-diffs/<YYYY-MM>.diff plain-text file - every line added
-to every file between the start and end of the given month on
-leanprover-community/physlib's default branch, with diff syntax stripped
-(just the file path as a header, then the raw added lines) - plus an updated
-monthly-diffs/index.json summary (contributors, total lines changed, diff
-filename) consumed by the physlib-website "Monthly Updates" page.
+Generates monthly-diffs-doc/MonthlyDoc.lean - a Verso (Manual genre) document
+listing every line added to every file between the start and end of the
+given month on leanprover-community/physlib's default branch, one section
+per file - plus an updated monthly-diffs/index.json summary (contributors,
+total lines changed, PDF filename) consumed by the physlib-website "Monthly
+Updates" page.
+
+MonthlyDoc.lean is then built by scripts/build_monthly_pdf.sh, which runs
+Verso (emitting LaTeX) and lualatex (emitting the actual PDF) to produce
+monthly-diffs/<YYYY-MM>.pdf.
 
 Expects a git remote named "upstream" pointing at
 https://github.com/leanprover-community/physlib.git to already be fetched.
@@ -18,6 +22,7 @@ which is what the end-of-month scheduled workflow uses.
 """
 
 import json
+import os
 import subprocess
 import sys
 from datetime import date, datetime
@@ -26,6 +31,8 @@ from pathlib import Path
 REPO_ROOT = Path(__file__).resolve().parent.parent
 OUT_DIR = REPO_ROOT / "monthly-diffs"
 INDEX_PATH = OUT_DIR / "index.json"
+DOC_PROJECT_DIR = REPO_ROOT / "monthly-diffs-doc"
+DOC_SOURCE_PATH = DOC_PROJECT_DIR / "MonthlyDoc.lean"
 REF = "upstream/master"
 EMPTY_TREE = "4b825dc642cb6eb9a060e54bf8d69288fbee4904"  # sha of an empty git tree
 
@@ -92,17 +99,17 @@ SKIP_PREFIXES = (
 )
 
 
-def added_lines_only(diff: str) -> str:
+def added_lines_only(diff: str) -> list[tuple[str, str]]:
     """Strips diff syntax down to, per changed file, just the raw lines added
     between the two commits - no +/- markers, no hunk headers, no per-commit
-    breakdown."""
-    sections: list[str] = []
+    breakdown. Returns a list of (file path, added-lines content) pairs."""
+    sections: list[tuple[str, str]] = []
     current_file: str | None = None
     current_lines: list[str] = []
 
     def flush() -> None:
         if current_file and current_lines:
-            sections.append(f"=== {current_file} ===\n" + "\n".join(current_lines))
+            sections.append((current_file, "\n".join(current_lines)))
 
     for line in diff.splitlines():
         if line.startswith("diff --git "):
@@ -120,7 +127,44 @@ def added_lines_only(diff: str) -> str:
         elif line.startswith("+") and current_file:
             current_lines.append(line[1:])
     flush()
-    return "\n\n".join(sections) + "\n"
+    return sections
+
+
+def code_fence(content: str) -> str:
+    """A backtick fence at least one tick longer than the longest run of
+    backticks in content, so the content can never prematurely close it."""
+    longest = 0
+    run = 0
+    for ch in content:
+        run = run + 1 if ch == "`" else 0
+        longest = max(longest, run)
+    return "`" * max(3, longest + 1)
+
+
+def heading_safe(path: str) -> str:
+    """Verso's LaTeX backend doesn't escape a literal `_` used in a chapter/
+    section title (it hits a "moving argument" context that isn't wrapped in
+    a verbatim environment like body code is), so a raw underscore renders
+    as a LaTeX subscript instead of a literal character - and an unescaped
+    `_` outside a code span is a Verso parse error in the first place, since
+    `_..._` is its emphasis syntax. Swap in U+2017 DOUBLE LOW LINE: it's not
+    LaTeX-special, isn't Verso markup syntax, is present in the PDF's
+    monospace font, and reads as a normal underscore."""
+    return path.replace("_", "‗")
+
+
+def write_verso_doc(label: str, sections: list[tuple[str, str]]) -> None:
+    lines = ["import VersoManual", "", "open Verso.Genre Manual", "", f'#doc (Manual) "{label}" =>', "", "# Changes", ""]
+    for path, content in sections:
+        fence = code_fence(content)
+        lines.append(f"## `{heading_safe(path)}`")
+        lines.append("")
+        lines.append(fence)
+        lines.append(content)
+        lines.append(fence)
+        lines.append("")
+    DOC_PROJECT_DIR.mkdir(exist_ok=True)
+    DOC_SOURCE_PATH.write_text("\n".join(lines))
 
 
 def update_index(entry: dict) -> None:
@@ -145,11 +189,9 @@ def generate(year: int, month: int) -> None:
     end_commit = commit_before(until)
 
     total_lines = lines_changed(start_commit, end_commit)
-    diff = added_lines_only(git("diff", start_commit, end_commit))
+    sections = added_lines_only(git("diff", start_commit, end_commit))
 
-    OUT_DIR.mkdir(exist_ok=True)
-    diff_file = f"{month_key}.diff"
-    (OUT_DIR / diff_file).write_text(diff)
+    write_verso_doc(label, sections)
 
     update_index(
         {
@@ -157,10 +199,14 @@ def generate(year: int, month: int) -> None:
             "label": label,
             "contributors": people,
             "linesChanged": total_lines,
-            "diffFile": diff_file,
+            "pdfFile": f"{month_key}.pdf",
         }
     )
-    print(f"Generated {diff_file}: {len(people)} contributor(s), {total_lines} lines changed.")
+    print(
+        f"Wrote {DOC_SOURCE_PATH} for {label}: {len(people)} contributor(s), "
+        f"{total_lines} lines changed, {len(sections)} file(s) touched. "
+        f"Run scripts/build_monthly_pdf.sh {month_key} to render the PDF."
+    )
 
 
 if __name__ == "__main__":
@@ -168,4 +214,14 @@ if __name__ == "__main__":
         y, m = (int(x) for x in sys.argv[1].split("-"))
     else:
         y, m = previous_month(datetime.utcnow().date())
+
+    github_output = os.environ.get("GITHUB_OUTPUT")
+    if github_output:
+        # The CLI arg is only given for a manual workflow_dispatch run; on
+        # the scheduled run it's empty and "previous month" is computed
+        # above, so the workflow needs this to know which month it's
+        # actually building (for the PDF filename and commit message).
+        with open(github_output, "a") as f:
+            f.write(f"month={y:04d}-{m:02d}\n")
+
     generate(y, m)

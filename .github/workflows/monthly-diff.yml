@@ -1,7 +1,8 @@
-# Generates last month's commit diff + contributor/line-count summary for the
-# physlib-website "Monthly Updates" page (see monthly-diffs/ and
-# scripts/generate_monthly_diff.py). Runs on this fork so it can commit and
-# push the result with the default GITHUB_TOKEN.
+# Generates last month's added-lines PDF + contributor/line-count summary for
+# the physlib-website "Monthly Updates" page (see monthly-diffs/,
+# scripts/generate_monthly_diff.py, scripts/build_monthly_pdf.sh, and the
+# Verso doc project in monthly-diffs-doc/). Runs on this fork so it can
+# commit and push the result with the default GITHUB_TOKEN.
 
 name: Generate monthly diff
 
@@ -30,13 +31,61 @@ jobs:
           git remote add upstream https://github.com/leanprover-community/physlib.git
           git fetch upstream master
 
-      - name: Generate diff and update index
-        run: python3 scripts/generate_monthly_diff.py ${{ github.event.inputs.month }}
+      - name: Generate diff doc and update index
+        id: generate
+        run: |
+          python3 scripts/generate_monthly_diff.py ${{ github.event.inputs.month }}
+          if git diff --quiet -- monthly-diffs/index.json; then
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "changed=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      # Everything below only runs if there were actually commits to report -
+      # building Verso + a full TeX Live install is expensive, so skip it
+      # entirely on a no-op month rather than re-render stale content.
+
+      - name: Cache elan toolchain
+        if: steps.generate.outputs.changed == 'true'
+        uses: actions/cache@v4
+        with:
+          path: ~/.elan
+          key: elan-${{ hashFiles('monthly-diffs-doc/lean-toolchain') }}
+
+      - name: Install elan
+        if: steps.generate.outputs.changed == 'true'
+        run: |
+          set -o pipefail
+          curl https://raw.githubusercontent.com/leanprover/elan/master/elan-init.sh -sSf | sh -s -- --default-toolchain none -y
+          echo "$HOME/.elan/bin" >> $GITHUB_PATH
+
+      # The expensive part of the build is Verso itself and its dependencies
+      # (subverso, MD4Lean, plausible, illuminate) - our own MonthlyDoc.lean
+      # is tiny and rebuilds fast on top of a cached Verso build, so keying
+      # the cache on the lakefile/manifest/toolchain (not on MonthlyDoc.lean,
+      # which changes every run) is what we want.
+      - name: Cache Lake build (Verso + deps)
+        if: steps.generate.outputs.changed == 'true'
+        uses: actions/cache@v4
+        with:
+          path: monthly-diffs-doc/.lake
+          key: lake-${{ hashFiles('monthly-diffs-doc/lakefile.lean', 'monthly-diffs-doc/lake-manifest.json', 'monthly-diffs-doc/lean-toolchain') }}
+
+      - name: Install TeX Live (lualatex + fonts/packages Verso's output needs)
+        if: steps.generate.outputs.changed == 'true'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y texlive-full
+
+      - name: Build PDF
+        if: steps.generate.outputs.changed == 'true'
+        run: bash scripts/build_monthly_pdf.sh ${{ steps.generate.outputs.month }}
 
       - name: Commit and push
+        if: steps.generate.outputs.changed == 'true'
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add monthly-diffs/
-          git commit -m "Add monthly diff for ${{ github.event.inputs.month }}" || git commit -m "Add monthly diff" || echo "No changes to commit"
+          git add monthly-diffs/ monthly-diffs-doc/MonthlyDoc.lean monthly-diffs-doc/lake-manifest.json
+          git commit -m "Add monthly diff for ${{ steps.generate.outputs.month }}" || git commit -m "Add monthly diff" || echo "No changes to commit"
           git push
