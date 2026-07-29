@@ -1,0 +1,4101 @@
+commit 8970dc02205db77cf55c58b67b9f76bb35c5f20f
+Author: Nicola Bernini <NicolaBernini@users.noreply.github.com>
+Date:   Thu Jan 1 10:21:08 2026 +0100
+
+    feat: Adding 6VZTR (#872)
+
+diff --git a/PhysLean/Relativity/Tensors/Color/Basic.lean b/PhysLean/Relativity/Tensors/Color/Basic.lean
+index 5fe148ba..37bee803 100644
+--- a/PhysLean/Relativity/Tensors/Color/Basic.lean
++++ b/PhysLean/Relativity/Tensors/Color/Basic.lean
+@@ -470,13 +470,10 @@ lemma equivToIso_mkIso_inv {c1 c2 : X → C} (h : c1 = c2) :
+     Hom.toEquiv (mkIso h).inv = Equiv.refl _ := by
+   rfl
+ 
+-TODO "6VZTR" "In the definition equivToHomEq the tactic `try {simp; decide}; try decide`
+-  can probably be made more efficient."
+-
+ /-- The morphism from `mk c` to `mk c1` obtained by an equivalence and
+   an equality lemma. -/
+ def equivToHomEq {c : X → C} {c1 : Y → C} (e : X ≃ Y)
+-    (h : ∀ x, c1 x = (c ∘ e.symm) x := by try {simp; decide}; try decide) : mk c ⟶ mk c1 :=
++    (h : ∀ x, c1 x = (c ∘ e.symm) x := by simp; decide) : mk c ⟶ mk c1 :=
+   (equivToHom e) ≫ (mkIso (funext fun x => (h x).symm)).hom
+ 
+ @[simp]
+
+commit abb6b6d0812461cd0a04f50465aa6f1b3da52449
+Author: rht <rhtbot@protonmail.com>
+Date:   Thu Jan 1 04:21:52 2026 -0500
+
+    chore: Fix typo in non-Lean files found by codespell (#870)
+
+diff --git a/.codespellignore b/.codespellignore
+index 3ff26c20..35ba186f 100644
+--- a/.codespellignore
++++ b/.codespellignore
+@@ -1,4 +1,5 @@
+ digitalize
++Digitalising
+ statics
+ disjointness
+ lightYears
+diff --git a/README.md b/README.md
+index 2f1491e7..b768cf75 100644
+--- a/README.md
++++ b/README.md
+@@ -45,7 +45,7 @@ See the [Get Involved](https://physlean.com/GetInvolved.html) for more details.
+ 
+ 📣 tackle a [TODO item](https://physlean.com/TODOList),
+ 
+-📣 or, start formalizing an area that you find intresting.
++📣 or, start formalizing an area that you find interesting.
+ 
+ Feel free to come to the [PhysLean zulip](https://leanprover.zulipchat.com/#narrow/channel/479953-PhysLean/) to ask questions and advice.
+ 
+diff --git a/docs/_data/harmonicOscillator.yml b/docs/_data/harmonicOscillator.yml
+index 44fc6a8c..019b695b 100644
+--- a/docs/_data/harmonicOscillator.yml
++++ b/docs/_data/harmonicOscillator.yml
+@@ -502,8 +502,8 @@ parts:
+           haveI hi : CauSeq.IsComplete ℂ norm :=
+             inferInstanceAs (CauSeq.IsComplete ℂ Complex.abs)
+           exact CauSeq.tendsto_limit (Complex.exp' (Complex.I * c * y))
+-        /- End of rewritting the intergrand as a limit. -/
+-        /- Rewritting the integral as a limit using dominated_convergence -/
++        /- End of rewriting the intergrand as a limit. -/
++        /- Rewriting the integral as a limit using dominated_convergence -/
+         have h1' : Filter.Tendsto (fun n => ∫ y : ℝ, ∑ r ∈ range n,
+             (Complex.I * ↑c * ↑y) ^ r / r ! * (f y * Real.exp (- m * ω * y^2 / (2 * ℏ))))
+             Filter.atTop (nhds (∫ y : ℝ, Complex.exp (Complex.I * c * y) *
+diff --git a/scripts/treemap_gen.py b/scripts/treemap_gen.py
+index 076aac29..86086d56 100644
+--- a/scripts/treemap_gen.py
++++ b/scripts/treemap_gen.py
+@@ -14,9 +14,9 @@ folder_map = {folder: idx + 1 for idx, folder in enumerate(folders)}
+ #debugging
+ #print(folder_map)
+ 
+-##################################################### names that end with a "." are actually ending with .lean but lean is removed for visiblity
++##################################################### names that end with a "." are actually ending with .lean but lean is removed for visibility
+ 
+-#generating the tree for treemap, id has to be unique and is assigned the aboslute path, label is what is displayed, this is immediate file or folder name for visiblity
++#generating the tree for treemap, id has to be unique and is assigned the absolute path, label is what is displayed, this is immediate file or folder name for visibility
+ # size decides the area occupied by each label, here it is just the file size, value is what decides the color, here it is the number assigned to the parent folder, so each file inside stats mech is assigned same number
+ blobs = [{
+     'parent': os.path.dirname(blob.path) or "/",
+
+commit 12e1c6c72bd5ff228902ef6ad27177c29df4a3a6
+Author: rht <rhtbot@protonmail.com>
+Date:   Thu Jan 1 04:23:29 2026 -0500
+
+    ci: Add codespell GH Actions (#868)
+    
+    * chore: Fix typo in non-Lean files found by codespell
+    
+    * ci: Add codespell GH Actions
+
+diff --git a/.github/workflows/build.yml b/.github/workflows/build.yml
+index c7fa94bc..6d00bca4 100644
+--- a/.github/workflows/build.yml
++++ b/.github/workflows/build.yml
+@@ -89,3 +89,13 @@ jobs:
+         run: |
+           chmod u+x scripts/lint-style.sh
+           ./scripts/lint-style.sh
++
++  codespell:
++    name: Check for spelling errors
++    runs-on: ubuntu-latest
++    steps:
++      - uses: actions/checkout@v6
++      - uses: codespell-project/actions-codespell@v2
++        with:
++          exclude_file: scripts/MetaPrograms/spellingWords.txt,scripts/physleanNoShake.json
++          ignore_words_file: .codespellignore
+
+commit a5c8d80cca288ee042e9e883ac5e6d7ccbb05732
+Author: rht <rhtbot@protonmail.com>
+Date:   Fri Jan 2 06:50:26 2026 -0500
+
+    feat: Specify total derivative equivalence for classical mechanics Lagrangian (#871)
+    
+    * feat: Specify gauge equivalence for classical mechanics Lagrangian
+    
+    This is to prepare for the derivation of the Lagrangian of a free
+    particle found in Landau vol 1.
+    
+    * refactor: Reuse PhysLean fderiv
+    
+    * docs: Remove duplicated comment
+    
+    * fix: Remove usage of "gauge equivalence"
+    
+    And fix authorship.
+    
+    * fix: Turn isTotalTimeDerivativeVelocity into theorem
+    
+    * fix: Turn isTotalTimeDerivativeVelocity into a lemma
+
+diff --git a/PhysLean.lean b/PhysLean.lean
+index 0b7b6f07..aacdeb99 100644
+--- a/PhysLean.lean
++++ b/PhysLean.lean
+@@ -3,6 +3,7 @@ import PhysLean.ClassicalMechanics.EulerLagrange
+ import PhysLean.ClassicalMechanics.HamiltonsEquations
+ import PhysLean.ClassicalMechanics.HarmonicOscillator.Basic
+ import PhysLean.ClassicalMechanics.HarmonicOscillator.Solution
++import PhysLean.ClassicalMechanics.Lagrangian.TotalDerivativeEquivalence
+ import PhysLean.ClassicalMechanics.Mass.MassUnit
+ import PhysLean.ClassicalMechanics.Pendulum.CoplanarDoublePendulum
+ import PhysLean.ClassicalMechanics.Pendulum.MiscellaneousPendulumPivotMotions
+diff --git a/PhysLean/ClassicalMechanics/Lagrangian/TotalDerivativeEquivalence.lean b/PhysLean/ClassicalMechanics/Lagrangian/TotalDerivativeEquivalence.lean
+new file mode 100644
+index 00000000..230583c8
+--- /dev/null
++++ b/PhysLean/ClassicalMechanics/Lagrangian/TotalDerivativeEquivalence.lean
+@@ -0,0 +1,115 @@
++/-
++Copyright (c) 2025 Rein Zustand. All rights reserved.
++Released under Apache 2.0 license as described in the file LICENSE.
++Authors: Rein Zustand
++-/
++import Mathlib.Analysis.InnerProductSpace.EuclideanDist
++import Mathlib.Analysis.InnerProductSpace.PiL2
++import Mathlib.Topology.MetricSpace.Basic
++import Mathlib.Analysis.Calculus.Deriv.Basic
++import PhysLean.Mathematics.VariationalCalculus.HasVarGradient
++
++/-!
++
++# Equivalent Lagrangians under Total Derivatives
++
++## i. Overview
++
++Two Lagrangians are physically equivalent if they differ by a total time derivative
++d/dt F(q, t). This is because the Euler-Lagrange equations depend only on extremizing
++the action integral, and total derivatives don't affect which paths are extremal.
++
++This module defines the key concept of a function being a total time derivative,
++which is essential for analyzing symmetries like Galilean invariance.
++
++Note: Some authors call this "gauge equivalence" by analogy with gauge transformations
++in field theory, but we avoid that terminology here since no gauge fields are involved.
++
++## ii. Key insight
++
++A general function δL(r, v, t) is a total time derivative if there exists a function
++F(r, t) (independent of velocity) such that:
++  δL(r, v, t) = d/dt F(r, t) = fderiv ℝ F (r, t) (v, 1)
++
++By the chain rule, this expands to:
++  δL(r, v, t) = ∂F/∂t + ⟨∇ᵣF, v⟩
++
++For the special case where δL depends only on velocity v (not position or time),
++this implies a strong constraint:
++  δL(v) = ⟨g, v⟩ for some constant vector g
++
++This is because:
++1. d/dt F(r, t) = ∂F/∂t + ⟨∇F, v⟩
++2. For δL to be r-independent, ∇F must be r-independent
++3. For δL to be t-independent, the time-dependent part must vanish
++4. The result is δL = ⟨g, v⟩ for constant g
++
++## iii. Key definitions
++
++- `IsTotalTimeDerivative`: General case for δL(r, v, t)
++- `IsTotalTimeDerivativeVelocity`: Velocity-only case, equivalent to δL(v) = ⟨g, v⟩
++
++## iv. References
++
++- Landau & Lifshitz, "Mechanics", §2 (The principle of least action)
++- Landau & Lifshitz, "Mechanics", §4 (The Lagrangian for a free particle)
++
++-/
++
++namespace ClassicalMechanics
++
++open InnerProductSpace
++
++namespace Lagrangian
++
++/-!
++
++## A. General Total Time Derivative
++
++-/
++
++/-- A function δL(r, v, t) is a total time derivative if it can be written as d/dt F(r, t)
++    for some function F that depends on position and time but not velocity.
++
++    Mathematically: δL(r, v, t) = fderiv ℝ F (r, t) (v, 1)
++
++    By the chain rule, this equals ∂F/∂t(r, t) + ⟨∇ᵣF(r, t), v⟩.
++
++    This is the most general form of Lagrangian equivalence under total derivatives.
++    The key point is that F must be independent of velocity. -/
++def IsTotalTimeDerivative {n : ℕ}
++    (δL : EuclideanSpace ℝ (Fin n) → EuclideanSpace ℝ (Fin n) → ℝ → ℝ) : Prop :=
++  ∃ (F : EuclideanSpace ℝ (Fin n) × ℝ → ℝ) (_ : Differentiable ℝ F),
++    ∀ r v t, δL r v t = fderiv ℝ F (r, t) (v, 1)
++
++/-!
++
++## B. Velocity-Only Total Time Derivative
++
++When δL depends only on velocity (the free particle case), the condition simplifies.
++
++-/
++
++/-- A velocity-only function that is a total time derivative must be linear in velocity.
++
++    If δL depends only on velocity and equals d/dt F(r, t) for some F,
++    then δL(v) = ⟨g, v⟩ for some constant vector g.
++
++    This characterization comes from the requirement that:
++    - d/dt F(r, t) = ∂F/∂t + ⟨∇F, ṙ⟩ = ∂F/∂t + ⟨∇F, v⟩
++    - For the result to be independent of r and t, we need ∇F = g (constant) and ∂F/∂t = 0
++    - Thus δL(v) = ⟨g, v⟩
++
++    WLOG, we assume `δL 0 = 0` since constants are total derivatives (c = d/dt(c·t))
++    and can be absorbed without affecting the equations of motion. -/
++@[sorryful]
++lemma isTotalTimeDerivativeVelocity {n : ℕ}
++    (δL : EuclideanSpace ℝ (Fin n) → ℝ)
++    (hδL0 : δL 0 = 0)
++    (h : IsTotalTimeDerivative (fun _ v _ => δL v)) :
++    ∃ g : EuclideanSpace ℝ (Fin n), ∀ v, δL v = ⟪g, v⟫_ℝ := by
++  sorry
++
++end Lagrangian
++
++end ClassicalMechanics
+
+commit ceb2de5831e91f1cb5cbb691c82d05349947c594
+Author: Nicola Bernini <NicolaBernini@users.noreply.github.com>
+Date:   Fri Jan 2 12:51:04 2026 +0100
+
+    feat: Implementing 7ESNL (#873)
+
+diff --git a/PhysLean/Relativity/Tensors/Basic.lean b/PhysLean/Relativity/Tensors/Basic.lean
+index 955bc195..f491b47c 100644
+--- a/PhysLean/Relativity/Tensors/Basic.lean
++++ b/PhysLean/Relativity/Tensors/Basic.lean
+@@ -565,9 +565,7 @@ lemma PermCond.preserve_color {n m : ℕ} {c : Fin n → C} {c1 : Fin m → C}
+   simp only [Function.comp_apply]
+   rw [h.2]
+ 
+-TODO "7ESNL" "We want to add `inv_perserve_color` to Simp database, however this fires the linter
+-    simpVarHead. This should be investigated."
+-
++@[simp, nolint simpVarHead]
+ lemma PermCond.inv_perserve_color {n m : ℕ} {c : Fin n → C} {c1 : Fin m → C}
+     {σ : Fin m → Fin n} (h : PermCond c c1 σ) (x : Fin n) :
+     c1 (h.inv σ x) = c x := by
+
+commit 637972496c4645a29a25a52b7ce3fd80c6486e4f
+Author: Nicola Bernini <NicolaBernini@users.noreply.github.com>
+Date:   Sun Jan 4 16:57:59 2026 +0100
+
+    feat: Fixing 6VZHC (#874)
+    
+    * feat: Fixing 6VZHC
+    
+    * fix: Adding required import
+    
+    * fix: Adding missing file
+    
+    * fix: Fixing Copyright
+    
+    * Change naming style of props
+    
+    ---------
+    
+    Co-authored-by: Joseph Tooby-Smith <72603918+jstoobysmith@users.noreply.github.com>
+
+diff --git a/PhysLean.lean b/PhysLean.lean
+index aacdeb99..e75f420f 100644
+--- a/PhysLean.lean
++++ b/PhysLean.lean
+@@ -1,4 +1,5 @@
+ import PhysLean.ClassicalMechanics.Basic
++import PhysLean.ClassicalMechanics.DampedHarmonicOscillator.Basic
+ import PhysLean.ClassicalMechanics.EulerLagrange
+ import PhysLean.ClassicalMechanics.HamiltonsEquations
+ import PhysLean.ClassicalMechanics.HarmonicOscillator.Basic
+diff --git a/PhysLean/ClassicalMechanics/DampedHarmonicOscillator/Basic.lean b/PhysLean/ClassicalMechanics/DampedHarmonicOscillator/Basic.lean
+new file mode 100644
+index 00000000..aa452b80
+--- /dev/null
++++ b/PhysLean/ClassicalMechanics/DampedHarmonicOscillator/Basic.lean
+@@ -0,0 +1,164 @@
++/-
++Copyright (c) 2025 Nicola Bernini. All rights reserved.
++Released under Apache 2.0 license as described in the file LICENSE.
++Authors: Nicola Bernini
++-/
++import PhysLean.Meta.Informal.SemiFormal
++import PhysLean.ClassicalMechanics.EulerLagrange
++import PhysLean.ClassicalMechanics.HamiltonsEquations
++/-!
++
++# The Damped Harmonic Oscillator
++
++## i. Overview
++
++The damped harmonic oscillator is a classical mechanical system corresponding to a
++mass `m` under a restoring force `- k x` and a damping force `- γ ẋ`, where `k` is the
++spring constant, `γ` is the damping coefficient, `x` is the position, and `ẋ` is the velocity.
++
++The equation of motion for the damped harmonic oscillator is:
++```
++m ẍ + γ ẋ + k x = 0
++```
++
++Depending on the relationship between the damping coefficient and the natural frequency,
++the system exhibits three different behaviors:
++- **Underdamped** (γ² < 4mk): Oscillatory motion with exponentially decaying amplitude
++- **Critically damped** (γ² = 4mk): Fastest return to equilibrium without oscillation
++- **Overdamped** (γ² > 4mk): Slow return to equilibrium without oscillation
++
++## ii. Key results
++
++This module is currently a placeholder for future implementation. The following results
++are planned to be formalized:
++
++- `DampedHarmonicOscillator`: Structure containing the input data (mass, spring constant,
++  damping coefficient)
++- `EquationOfMotion`: The equation of motion for the damped harmonic oscillator
++- Solutions for underdamped, critically damped, and overdamped cases
++- Energy dissipation properties
++- Quality factor and relaxation time
++
++## iii. Table of contents
++
++- A. The input data (to be implemented)
++- B. The damped angular frequency (to be implemented)
++- C. The energies and energy dissipation (to be implemented)
++- D. The equation of motion (to be implemented)
++- E. Solutions (to be implemented)
++  - E.1. Underdamped case
++  - E.2. Critically damped case
++  - E.3. Overdamped case
++- F. Quality factor and decay time (to be implemented)
++
++## iv. References
++
++References for the damped harmonic oscillator include:
++- Landau & Lifshitz, Mechanics, page 76, section 25.
++- Goldstein, Classical Mechanics, Chapter 2.
++
++-/
++
++namespace ClassicalMechanics
++open Real
++open Space
++open InnerProductSpace
++
++TODO "DHO01" "Define the DampedHarmonicOscillator structure with mass m, spring constant k,
++  and damping coefficient γ."
++
++TODO "DHO02" "Define the three damping regimes: underdamped, critically damped, and overdamped."
++
++TODO "DHO03" "Define the equation of motion for the damped harmonic oscillator."
++
++TODO "DHO04" "Prove that energy is not conserved and derive the energy dissipation rate."
++
++TODO "DHO05" "Derive solutions for the underdamped case (oscillatory with exponential decay)."
++
++TODO "DHO06" "Derive solutions for the critically damped case (fastest non-oscillatory return)."
++
++TODO "DHO07" "Derive solutions for the overdamped case (slow non-oscillatory return)."
++
++TODO "DHO08" "Define and prove properties of the quality factor Q."
++
++TODO "DHO09" "Define and prove properties of the relaxation time τ."
++
++TODO "DHO10" "Prove that the damped harmonic oscillator reduces to the undamped case when γ = 0."
++
++/-!
++
++## A. The input data (placeholder)
++
++The input data for the damped harmonic oscillator will consist of:
++- Mass `m > 0`
++- Spring constant `k > 0`
++- Damping coefficient `γ ≥ 0`
++
++-/
++
++/-- Placeholder structure for the damped harmonic oscillator.
++  The damped harmonic oscillator is specified by a mass `m`, a spring constant `k`,
++  and a damping coefficient `γ`. All parameters are assumed to be positive (or non-negative
++  for the damping coefficient). -/
++structure DampedHarmonicOscillator where
++  /-- The mass of the oscillator. -/
++  m : ℝ
++  /-- The spring constant of the oscillator. -/
++  k : ℝ
++  /-- The damping coefficient of the oscillator. -/
++  γ : ℝ
++  m_pos : 0 < m
++  k_pos : 0 < k
++  γ_nonneg : 0 ≤ γ
++
++namespace DampedHarmonicOscillator
++
++variable (S : DampedHarmonicOscillator)
++
++@[simp]
++lemma k_neq_zero : S.k ≠ 0 := Ne.symm (ne_of_lt S.k_pos)
++
++@[simp]
++lemma m_neq_zero : S.m ≠ 0 := Ne.symm (ne_of_lt S.m_pos)
++
++/-!
++
++## B. The natural angular frequency (placeholder)
++
++The natural angular frequency ω₀ = √(k/m) will be defined here.
++
++-/
++
++/-- The natural (undamped) angular frequency of the oscillator, ω₀ = √(k/m). -/
++noncomputable def ω₀ : ℝ := √(S.k / S.m)
++
++@[simp]
++lemma ω₀_pos : 0 < S.ω₀ := sqrt_pos.mpr (div_pos S.k_pos S.m_pos)
++
++lemma ω₀_sq : S.ω₀^2 = S.k / S.m := by
++  rw [ω₀, sq_sqrt]
++  exact div_nonneg (le_of_lt S.k_pos) (le_of_lt S.m_pos)
++
++/-!
++
++## C. Damping regimes (placeholder)
++
++The three damping regimes will be defined based on the discriminant γ² - 4mk.
++
++-/
++
++/-- The discriminant that determines the damping regime. -/
++noncomputable def discriminant : ℝ := S.γ^2 - 4 * S.m * S.k
++
++/-- The system is underdamped when γ² < 4mk. -/
++def IsUnderdamped : Prop := S.discriminant < 0
++
++/-- The system is critically damped when γ² = 4mk. -/
++def IsCriticallyDamped : Prop := S.discriminant = 0
++
++/-- The system is overdamped when γ² > 4mk. -/
++def IsOverdamped : Prop := S.discriminant > 0
++
++end DampedHarmonicOscillator
++
++end ClassicalMechanics
+diff --git a/PhysLean/ClassicalMechanics/HarmonicOscillator/Basic.lean b/PhysLean/ClassicalMechanics/HarmonicOscillator/Basic.lean
+index 8fb67ab8..ad6454dc 100644
+--- a/PhysLean/ClassicalMechanics/HarmonicOscillator/Basic.lean
++++ b/PhysLean/ClassicalMechanics/HarmonicOscillator/Basic.lean
+@@ -85,8 +85,6 @@ open Real
+ open Space
+ open InnerProductSpace
+ 
+-TODO "6VZHC" "Create a new folder for the damped harmonic oscillator, initially as a place-holder."
+-
+ /-!
+ 
+ ## A. The input data
+
+commit bc3e6dd639bc1c54ee4500535f833b52eaecda20
+Author: Joseph Tooby-Smith <72603918+jstoobysmith@users.noreply.github.com>
+Date:   Tue Jan 6 05:08:36 2026 +0000
+
+    feat: Add doc to lemma (#884)
+
+diff --git a/PhysLean/Particles/SuperSymmetry/SU5/ChargeSpectrum/Completions.lean b/PhysLean/Particles/SuperSymmetry/SU5/ChargeSpectrum/Completions.lean
+index 9cd03b70..60ea1ee6 100644
+--- a/PhysLean/Particles/SuperSymmetry/SU5/ChargeSpectrum/Completions.lean
++++ b/PhysLean/Particles/SuperSymmetry/SU5/ChargeSpectrum/Completions.lean
+@@ -305,6 +305,8 @@ lemma self_subset_mem_completions (S5 S10 : Finset 𝓩) (x y : ChargeSpectrum 
+     · simp_all
+     · simp_all
+ 
++/-- If `x` is a subset of `y` and `y` is complete, then there is a completion of `x` which is also
++  a subset of `y`.-/
+ lemma exist_completions_subset_of_complete (S5 S10 : Finset 𝓩) (x y : ChargeSpectrum 𝓩)
+     (hsubset : x ⊆ y) (hy : y ∈ ofFinset S5 S10) (hycomplete : IsComplete y) :
+     ∃ z ∈ completions S5 S10 x, z ⊆ y := by
+
+commit 8d825f94c8b762361fd100c2eb073374fcbb4b74
+Author: Joseph Tooby-Smith <72603918+jstoobysmith@users.noreply.github.com>
+Date:   Tue Jan 6 06:58:17 2026 +0000
+
+    refactor: Small tidy of constants (#888)
+    
+    * refactor: Small tidy of constants
+    
+    * refactor: Fix spelling
+
+diff --git a/PhysLean/QuantumMechanics/PlanckConstant.lean b/PhysLean/QuantumMechanics/PlanckConstant.lean
+index f02baba3..2412f581 100644
+--- a/PhysLean/QuantumMechanics/PlanckConstant.lean
++++ b/PhysLean/QuantumMechanics/PlanckConstant.lean
+@@ -9,15 +9,14 @@ import Mathlib.Data.NNReal.Defs
+ # Planck's constant
+ 
+ In this module we define the Planck's constant `ℏ` as a positive real number.
+-This is introduced as an axiom.
+ 
+ -/
+ open NNReal
+ 
+ namespace Constants
+ 
+-/-- Planck's constant. -/
+-axiom ℏ : Subtype fun x : ℝ => 0 < x
++/-- The value of the reduced Planck's constant in units of J.s. -/
++def ℏ : Subtype fun x : ℝ => 0 < x := ⟨1.054571817e-34, by norm_num⟩
+ 
+ /-- Planck's constant is positive. -/
+ lemma ℏ_pos : 0 < (ℏ : ℝ) := ℏ.2
+diff --git a/PhysLean/StatisticalMechanics/BoltzmannConstant.lean b/PhysLean/StatisticalMechanics/BoltzmannConstant.lean
+index 065ea3b3..90e85ede 100644
+--- a/PhysLean/StatisticalMechanics/BoltzmannConstant.lean
++++ b/PhysLean/StatisticalMechanics/BoltzmannConstant.lean
+@@ -11,16 +11,17 @@ import Mathlib.Data.NNReal.Defs
+ The Boltzmann constant is a constant `kB` of dimension `m² kg s⁻² K⁻¹`, that is
+ `Energy/Temperature`. It is named after Ludwig Boltzmann.
+ 
+-In this module we axiomise the existence of the Boltzmann constant in a given (but arbitrary)
+-set of units.
++In this module give the value of the Boltzmann constant.
+ 
+ -/
+ open NNReal
+ 
+ namespace Constants
+ 
+-/-- The axiom introducing the Boltzmann constant in a given but arbitrary set of units. -/
+-axiom kBAx : {p : ℝ | 0 < p}
++/-- The Boltzmann constant in units of `m ^ 2 kg s ^ (-2) K ^ (-1)`.
++  As long as one does not use the underlying value of this quantity,
++  then it can be used as Boltzmann's constant in an arbitrary set of units. -/
++def kBAx : {p : ℝ | 0 < p} := ⟨1.380649e-23, by norm_num⟩
+ 
+ /-- The Boltzmann constant in a given but arbitrary set of units.
+   Boltzman's constant has dimension equivalent to `Energy/Temperature`. -/
+
+commit ae09e6cc86e9ef32d7894915aa333baa869331ca
+Author: Joseph Tooby-Smith <72603918+jstoobysmith@users.noreply.github.com>
+Date:   Wed Jan 7 08:55:17 2026 +0000
+
+    feat: Add API issue template (#889)
+
+diff --git a/.github/ISSUE_TEMPLATE/API.yml b/.github/ISSUE_TEMPLATE/API.yml
+new file mode 100644
+index 00000000..46cc5ee6
+--- /dev/null
++++ b/.github/ISSUE_TEMPLATE/API.yml
+@@ -0,0 +1,33 @@
++name: API
++description: Auto-filled issue for API building
++title: "API: "
++labels:
++  - API
++  - help wanted
++  - Requirements needed
++body:
++  - type: textarea
++    id: content
++    attributes:
++      label: Details
++      value: |
++        The details of this issue are not yet completed. The issue is here to track the progress of the API specified by the title. Parts of this API may already be included within the project. There are a number of things we need to specify, help in specifying these points is appreciated.
++
++        ## Key data structure
++
++        What is the key data structure the API is built around.
++
++        ## Need
++
++        Why is this API needed, after it is completed, what will it make easier or allow us to do.
++
++        ## Requirements
++
++        A tickbox list of the requirements of the API. This should include things which have already been done as well as things still to be worked on. Details on writing good system requirements can be found [here](https://www.ibm.com/docs/en/SSYQBZ_9.6.1/com.ibm.doors.requirements.doc/topics/get_it_right_the_first_time.pdf).
++
++        ## Corresponding file system
++
++        If it exists, the part of the PhysLean which corresponds to this API.
++
++    validations:
++      required: false
+diff --git a/.github/ISSUE_TEMPLATE/NoteDocString.yml b/.github/ISSUE_TEMPLATE/NoteDocString.yml
+deleted file mode 100644
+index c97bcbab..00000000
+--- a/.github/ISSUE_TEMPLATE/NoteDocString.yml
++++ /dev/null
+@@ -1,24 +0,0 @@
+-name: Note doc string
+-description: Improvements to docstrings from curated notes
+-title: "[doc-string]: "
+-body:
+-  - type: markdown
+-    attributes:
+-      value: |
+-        Thanks for taking the time to suggest an improvement!
+-  - type: input
+-    id: name
+-    attributes:
+-      label: Name of result
+-      description: What is the name of the result you are suggesting an improvement for?
+-      placeholder:
+-    validations:
+-      required: true
+-  - type: textarea
+-    id: improvement
+-    attributes:
+-      label: Improvement
+-      description: What is the improvement you are suggesting?
+-      placeholder:
+-    validations:
+-      required: true
+
+commit 6c08220111032929d27c9000b5214f7be38493fd
+Author: Riad <rfikani@purdue.edu>
+Date:   Wed Jan 7 08:31:15 2026 -0500
+
+    DHO03: define equation of motion for damped harmonic oscillator (#890)
+    
+    * DHO03: define equation of motion for damped harmonic oscillator
+    
+    * Update equation of motion to use Time type
+    
+    Time and Time.deriv in equation of motion
+    
+    * Rename equationOfMotion to EquationOfMotion
+    
+    Also added PhysLean.SpaceAndTime.Time.Derivatives
+    
+    ---------
+    
+    Co-authored-by: Riad Fikani Jr <61957395+rfikani@users.noreply.github.com>
+
+diff --git a/PhysLean/ClassicalMechanics/DampedHarmonicOscillator/Basic.lean b/PhysLean/ClassicalMechanics/DampedHarmonicOscillator/Basic.lean
+index aa452b80..8a1086cb 100644
+--- a/PhysLean/ClassicalMechanics/DampedHarmonicOscillator/Basic.lean
++++ b/PhysLean/ClassicalMechanics/DampedHarmonicOscillator/Basic.lean
+@@ -6,6 +6,8 @@ Authors: Nicola Bernini
+ import PhysLean.Meta.Informal.SemiFormal
+ import PhysLean.ClassicalMechanics.EulerLagrange
+ import PhysLean.ClassicalMechanics.HamiltonsEquations
++import PhysLean.SpaceAndTime.Time.Derivatives
++
+ /-!
+ 
+ # The Damped Harmonic Oscillator
+@@ -141,6 +143,30 @@ lemma ω₀_sq : S.ω₀^2 = S.k / S.m := by
+ 
+ /-!
+ 
++/-!
++## C. Equation of motion (Tag: DHO03)
++
++The damped harmonic oscillator with mass `m`, spring
++constant `k`, and damping coefficient `γ` satisfies
++
++    m ẍ + γ ẋ + k x = 0,
++
++where `x : Time → ℝ` is the position as a function of time.
++-/
++
++/-- The equation of motion for the damped harmonic oscillator.
++
++A function `x : Time → ℝ` is a solution if it satisfies
++
++    S.m * x¨ + S.γ * ẋ + S.k * x = 0
++
++for all times `t`. -/
++noncomputable def EquationOfMotion (x : Time → ℝ) : Prop :=
++  ∀ t : Time,
++    S.m * (Time.deriv (Time.deriv x) t) +
++    S.γ * (Time.deriv x t) +
++    S.k * x t = 0
++
+ ## C. Damping regimes (placeholder)
+ 
+ The three damping regimes will be defined based on the discriminant γ² - 4mk.
+@@ -159,6 +185,7 @@ def IsCriticallyDamped : Prop := S.discriminant = 0
+ /-- The system is overdamped when γ² > 4mk. -/
+ def IsOverdamped : Prop := S.discriminant > 0
+ 
++
+ end DampedHarmonicOscillator
+ 
+ end ClassicalMechanics
+
+commit 6099da24305d6ca71df680ccada8f91d026cb604
+Author: Alex Meiburg <timeroot.alex@gmail.com>
+Date:   Wed Jan 7 15:21:56 2026 -0500
+
+    couple golfs
+
+diff --git a/QuantumInfo/ForMathlib/LimSupInf.lean b/QuantumInfo/ForMathlib/LimSupInf.lean
+index 211d268a..c9db3745 100644
+--- a/QuantumInfo/ForMathlib/LimSupInf.lean
++++ b/QuantumInfo/ForMathlib/LimSupInf.lean
+@@ -18,58 +18,49 @@ Several 'bespoke' facts about limsup and liminf on ENNReal / NNReal needed in St
+ /-
+ There exists a strictly increasing sequence of indices $n_k$ such that $f(1/(k+1), n_k) \le y + 1/(k+1)$.
+ -/
+-lemma exists_strictMono_seq_le (y : ℝ≥0) (f : ℝ≥0 → ℕ → ℝ≥0∞)
+-    (hf : ∀ x > 0, Filter.atTop.liminf (f x) ≤ y) :
++lemma exists_strictMono_seq_le (y : ℝ≥0) (f : ℝ≥0 → ℕ → ℝ≥0∞) (hf : ∀ x > 0, Filter.atTop.liminf (f x) ≤ y) :
+     ∃ n : ℕ → ℕ, StrictMono n ∧ ∀ k : ℕ, f ((k : ℝ≥0) + 1)⁻¹ (n k) ≤ (y : ℝ≥0∞) + ((k : ℝ≥0) + 1)⁻¹ := by
+-  -- For each $k$, since $\liminf_{n \to \infty} f(\epsilon_k, n) \le y$, there exists $n_k$ such that $f(\epsilon_k, n_k) \le y + \epsilon_k$.
+-  have h_exists_n : ∀ k : ℕ, ∃ n : ℕ, f ((k + 1 : ℝ≥0)⁻¹) n ≤ y + (k + 1 : ℝ≥0)⁻¹ := by
+-    intro k; specialize hf ( ( k + 1 : ℝ≥0 ) ⁻¹ ) ( by positivity ) ; norm_cast at * ;
+-    rw [ Filter.liminf_eq ] at hf
+-    simp only [Nat.cast_add, Nat.cast_one, ENNReal.coe_add, ne_eq, add_eq_zero, Nat.cast_eq_zero,
+-      one_ne_zero, and_false, not_false_eq_true, ENNReal.coe_inv, ENNReal.coe_natCast,
+-      ENNReal.coe_one]
+-    simp only [Nat.cast_add, Nat.cast_one, Filter.eventually_atTop, ge_iff_le, sSup_le_iff,
+-      Set.mem_setOf_eq, forall_exists_index] at hf
+-    contrapose! hf;
+-    exact ⟨ _, 0, fun _ _ => le_of_lt ( hf _ ), ENNReal.lt_add_right ( by norm_num ) ( by norm_num ) ⟩;
+-  -- Since the property holds frequently (for infinitely many $n$), there exists $n_{k+1} > n_k$ such that $f(\epsilon_{k+1}, n_{k+1}) \le y + \epsilon_{k+1}$.
+-  have h_exists_n_succ : ∀ k : ℕ, ∀ n : ℕ, ∃ m : ℕ, m > n ∧ f ((k + 1 : ℝ≥0)⁻¹) m ≤ y + (k + 1 : ℝ≥0)⁻¹ := by
+-    intro k n
+-    specialize hf ( ( k + 1 : ℝ≥0 ) ⁻¹ ) ( by positivity )
+-    rw [ Filter.liminf_eq ] at hf
+-    simp_all only [ne_eq, add_eq_zero, Nat.cast_eq_zero, one_ne_zero, and_false, not_false_eq_true, ENNReal.coe_inv,
+-      ENNReal.coe_add, ENNReal.coe_natCast, ENNReal.coe_one, Filter.eventually_atTop, ge_iff_le, sSup_le_iff,
+-      Set.mem_setOf_eq, forall_exists_index, gt_iff_lt]
+-    -- By contradiction, assume there exists $n$ such that for all $m > n$, $f(\epsilon_k, m) > y + \epsilon_k$.
+-    by_contra! h_contra
+-    exact absurd ( hf ( y + ( ( k : ℝ≥0∞ ) + 1 ) ⁻¹ ) ( n + 1 ) fun m hm => le_of_lt ( h_contra m hm ) ) ( by exact not_le_of_gt ( ENNReal.lt_add_right ( by norm_num ) ( by norm_num ) ) )
+-  exact ⟨ fun k => Nat.recOn k ( Classical.choose ( h_exists_n 0 ) ) fun k ih => Nat.find ( h_exists_n_succ ( k + 1 ) ih ), strictMono_nat_of_lt_succ fun k => Nat.find_spec ( h_exists_n_succ ( k + 1 ) _ ) |>.1, fun k => Nat.recOn k ( Classical.choose_spec ( h_exists_n 0 ) ) fun k ih => Nat.find_spec ( h_exists_n_succ ( k + 1 ) _ ) |>.2 ⟩
+-
++  -- Since the liminf is ≤ y, for any ε > 0 and index n, there frequently exists an m > n satisfying the bound.
++  have h_freq (k n : ℕ) : ∃ m > n, f ((k + 1 : ℝ≥0)⁻¹) m ≤ y + (k + 1 : ℝ≥0)⁻¹ := by
++    specialize hf ((k + 1 : ℝ≥0)⁻¹) (by positivity)
++    rw [Filter.liminf_eq] at hf
++    simp only [Filter.eventually_atTop, ge_iff_le, sSup_le_iff, Set.mem_setOf_eq, forall_exists_index] at hf
++    contrapose! hf
++    refine ⟨_, n + 1, fun m hm ↦ (hf m hm).le, ENNReal.lt_add_right (by norm_num) (by norm_num)⟩
++  refine ⟨fun k ↦ k.recOn (Classical.choose (h_freq 0 0))
++    (fun i ih ↦ Nat.find (h_freq (i + 1) ih)), ?_, ?_⟩
++  · exact strictMono_nat_of_lt_succ fun k ↦ (Nat.find_spec (h_freq (k + 1) _)).1
++  · rintro (_ | k)
++    · exact (Classical.choose_spec (h_freq 0 _)).2
++    · exact (Nat.find_spec (h_freq (k + 1) _)).2
+ /-
+ There exists a strictly increasing sequence M such that for all k, and all n ≥ M k, f (1/(k+1)) n is close to y.
+ -/
+-lemma exists_seq_bound (y : ℝ≥0) (f : ℝ≥0 → ℕ → ℝ≥0∞)
+-  (hf : ∀ x > 0, Filter.atTop.limsup (f x) ≤ y) :
+-  ∃ M : ℕ → ℕ, StrictMono M ∧ ∀ k, ∀ n ≥ M k, f ((k + 1 : ℝ≥0)⁻¹) n ≤ y + (k + 1 : ℝ≥0∞)⁻¹ := by
+-    simp
+-    have h_M : ∀ k : ℕ, ∃ M_k : ℕ, ∀ n ≥ M_k, f ((k + 1 : ℝ≥0)⁻¹) n ≤ y + (k + 1 : ℝ≥0∞)⁻¹ := by
+-      intro k
+-      specialize hf ((k + 1 : ℝ≥0)⁻¹) (by
+-      positivity);
+-      contrapose! hf;
+-      refine' lt_of_lt_of_le _ ( le_csInf _ _ );
+-      rotate_left;
+-      exact ( y : ℝ≥0∞ ) + ( k + 1 : ℝ≥0∞ ) ⁻¹;
+-      · exact ⟨ ⊤, by simp +decide ⟩;
+-      · intro b a
+-        simp_all only [ge_iff_le, Filter.eventually_map, Filter.eventually_atTop, Set.mem_setOf_eq]
+-        obtain ⟨w, h⟩ := a
+-        exact le_trans ( le_of_lt ( hf w |> Classical.choose_spec |> And.right ) ) ( h _ ( hf w |> Classical.choose_spec |> And.left ) );
+-      · exact ENNReal.lt_add_right ( by norm_num ) ( by norm_num );
+-    choose M hM using h_M;
+-    refine' ⟨ fun k => Nat.recOn k ( M 0 ) fun k ih => Max.max ( M ( k + 1 ) ) ( ih + 1 ), strictMono_nat_of_lt_succ fun k => _, fun k n hn => hM k n <| _ ⟩
+-    · simp_all only [lt_sup_iff, lt_add_iff_pos_right, zero_lt_one, or_true]
+-    · exact le_trans ( by induction k <;> aesop ) hn
++lemma exists_seq_bound (y : ℝ≥0) (f : ℝ≥0 → ℕ → ℝ≥0∞) (hf : ∀ x > 0, Filter.atTop.limsup (f x) ≤ y) :
++    ∃ M : ℕ → ℕ, StrictMono M ∧ ∀ k, ∀ n ≥ M k, f ((k + 1 : ℝ≥0)⁻¹) n ≤ y + (k + 1 : ℝ≥0∞)⁻¹ := by
++  have h_M (k : ℕ) : ∃ M_k, ∀ n ≥ M_k, f (k + 1)⁻¹ n ≤ y + (k + 1 : ℝ≥0∞)⁻¹ := by
++    specialize hf (k + 1)⁻¹ (by positivity)
++    contrapose! hf
++    refine lt_of_lt_of_le (b := ?_) ?_ (le_csInf ⟨⊤, by simp⟩ ?_)
++    · exact y + (k + 1 : ℝ≥0∞)⁻¹
++    · exact ENNReal.lt_add_right (by norm_num) (by norm_num)
++    · intro b hb
++      simp only [Filter.eventually_map, Filter.eventually_atTop, Set.mem_setOf_eq] at hb
++      obtain ⟨w, h⟩ := hb
++      obtain ⟨_, hw_left, hw_right⟩ := hf w
++      grw [hw_right]
++      exact h _ hw_left
++  choose M hM using h_M
++  use Nat.rec (M 0) fun k ih ↦ M (k + 1) ⊔ (ih + 1)
++  constructor
++  · apply strictMono_nat_of_lt_succ
++    exact fun _ ↦ lt_sup_of_lt_right (lt_add_one _)
++  · intro k n hn
++    apply hM
++    grw [hn]
++    cases k
++    · rfl
++    · apply le_max_left
+ 
+ /- (∀ x, x > 0 → liminf (n ↦ f x n) ≤ y) →
+   ∃ g : ℕ → ℝ, (∀ x, g x > 0) ∧ (liminf g = 0) ∧ (liminf (n ↦ f (g n) n) ≤ y) -/
+@@ -244,22 +235,29 @@ lemma exists_limsup_zero_of_forall_limsup_le (y : ℝ≥0) (f : ℝ≥0 → ℕ
+ /-
+ If x_k tends to L and g(n) = x_k for n in [T_k, T_{k+1}) where T is strictly increasing, then g(n) tends to L.
+ -/
+-lemma tendsto_of_block_sequence {α : Type*} [TopologicalSpace α] {x : ℕ → α} {T : ℕ → ℕ} (hT : StrictMono T) {L : α} (hx : Filter.atTop.Tendsto x (𝓝 L)) (g : ℕ → α) (hg : ∀ k, ∀ n ∈ Set.Ico (T k) (T (k + 1)), g n = x k) :
+-  Filter.atTop.Tendsto g (𝓝 L) := by
+-    rw [ Filter.tendsto_atTop' ] at *;
+-    -- Fix a neighborhood `s` of `L`.
+-    intro s hs;
+-    -- Let `a` be the witness from the definition of `Tendsto`.
+-    rcases hx s hs with ⟨a, ha⟩;
+-    -- Since `T` is strictly monotone, `T a` is well-defined.
+-    use T a; intros n hn; (
+-    -- Let `k` be such that `T k ≤ n < T (k + 1)`.
+-    obtain ⟨k, hk⟩ : ∃ k, T k ≤ n ∧ n < T (k + 1) := by
+-      -- Since $T$ is strictly increasing, the set $\{k \mid T k \leq n\}$ is finite and non-empty.
+-      have h_finite : Set.Finite {k | T k ≤ n} := by
+-        exact Set.finite_iff_bddAbove.2 ⟨ n, fun k hk => le_trans ( hT.id_le _ ) hk ⟩;
+-      exact ⟨ Finset.max' ( h_finite.toFinset ) ⟨ a, h_finite.mem_toFinset.mpr hn ⟩, h_finite.mem_toFinset.mp ( Finset.max'_mem _ _ ), not_le.mp fun h => not_lt_of_ge ( Finset.le_max' _ _ ( h_finite.mem_toFinset.mpr h ) ) ( Nat.lt_succ_self _ ) ⟩;
+-    rw [ hg k n ⟨ hk.1, hk.2 ⟩ ] ; exact ha k ( le_of_not_gt fun hk' => by linarith [ hT.monotone hk'.nat_succ_le ] ) ;)
++lemma tendsto_of_block_sequence {α : Type*} [TopologicalSpace α] {x : ℕ → α} {T : ℕ → ℕ}
++    (hT : StrictMono T) {L : α} (hx : Filter.atTop.Tendsto x (𝓝 L)) (g : ℕ → α) (hg : ∀ k, ∀ n ∈ Set.Ico (T k) (T (k + 1)), g n = x k) :
++      Filter.atTop.Tendsto g (𝓝 L) := by
++  rw [Filter.tendsto_atTop'] at hx ⊢
++  intro s hs
++  -- Let `a` be the witness from the definition of `Tendsto`.
++  rcases hx s hs with ⟨a, ha⟩
++  use T a
++  intros n hn
++  -- Let `k` be such that `T k ≤ n < T (k + 1)`.
++  obtain ⟨k, hk⟩ : ∃ k, T k ≤ n ∧ n < T (k + 1) := by
++    -- Since $T$ is strictly increasing, the set $\{k \mid T k \leq n\}$ is finite and non-empty.
++    have h_finite : Set.Finite {k | T k ≤ n} := by
++      rw [Set.finite_iff_bddAbove]
++      exact ⟨_, (hT.id_le · |>.trans)⟩
++    use h_finite.toFinset.max' ⟨a, h_finite.mem_toFinset.mpr hn⟩
++    constructor
++    · exact h_finite.mem_toFinset.mp (Finset.max'_mem _ _)
++    · rw [← not_le]
++      intro h
++      exact not_lt_of_ge (Finset.le_max' _ _ (h_finite.mem_toFinset.mpr h)) (Nat.lt_succ_self _)
++  rw [hg k n hk]
++  exact ha k (le_of_not_gt fun hk' ↦ by linarith [hT.monotone hk'])
+ 
+ /-
+ Given a lower bound sequence M and a property P that can always be satisfied eventually, there exists a strictly increasing sequence T bounded by M such that each interval [T_k, T_{k+1}) contains a witness for P.
+
+commit 7dfd69e529686e5a5bf0dc32006ad0a8a6e510de
+Author: Riad <rfikani@purdue.edu>
+Date:   Thu Jan 8 04:41:07 2026 -0500
+
+    Define energy and energy dissipation rate-DHO04 (#891)
+    
+    Prove that energy is not conserved and derive the energy dissipation rate.
+
+diff --git a/PhysLean/ClassicalMechanics/DampedHarmonicOscillator/Basic.lean b/PhysLean/ClassicalMechanics/DampedHarmonicOscillator/Basic.lean
+index 8a1086cb..5cb1e8a0 100644
+--- a/PhysLean/ClassicalMechanics/DampedHarmonicOscillator/Basic.lean
++++ b/PhysLean/ClassicalMechanics/DampedHarmonicOscillator/Basic.lean
+@@ -167,6 +167,46 @@ noncomputable def EquationOfMotion (x : Time → ℝ) : Prop :=
+     S.γ * (Time.deriv x t) +
+     S.k * x t = 0
+ 
++/-!
++## D. The energies and energy dissipation (Tag: DHO04)
++
++For the damped harmonic oscillator, the mechanical energy is
++
++  E(t) = ½ S.m (ẋ(t))^2 + ½ S.k (x(t))^2,
++
++where `x : Time → ℝ` is the position as a function of time.
++
++If `x` satisfies the equation of motion
++
++  S.m * x¨ + S.γ * ẋ + S.k * x = 0,
++
++then differentiating `E` with respect to time and substituting the
++equation of motion yields
++
++  dE/dt = - S.γ * (ẋ(t))^2 ≤ 0
++
++Thus the energy is non-increasing in time, and it is strictly decreasing
++whenever `S.γ > 0` and `ẋ(t) ≠ 0`. In particular, for `S.γ > 0`
++the energy is not conserved, and the energy dissipation rate is
++proportional to the squared velocity.
++-/
++
++/-- Mechanical energy of the damped harmonic oscillator. -/
++noncomputable def energy (x : Time → ℝ) : Time → ℝ :=
++  fun t =>
++    (1 / 2 : ℝ) * S.m * (Time.deriv x t)^2 +
++    (1 / 2 : ℝ) * S.k * (x t)^2
++
++/-- Energy dissipation rate along a trajectory `x : Time → ℝ`.
++
++ if `x` satisfies `S.equationOfMotion x`, then
++
++  Time.deriv (S.energy x) t = - S.γ * (Time.deriv x t)^2,
++
++so the energy is non-increasing and not conserved when `S.γ > 0`. -/
++noncomputable def energyDissipationRate (x : Time → ℝ) : Time → ℝ :=
++  fun t => - S.γ * (Time.deriv x t)^2
++
+ ## C. Damping regimes (placeholder)
+ 
+ The three damping regimes will be defined based on the discriminant γ² - 4mk.
+
+commit 11687003d12e70c053f98bda4601c928aa33feb0
+Author: Miles Cranmer <miles.cranmer@gmail.com>
+Date:   Sat Jan 10 08:03:56 2026 +0000
+
+    fix sign error (#894)
+
+diff --git a/PhysLean/QuantumMechanics/OneDimension/ReflectionlessPotential/Basic.lean b/PhysLean/QuantumMechanics/OneDimension/ReflectionlessPotential/Basic.lean
+index 863cb3e5..752d82c7 100644
+--- a/PhysLean/QuantumMechanics/OneDimension/ReflectionlessPotential/Basic.lean
++++ b/PhysLean/QuantumMechanics/OneDimension/ReflectionlessPotential/Basic.lean
+@@ -135,7 +135,7 @@ noncomputable def creationOperatorSchwartz (Q : ReflectionlessPotential) : 𝓢(
+ noncomputable def annihilationOperatorSchwartz (Q : ReflectionlessPotential) :
+   𝓢(ℝ, ℂ) →L[ℂ] 𝓢(ℝ, ℂ) :=
+ (1 / Real.sqrt (2 * Q.m)) • momentumOperatorSchwartz +
+-    ((Complex.I * Q.ℏ * Q.κ) / Real.sqrt (2 * Q.m)) • Q.tanhOperatorSchwartz
++    ((-Complex.I * Q.ℏ * Q.κ) / Real.sqrt (2 * Q.m)) • Q.tanhOperatorSchwartz
+ 
+ end ReflectionlessPotential
+ end OneDimension
+
+commit a2507504fa3cf242895137e5cbd776096fdaf293
+Author: ValentinBredemestre <150029072+ValentinBredemestre@users.noreply.github.com>
+Date:   Sat Jan 10 10:04:32 2026 +0200
+
+    Remove sorry: prove solsIncl_injective (#895)
+    
+    This proves injectivity of solsIncl using injectivity of the two composing inclusions.
+
+diff --git a/PhysLean/QFT/AnomalyCancellation/Basic.lean b/PhysLean/QFT/AnomalyCancellation/Basic.lean
+index 4fb60fae..7cdec4cf 100644
+--- a/PhysLean/QFT/AnomalyCancellation/Basic.lean
++++ b/PhysLean/QFT/AnomalyCancellation/Basic.lean
+@@ -518,7 +518,11 @@ def solsIncl (χ : ACCSystem) : χ.Sols →[ℚ] χ.Charges :=
+ @[sorryful]
+ lemma solsIncl_injective (χ : ACCSystem) :
+     Function.Injective χ.solsIncl := by
+-  sorry
++  intro S T h
++  have h' : χ.solsInclQuadSols S = χ.solsInclQuadSols T := by
++    apply ACCSystemQuad.quadSolsIncl_injective (χ := χ.toACCSystemQuad)
++    simpa [ACCSystem.solsIncl, MulActionHom.comp_apply] using h
++  exact (solsInclQuadSols_injective χ) h'
+ 
+ /-!
+ 
+
+commit aac039fac74025a125a2ba5cd899fea743bbf6ca
+Author: ValentinBredemestre <150029072+ValentinBredemestre@users.noreply.github.com>
+Date:   Sat Jan 10 18:15:36 2026 +0200
+
+    Remove sorry: prove quadSolsInclLinSols_injective (#896)
+    
+    This proves injectivity of quadSolsInclLinSols using extensionality of QuadSols.
+
+diff --git a/PhysLean/QFT/AnomalyCancellation/Basic.lean b/PhysLean/QFT/AnomalyCancellation/Basic.lean
+index 7cdec4cf..dd9e5c56 100644
+--- a/PhysLean/QFT/AnomalyCancellation/Basic.lean
++++ b/PhysLean/QFT/AnomalyCancellation/Basic.lean
+@@ -360,10 +360,12 @@ def quadSolsInclLinSols (χ : ACCSystemQuad) : χ.QuadSols →[ℚ] χ.LinSols w
+   toFun := QuadSols.toLinSols
+   map_smul' _ _ := rfl
+ 
+-@[sorryful]
+ lemma quadSolsInclLinSols_injective (χ : ACCSystemQuad) :
+     Function.Injective χ.quadSolsInclLinSols := by
+-  sorry
++  intro S T h
++  ext
++  simpa [ACCSystemQuad.quadSolsInclLinSols] using
++    congrArg (fun X => X.val) h
+ 
+ /-!
+ 
+
+commit 0bd353e97d88e3b735c2a380f9e0d84569138e5d
+Author: ValentinBredemestre <150029072+ValentinBredemestre@users.noreply.github.com>
+Date:   Sat Jan 10 22:41:39 2026 +0200
+
+    Remove sorry: prove quadSolsIncl_injective (#897)
+    
+    * Remove sorry: prove quadSolsIncl_injective
+    
+    This proves injectivity of quadSolsIncl using injectivity of the composing inclusions.
+    
+    * Keep sorryful: quadSolsIncl_injective
+    
+    This lemma currently depends on results that are still marked sorryful in the codebase.
+    The `@[sorryful]` attribute is kept so that `sorry_lint` passes.
+    It can be removed once the upstream dependencies are fully resolved.
+
+diff --git a/PhysLean/QFT/AnomalyCancellation/Basic.lean b/PhysLean/QFT/AnomalyCancellation/Basic.lean
+index dd9e5c56..809cc1d1 100644
+--- a/PhysLean/QFT/AnomalyCancellation/Basic.lean
++++ b/PhysLean/QFT/AnomalyCancellation/Basic.lean
+@@ -399,7 +399,11 @@ def quadSolsIncl (χ : ACCSystemQuad) : χ.QuadSols →[ℚ] χ.Charges :=
+ @[sorryful]
+ lemma quadSolsIncl_injective (χ : ACCSystemQuad) :
+     Function.Injective χ.quadSolsIncl := by
+-  sorry
++  intro S T h
++  have h' : χ.quadSolsInclLinSols S = χ.quadSolsInclLinSols T := by
++    apply ACCSystemLinear.linSolsIncl_injective (χ := χ.toACCSystemLinear)
++    simpa [ACCSystemQuad.quadSolsIncl, MulActionHom.comp_apply] using h
++  exact quadSolsInclLinSols_injective χ h'
+ 
+ end ACCSystemQuad
+ 
+
+commit e5dbb974dcb4aca1e4be7b3f86ed1247d5e2b1ae
+Author: ValentinBredemestre <150029072+ValentinBredemestre@users.noreply.github.com>
+Date:   Sat Jan 10 22:41:50 2026 +0200
+
+    Remove sorry: prove solsInclQuadSols_injective (#898)
+    
+    This proves injectivity of solsInclQuadSols.
+
+diff --git a/PhysLean/QFT/AnomalyCancellation/Basic.lean b/PhysLean/QFT/AnomalyCancellation/Basic.lean
+index 809cc1d1..1bbe4803 100644
+--- a/PhysLean/QFT/AnomalyCancellation/Basic.lean
++++ b/PhysLean/QFT/AnomalyCancellation/Basic.lean
+@@ -492,10 +492,13 @@ def solsInclQuadSols (χ : ACCSystem) : χ.Sols →[ℚ] χ.QuadSols where
+   toFun := Sols.toQuadSols
+   map_smul' _ _ := rfl
+ 
+-@[sorryful]
+ lemma solsInclQuadSols_injective (χ : ACCSystem) :
+     Function.Injective χ.solsInclQuadSols := by
+-  sorry
++  intro S T h
++  apply Sols.ext
++  have hv : (χ.solsInclQuadSols S).val = (χ.solsInclQuadSols T).val :=
++    congrArg (fun X => X.val) h
++  simpa [ACCSystem.solsInclQuadSols] using hv
+ 
+ /-!
+ 
+
+commit a19ffbbabace48165f6540b9348a0c9fa2c2559f
+Author: ValentinBredemestre <150029072+ValentinBredemestre@users.noreply.github.com>
+Date:   Sat Jan 10 22:42:01 2026 +0200
+
+    Remove sorry: prove solsInclLinSols_injective (#899)
+    
+    * Remove sorry: prove solsInclLinSols_injective
+    
+    This proves injectivity of solsInclLinSols.
+    
+    * Keep sorryful: solsInclLinSols_injective
+    
+    This lemma currently depends on results that are still marked sorryful in the codebase.
+    The `@[sorryful]` attribute is kept so that `sorry_lint` passes.
+    It can be removed once the upstream dependencies are fully resolved.
+
+diff --git a/PhysLean/QFT/AnomalyCancellation/Basic.lean b/PhysLean/QFT/AnomalyCancellation/Basic.lean
+index 1bbe4803..51fd1e4b 100644
+--- a/PhysLean/QFT/AnomalyCancellation/Basic.lean
++++ b/PhysLean/QFT/AnomalyCancellation/Basic.lean
+@@ -512,7 +512,11 @@ def solsInclLinSols (χ : ACCSystem) : χ.Sols →[ℚ] χ.LinSols :=
+ @[sorryful]
+ lemma solsInclLinSols_injective (χ : ACCSystem) :
+     Function.Injective χ.solsInclLinSols := by
+-  sorry
++  intro S T h
++  have h' : χ.solsInclQuadSols S = χ.solsInclQuadSols T := by
++    apply ACCSystemQuad.quadSolsInclLinSols_injective (χ := χ.toACCSystemQuad)
++    simpa [ACCSystem.solsInclLinSols, MulActionHom.comp_apply] using h
++  exact solsInclQuadSols_injective χ h'
+ 
+ /-!
+ 
+
+commit 61a2303f40881e64633c1b04ae2f58b9a4970071
+Author: Joseph Tooby-Smith <72603918+jstoobysmith@users.noreply.github.com>
+Date:   Sun Jan 11 08:19:54 2026 +0000
+
+    fix: Linter error (#901)
+
+diff --git a/PhysLean/QFT/AnomalyCancellation/Basic.lean b/PhysLean/QFT/AnomalyCancellation/Basic.lean
+index 51fd1e4b..08b220d9 100644
+--- a/PhysLean/QFT/AnomalyCancellation/Basic.lean
++++ b/PhysLean/QFT/AnomalyCancellation/Basic.lean
+@@ -509,7 +509,6 @@ lemma solsInclQuadSols_injective (χ : ACCSystem) :
+ def solsInclLinSols (χ : ACCSystem) : χ.Sols →[ℚ] χ.LinSols :=
+   MulActionHom.comp χ.quadSolsInclLinSols χ.solsInclQuadSols
+ 
+-@[sorryful]
+ lemma solsInclLinSols_injective (χ : ACCSystem) :
+     Function.Injective χ.solsInclLinSols := by
+   intro S T h
+
+commit df9f0918de92cb953f56e17dcd0262368e724cab
+Author: Nicola Bernini <NicolaBernini@users.noreply.github.com>
+Date:   Sun Jan 11 10:07:27 2026 +0100
+
+    feat: Implementing TODO 6VZME Step 1 (the work seems to be pretty large so it has been divided to be done in multiple PRs) (#875)
+    
+    * feat: Implementing TODO 6VZME Step 1 (the work seems to be pretty large so it has been divided to be done in multiple PRs)
+    
+    * fix: Fixing Linter Related 100 characters limit per line
+    
+    * fix: Fixing Issue about signs
+    
+    * fix: Fixing Issue
+    
+    * fix: Applying fix
+    
+    * fix: Fix
+    
+    * fix: Fix
+    
+    * fix: Fix
+    
+    * fix: Fixing Review
+    
+    ---------
+    
+    Co-authored-by: jstoobysmith <72603918+jstoobysmith@users.noreply.github.com>
+
+diff --git a/PhysLean/ClassicalMechanics/HarmonicOscillator/Solution.lean b/PhysLean/ClassicalMechanics/HarmonicOscillator/Solution.lean
+index 0c0ec77e..202d0ee9 100644
+--- a/PhysLean/ClassicalMechanics/HarmonicOscillator/Solution.lean
++++ b/PhysLean/ClassicalMechanics/HarmonicOscillator/Solution.lean
+@@ -107,17 +107,112 @@ lemma InitialConditions.ext {IC₁ IC₂ : InitialConditions} (h1 : IC₁.x₀ =
+ ### A.2. Relation to other types of initial conditions
+ 
+ We relate the initial condition given by an initial position and an initial velocity
+-to other specifications of initial conditions. This is currently not implemented,
+-and is a TODO.
++to other specifications of initial conditions.
++
++In this section, we implement alternative ways to specify initial conditions for the harmonic
++oscillator. The standard `InitialConditions` type specifies position and velocity at time `t=0`,
++but in practice it is often useful to specify initial conditions at other times or in other forms.
++
++Currently implemented:
++- **Initial conditions at arbitrary time**: Specify position and velocity at any time `t₀`,
++  not necessarily at `t=0`.
++  This is useful for problems where the natural reference time is not zero.
++
++Future work (to be added in separate PRs):
++- Initial conditions from two positions at different times
++- Initial conditions from two velocities at different times
++- Amplitude-phase parametrization
++
++All alternative forms can be converted to the standard `InitialConditions` type via conversion
++functions, and we prove that the converted initial conditions produce trajectories that satisfy
++the original specifications.
++
++-/
++
++/-!
++
++#### A.2.1. Initial conditions at arbitrary time
++
++We define a type for initial conditions specified at an arbitrary time `t₀`, rather than at `t=0`.
++This is useful when the natural reference point for a problem is not at time zero.
++
++-/
++
++/-- Initial conditions for the harmonic oscillator specified at an arbitrary time `t₀`.
++
++  This structure allows specifying the position and velocity at any time `t₀`, not necessarily
++  at `t=0`. This is useful for problems where the natural reference time is not zero.
++
++  The conditions can be converted to the standard `InitialConditions` format (at `t=0`)
++  using the `toInitialConditions` function. -/
++structure InitialConditionsAtTime where
++  /-- The time at which the initial conditions are specified. -/
++  t₀ : Time
++  /-- The position at time t₀. -/
++  x_t₀ : EuclideanSpace ℝ (Fin 1)
++  /-- The velocity at time t₀. -/
++  v_t₀ : EuclideanSpace ℝ (Fin 1)
++
++/-!
++
++##### A.2.1.1. Extensionality lemma
++
++We prove an extensionality lemma for `InitialConditionsAtTime`.
+ 
+ -/
+ 
+-TODO "6VZME" "Implement other initial conditions. For example:
+-- initial conditions at a given time.
++@[ext]
++lemma InitialConditionsAtTime.ext {IC₁ IC₂ : InitialConditionsAtTime}
++    (h1 : IC₁.t₀ = IC₂.t₀) (h2 : IC₁.x_t₀ = IC₂.x_t₀) (h3 : IC₁.v_t₀ = IC₂.v_t₀) :
++    IC₁ = IC₂ := by
++  cases IC₁
++  cases IC₂
++  simp_all
++
++/-!
++
++##### A.2.1.2. Conversion to standard initial conditions
++
++We now define the conversion from `InitialConditionsAtTime` to the standard `InitialConditions`.
++
++The conversion works by "running the trajectory backward in time" from `t₀` to `0`.
++Given that we know `x(t₀)` and `v(t₀)`, we use the harmonic oscillator solution formula
++with time-reversal to determine what `x(0)` and `v(0)` must have been.
++
++Mathematically, if `x(t) = cos(ωt)·x₀ + (sin(ωt)/ω)·v₀`, then setting `t = t₀`:
++  `x(t₀) = cos(ωt₀)·x₀ + (sin(ωt₀)/ω)·v₀`
++  `v(t₀) = -ω·sin(ωt₀)·x₀ + cos(ωt₀)·v₀`
++
++Solving this linear system for `x₀` and `v₀` gives the formulas below.
++
++-/
++
++namespace InitialConditionsAtTime
++
++/-- Convert initial conditions at time `t₀` to standard initial conditions at `t=0`.
++
++  This conversion uses the harmonic oscillator solution formula with time-reversal.
++  The resulting `InitialConditions` will produce a trajectory that passes through
++  `x_t₀` with velocity `v_t₀` at time `t₀`.
++
++  See `toInitialConditions_trajectory_at_t₀` and `toInitialConditions_velocity_at_t₀` for
++  the correctness proofs. -/
++noncomputable def toInitialConditions (S : HarmonicOscillator)
++    (IC : InitialConditionsAtTime) : InitialConditions where
++  x₀ := cos (S.ω * IC.t₀) • IC.x_t₀ - (sin (S.ω * IC.t₀) / S.ω) • IC.v_t₀
++  v₀ := S.ω • sin (S.ω * IC.t₀) • IC.x_t₀ + cos (S.ω * IC.t₀) • IC.v_t₀
++
++/-!
++The correctness proofs showing that the conversion produces the expected trajectory
++are given later in section D.1, after the trajectory machinery has been defined.
++-/
++
++TODO "6VZME" "Implement other initial conditions (deferred to future PRs). For example:
+ - Two positions at different times.
+ - Two velocities at different times.
+-And convert them into the type `InitialConditions` above (which may need generalzing a bit
+-to make this possible)."
++And convert them into the type `InitialConditions` above."
++
++end InitialConditionsAtTime
+ 
+ /-!
+ 
+@@ -359,6 +454,64 @@ lemma trajectory_energy (IC : InitialConditions) : S.energy (IC.trajectory S) =
+   simp [energy, kineticEnergy, potentialEnergy]
+   ring
+ 
++end InitialConditions
++
++/-!
++
++## D.1. Correctness of InitialConditionsAtTime conversion
++
++We now prove the correctness lemmas for the `InitialConditionsAtTime.toInitialConditions`
++conversion function. These show that the conversion produces a trajectory that passes through
++the specified position and velocity at the specified time.
++
++-/
++
++namespace InitialConditionsAtTime
++
++/-- The trajectory resulting from `toInitialConditions` passes through the specified
++  position `x_t₀` at time `t₀`. -/
++@[simp]
++lemma toInitialConditions_trajectory_at_t₀ (S : HarmonicOscillator)
++    (IC : InitialConditionsAtTime) :
++    (IC.toInitialConditions S).trajectory S IC.t₀ = IC.x_t₀ := by
++  rw [InitialConditions.trajectory_eq, toInitialConditions]
++  ext i
++  simp only [PiLp.add_apply, PiLp.smul_apply, PiLp.sub_apply, smul_eq_mul]
++  have h1 : cos (S.ω * IC.t₀.val) ^ 2 + sin (S.ω * IC.t₀.val) ^ 2 = 1 :=
++    cos_sq_add_sin_sq (S.ω * IC.t₀.val)
++  field_simp [S.ω_neq_zero]
++  linear_combination S.ω * IC.x_t₀.ofLp i * h1
++
++/-- The trajectory resulting from `toInitialConditions` has the specified
++  velocity `v_t₀` at time `t₀`. -/
++@[simp]
++lemma toInitialConditions_velocity_at_t₀ (S : HarmonicOscillator)
++    (IC : InitialConditionsAtTime) :
++    ∂ₜ ((IC.toInitialConditions S).trajectory S) IC.t₀ = IC.v_t₀ := by
++  rw [InitialConditions.trajectory_velocity, toInitialConditions]
++  ext i
++  simp only [PiLp.add_apply, PiLp.smul_apply, PiLp.sub_apply, smul_eq_mul, neg_mul]
++  have h1 : cos (S.ω * IC.t₀.val) ^ 2 + sin (S.ω * IC.t₀.val) ^ 2 = 1 :=
++    cos_sq_add_sin_sq (S.ω * IC.t₀.val)
++  field_simp [S.ω_neq_zero]
++  linear_combination IC.v_t₀.ofLp i * h1
++
++/-- The energy of the trajectory at time `t₀` equals the energy computed from the
++  initial conditions at `t₀`. -/
++lemma toInitialConditions_energy_at_t₀ (S : HarmonicOscillator)
++    (IC : InitialConditionsAtTime) :
++    S.energy ((IC.toInitialConditions S).trajectory S) IC.t₀ =
++    1/2 * (S.m * ‖IC.v_t₀‖^2 + S.k * ‖IC.x_t₀‖^2) := by
++  unfold energy kineticEnergy potentialEnergy
++  simp only [toInitialConditions_trajectory_at_t₀, toInitialConditions_velocity_at_t₀]
++  rw [real_inner_self_eq_norm_sq, real_inner_self_eq_norm_sq]
++  simp only [smul_eq_mul]
++  ring
++
++end InitialConditionsAtTime
++
++namespace InitialConditions
++
+ /-!
+ 
+ ## E. The trajectories at zero velocity
+
+commit 4adeb42cb879d6ca4d6f97a8f93ad6af2df6523c
+Author: kastch <kastcheev.nb@gmail.com>
+Date:   Mon Jan 12 04:31:19 2026 -0300
+
+    Remove sorry: prove ClassicalMechanics.HarmonicOscillator.InitialConditions.trajectories_unique (#902)
+    
+    Co-authored-by: kastch <kastch>
+
+diff --git a/PhysLean/ClassicalMechanics/HarmonicOscillator/Solution.lean b/PhysLean/ClassicalMechanics/HarmonicOscillator/Solution.lean
+index 202d0ee9..b3005611 100644
+--- a/PhysLean/ClassicalMechanics/HarmonicOscillator/Solution.lean
++++ b/PhysLean/ClassicalMechanics/HarmonicOscillator/Solution.lean
+@@ -54,7 +54,7 @@ References for the classical harmonic oscillator include:
+ -/
+ 
+ namespace ClassicalMechanics
+-open Real Time
++open Real Time ContDiff
+ 
+ namespace HarmonicOscillator
+ 
+@@ -433,10 +433,179 @@ for the given initial conditions. This is currently a TODO.
+   Semiformal implementation:
+   - One may needed the added condition of smoothness on `x` here.
+   - `EquationOfMotion` needs defining before this can be proved. -/
+-@[sorryful]
+-lemma trajectories_unique (IC : InitialConditions) (x : Time → EuclideanSpace ℝ (Fin 1)) :
++lemma trajectories_unique (IC : InitialConditions) (x : Time → EuclideanSpace ℝ (Fin 1))
++    (hx : ContDiff ℝ ∞ x) :
+     S.EquationOfMotion x ∧ x 0 = IC.x₀ ∧ ∂ₜ x 0 = IC.v₀ →
+-    x = IC.trajectory S := by sorry
++    x = IC.trajectory S := by
++  intro h
++  rcases h with ⟨hEOM, hx0, hv0⟩
++
++  -- Newton form for x
++  have hNewt_x :
++      ∀ t, S.m • ∂ₜ (∂ₜ x) t = force S (x t) :=
++    (S.equationOfMotion_iff_newtons_2nd_law (xₜ := x) hx).1 hEOM
++
++  -- Newton form for the explicit trajectory
++  have hTrajContDiff : ContDiff ℝ ∞ (IC.trajectory S) := by
++    -- trajectory_contDiff already exists and is [fun_prop]
++    fun_prop
++
++  have hNewt_traj :
++      ∀ t, S.m • ∂ₜ (∂ₜ (IC.trajectory S)) t = force S ((IC.trajectory S) t) :=
++    (S.equationOfMotion_iff_newtons_2nd_law (xₜ := IC.trajectory S) hTrajContDiff).1
++      (trajectory_equationOfMotion S IC)
++
++  -- Define the difference y = x - traj
++  set y : Time → EuclideanSpace ℝ (Fin 1) := fun t => x t - IC.trajectory S t with hydef
++
++  have hyContDiff : ContDiff ℝ ∞ y := by
++    -- ContDiff closed under subtraction
++    simpa [hydef] using hx.sub hTrajContDiff
++
++  -- First derivative of y
++  have hy_deriv : ∂ₜ y = fun t => ∂ₜ x t - ∂ₜ (IC.trajectory S) t := by
++    funext t
++    -- same style as in trajectory_velocity: unfold Time.deriv and use fderiv_fun_sub
++    rw [hydef, Time.deriv]
++    -- ContDiff implies DifferentiableAt - use this explicitly since fun_prop can't infer it
++    -- ContDiff ℝ ∞ f implies ContDiffAt ℝ ∞ f t for any t
++    have hx_contDiffAt : ContDiffAt ℝ ∞ x t := hx.contDiffAt
++    have htraj_contDiffAt : ContDiffAt ℝ ∞ (IC.trajectory S) t := hTrajContDiff.contDiffAt
++    have hx_diff : DifferentiableAt ℝ x t :=
++      ContDiffAt.differentiableAt hx_contDiffAt (by norm_num : (1 : ℕ∞) ≤ ∞)
++    have htraj_diff : DifferentiableAt ℝ (IC.trajectory S) t :=
++      ContDiffAt.differentiableAt htraj_contDiffAt (by norm_num : (1 : ℕ∞) ≤ ∞)
++    rw [fderiv_fun_sub hx_diff htraj_diff]
++    simp only [ContinuousLinearMap.sub_apply, Time.deriv]
++
++  -- Second derivative of y
++  have hy_deriv2 :
++      ∂ₜ (∂ₜ y) = fun t => ∂ₜ (∂ₜ x) t - ∂ₜ (∂ₜ (IC.trajectory S)) t := by
++    funext t
++    rw [hy_deriv, Time.deriv]
++    -- now differentiate (∂ₜ x - ∂ₜ traj)
++    -- use differentiability of time-derivatives from ContDiff
++    have hx1 : Differentiable ℝ (fun t => ∂ₜ x t) :=
++      deriv_differentiable_of_contDiff x hx
++    have htr1 : Differentiable ℝ (fun t => ∂ₜ (IC.trajectory S) t) :=
++      deriv_differentiable_of_contDiff (IC.trajectory S) hTrajContDiff
++    -- Apply fderiv_fun_sub and use Time.deriv to convert back
++    -- Differentiable ℝ f means ∀ x, DifferentiableAt ℝ f x
++    -- In Mathlib, Differentiable is defined as ∀ x, DifferentiableAt, so we can apply directly
++    have hx1_at : DifferentiableAt ℝ (fun t => ∂ₜ x t) t := hx1 t
++    have htr1_at : DifferentiableAt ℝ (fun t => ∂ₜ (IC.trajectory S) t) t := htr1 t
++    rw [fderiv_fun_sub hx1_at htr1_at]
++    -- Now we need to show fderiv of (fun t => fderiv ℝ x t 1) equals fderiv of (∂ₜ x)
++    -- This follows from Time.deriv f t = fderiv ℝ f t 1
++    simp only [ContinuousLinearMap.sub_apply]
++    rw [Time.deriv, Time.deriv]
++
++  -- Newton form for y (linearity of force)
++  have hNewt_y : ∀ t, S.m • ∂ₜ (∂ₜ y) t = force S (y t) := by
++    intro t
++    have hy2t : ∂ₜ (∂ₜ y) t =
++        (∂ₜ (∂ₜ x) t - ∂ₜ (∂ₜ (IC.trajectory S)) t) := by
++      simpa using congrFun hy_deriv2 t
++
++    -- Expand and substitute Newton laws for x and traj, then fold back using force_eq_linear
++    calc
++      S.m • ∂ₜ (∂ₜ y) t
++          = S.m • (∂ₜ (∂ₜ x) t - ∂ₜ (∂ₜ (IC.trajectory S)) t) := by
++              simp [hy2t]
++      _   = (S.m • ∂ₜ (∂ₜ x) t) - (S.m • ∂ₜ (∂ₜ (IC.trajectory S)) t) := by
++              simp [smul_sub]
++      _   = force S (x t) - force S ((IC.trajectory S) t) := by
++              simp [hNewt_x t, hNewt_traj t]
++      _   = force S (y t) := by
++              -- force = -k•x, so it is linear: force(x) - force(traj) = force(x-traj)
++              -- and y t = x t - traj t by definition
++              simp [hydef, force_eq_linear, smul_sub]
++
++  -- Turn Newton form back into EquationOfMotion for y
++  have hEOM_y : S.EquationOfMotion y :=
++    (S.equationOfMotion_iff_newtons_2nd_law (xₜ := y) hyContDiff).2 hNewt_y
++
++  -- Initial conditions for y are zero
++  have hy0 : y 0 = 0 := by
++    -- y 0 = x 0 - traj 0 = IC.x₀ - IC.x₀
++    simp [hydef, hx0]
++
++  have hyv0 : ∂ₜ y 0 = 0 := by
++    -- ∂ₜ y 0 = ∂ₜ x 0 - ∂ₜ traj 0 = IC.v₀ - IC.v₀
++    rw [congr_fun hy_deriv 0]
++    rw [hv0, trajectory_velocity_at_zero S IC]
++    simp
++
++  -- Energy at time 0 is 0
++  have hE0 : S.energy y 0 = 0 := by
++    -- unfold energy, kinetic, potential and use hy0, hyv0
++    simp [HarmonicOscillator.energy, HarmonicOscillator.kineticEnergy,
++      HarmonicOscillator.potentialEnergy, hy0, hyv0, one_div, smul_eq_mul]
++
++  -- Energy is constant, hence always 0
++  have hE : ∀ t, S.energy y t = 0 := by
++    intro t
++    have ht := S.energy_conservation_of_equationOfMotion' (xₜ := y) hyContDiff hEOM_y t
++    simpa [hE0] using ht
++
++  -- From energy=0 and positivity => y(t)=0
++  have hy_all : ∀ t, y t = 0 := by
++    intro t
++    have hEt : S.energy y t = 0 := hE t
++
++    have hk_nonneg : 0 ≤ S.kineticEnergy y t := by
++      unfold HarmonicOscillator.kineticEnergy
++      have hcoeff : 0 ≤ (1 / (2 : ℝ)) * S.m := by
++        exact mul_nonneg (by norm_num) (le_of_lt S.m_pos)
++      -- Use the same approach as for potential energy below
++      have hin : 0 ≤ inner ℝ (∂ₜ y t) (∂ₜ y t) := by
++        -- For EuclideanSpace ℝ (Fin 1), inner product with itself is nonnegative
++        exact real_inner_self_nonneg (x := ∂ₜ y t)
++      exact mul_nonneg hcoeff hin
++
++    have hp_nonneg : 0 ≤ S.potentialEnergy (y t) := by
++      unfold HarmonicOscillator.potentialEnergy
++      -- potentialEnergy = (1/2) * k * ⟪y,y⟫
++      simp only [one_div, smul_eq_mul]
++      -- Goal is 0 ≤ 2⁻¹ * (S.k * inner ℝ (y t) (y t))
++      apply mul_nonneg
++      · norm_num -- 0 ≤ 2⁻¹
++      · -- 0 ≤ S.k * inner ℝ (y t) (y t)
++        have hk_pos : 0 ≤ S.k := le_of_lt S.k_pos
++        have hin : 0 ≤ inner ℝ (y t) (y t) := by
++          -- For EuclideanSpace ℝ (Fin 1), inner product with itself is nonnegative
++          exact real_inner_self_nonneg (x := y t)
++        exact mul_nonneg hk_pos hin
++
++    have hp_le : S.potentialEnergy (y t) ≤ S.energy y t := by
++      unfold HarmonicOscillator.energy
++      exact le_add_of_nonneg_left hk_nonneg
++
++    have hp0 : S.potentialEnergy (y t) = 0 := by
++      have : S.potentialEnergy (y t) ≤ 0 := by
++        calc
++          S.potentialEnergy (y t) ≤ S.energy y t := hp_le
++          _ = 0 := hEt
++      exact le_antisymm this hp_nonneg
++
++    -- extract ⟪y,y⟫ = 0 from potentialEnergy = 0, then y=0
++    have hy_inner0 : inner ℝ (y t) (y t) = 0 := by
++      -- potentialEnergy = (1/2) * k * ⟪y,y⟫
++      have hmul : ((1 / (2 : ℝ)) * S.k) * inner ℝ (y t) (y t) = 0 := by
++        simpa [HarmonicOscillator.potentialEnergy, one_div, smul_eq_mul, mul_assoc] using hp0
++      have hcoeff : ((1 / (2 : ℝ)) * S.k) ≠ 0 := by
++        exact mul_ne_zero (by norm_num) (S.k_neq_zero)
++      rcases mul_eq_zero.mp hmul with hcoeff0 | hinner
++      · exact (False.elim (hcoeff hcoeff0))
++      · exact hinner
++
++    exact (inner_self_eq_zero.mp hy_inner0)
++
++  -- Conclude x = traj
++  funext t
++  have : y t = 0 := hy_all t
++  -- y t = x t - traj t
++  simpa [hydef] using (sub_eq_zero.mp this)
+ 
+ /-!
+ 
+
+commit e96fa6c17ca75896177ea1ffd0290dbcb889caa6
+Author: ValentinBredemestre <150029072+ValentinBredemestre@users.noreply.github.com>
+Date:   Wed Jan 14 08:09:17 2026 +0200
+
+    TODO 6VZMW Add topological derivation interface for anomaly cancellation conditions (#900)
+    
+    * Add topological derivation interface for anomaly cancellation conditions
+    
+    Introduce a `TopologicalDerivation` structure recording anomaly cancellation conditions
+    as linear, quadratic and cubic homogeneous forms arising from a formal derivation
+    (e.g. triangle diagrams or index-theoretic methods).
+    
+    Provide a canonical map from `TopologicalDerivation` to `ACCSystem`, together with
+    basic simp lemmas, and update the document structure accordingly.
+    
+    * Record topological origin of anomaly cancellation conditions
+    
+    Introduce `TopologicalDerivation` as a lightweight abbreviation for `ACCSystem`,
+    used to record the intended topological or perturbative origin of anomaly
+    cancellation conditions (e.g. via triangle diagrams or index-theoretic methods).
+    
+    This avoids duplicating the structure of `ACCSystem` while addressing the
+    corresponding TODO item.
+    
+    * Clarify formal origin of anomaly cancellation conditions in documentation
+    
+    Expand the documentation of `ACCSystem` and the Open TODO section to clarify that
+    anomaly cancellation conditions are intended to arise from formal derivations
+    (e.g. via triangle Feynman diagrams or index-theoretic methods).
+    
+    No new definitions are introduced; the corresponding TODO item is kept open.
+
+diff --git a/PhysLean/QFT/AnomalyCancellation/Basic.lean b/PhysLean/QFT/AnomalyCancellation/Basic.lean
+index 08b220d9..9462c14f 100644
+--- a/PhysLean/QFT/AnomalyCancellation/Basic.lean
++++ b/PhysLean/QFT/AnomalyCancellation/Basic.lean
+@@ -416,7 +416,16 @@ in the rational charges. This corresponds to the `u(1)^3` anomaly.
+ 
+ -/
+ 
+-/-- The type of charges plus the anomaly cancellation conditions. -/
++/--
++The type of charges plus the anomaly cancellation conditions.
++
++In many physical settings these conditions are derived formally from the gauge group and the
++fermionic representations. They arise from triangle Feynman diagrams, and can also be obtained
++using index-theoretic or characteristic-class constructions.
++
++In this file, we take the resulting conditions as input data: linear, quadratic and cubic
++homogeneous forms on the space of rational charges.
++-/
+ structure ACCSystem extends ACCSystemQuad where
+   /-- The cubic ACC. -/
+   cubicACC : HomogeneousCubic toACCSystemCharges.Charges
+@@ -577,6 +586,12 @@ end ACCSystem
+ 
+ We give some open TODO items for future work.
+ 
++One natural direction is to formalize how the anomaly cancellation conditions defining an
++`ACCSystem` arise from gauge-theoretic data (a gauge group together with fermionic representations).
++Physically these arise from triangle Feynman diagrams, and can also be described via index-theoretic
++or characteristic-class constructions (e.g. through an anomaly polynomial). At present we do not
++formalize this derivation in Lean, and instead take the resulting homogeneous forms as data.
++
+ (To view these you may need to go to the GitHub source code for the file.)
+ 
+ -/
+
+commit 901256f34bada179a80d0ab2633bf8a852490e52
+Author: kastch <kastcheev.nb@gmail.com>
+Date:   Wed Jan 14 06:06:48 2026 -0300
+
+    Remove sorry: prove ClassicalMechanics.Lagrangian.isTotalTimeDerivativeVelocity (#903)
+    
+    Co-authored-by: kastch <kastch>
+
+diff --git a/PhysLean/ClassicalMechanics/Lagrangian/TotalDerivativeEquivalence.lean b/PhysLean/ClassicalMechanics/Lagrangian/TotalDerivativeEquivalence.lean
+index 230583c8..a18cc015 100644
+--- a/PhysLean/ClassicalMechanics/Lagrangian/TotalDerivativeEquivalence.lean
++++ b/PhysLean/ClassicalMechanics/Lagrangian/TotalDerivativeEquivalence.lean
+@@ -102,13 +102,68 @@ When δL depends only on velocity (the free particle case), the condition simpli
+ 
+     WLOG, we assume `δL 0 = 0` since constants are total derivatives (c = d/dt(c·t))
+     and can be absorbed without affecting the equations of motion. -/
+-@[sorryful]
+ lemma isTotalTimeDerivativeVelocity {n : ℕ}
+     (δL : EuclideanSpace ℝ (Fin n) → ℝ)
+     (hδL0 : δL 0 = 0)
+     (h : IsTotalTimeDerivative (fun _ v _ => δL v)) :
+     ∃ g : EuclideanSpace ℝ (Fin n), ∀ v, δL v = ⟪g, v⟫_ℝ := by
+-  sorry
++  classical
++  rcases h with ⟨F, hFdiff, hEq⟩
++
++  -- Derivative of F at (0,0)
++  let dF : (EuclideanSpace ℝ (Fin n) × ℝ) →L[ℝ] ℝ :=
++    fderiv ℝ F ((0 : EuclideanSpace ℝ (Fin n)), (0 : ℝ))
++
++  -- The "time-direction" derivative must vanish because δL 0 = 0.
++  have h_time : dF ((0 : EuclideanSpace ℝ (Fin n)), (1 : ℝ)) = 0 := by
++    have h0 :
++        δL (0 : EuclideanSpace ℝ (Fin n)) =
++          fderiv ℝ F ((0 : EuclideanSpace ℝ (Fin n)), (0 : ℝ))
++            ((0 : EuclideanSpace ℝ (Fin n)), (1 : ℝ)) := by
++      simpa using (hEq (0 : EuclideanSpace ℝ (Fin n))
++        (0 : EuclideanSpace ℝ (Fin n)) (0 : ℝ))
++    have : dF ((0 : EuclideanSpace ℝ (Fin n)), (1 : ℝ)) =
++        δL (0 : EuclideanSpace ℝ (Fin n)) := by
++      simpa [dF] using h0.symm
++    simpa [hδL0] using this
++
++  -- Induced continuous linear functional on velocity: v ↦ dF (v,0).
++  let φ : (EuclideanSpace ℝ (Fin n)) →L[ℝ] ℝ :=
++    dF.comp (ContinuousLinearMap.inl ℝ (EuclideanSpace ℝ (Fin n)) ℝ)
++
++  -- Show δL v = φ v for all v.
++  have hφ : ∀ v : EuclideanSpace ℝ (Fin n), δL v = φ v := by
++    intro v
++    have hv :
++        δL v =
++          fderiv ℝ F ((0 : EuclideanSpace ℝ (Fin n)), (0 : ℝ))
++            (v, (1 : ℝ)) := by
++      simpa using (hEq (0 : EuclideanSpace ℝ (Fin n)) v (0 : ℝ))
++    have hv' : δL v = dF (v, (1 : ℝ)) := by
++      simpa [dF] using hv
++    calc
++      δL v = dF (v, (1 : ℝ)) := hv'
++      _ = dF ((v, (0 : ℝ)) + ((0 : EuclideanSpace ℝ (Fin n)), (1 : ℝ))) := by
++        simp
++      _ = dF (v, (0 : ℝ)) + dF ((0 : EuclideanSpace ℝ (Fin n)), (1 : ℝ)) := by
++        simpa using
++          (dF.map_add (v, (0 : ℝ)) ((0 : EuclideanSpace ℝ (Fin n)), (1 : ℝ)))
++      _ = dF (v, (0 : ℝ)) := by
++        simp [h_time]
++      _ = φ v := by
++        simp [φ]
++
++  -- Frechet–Riesz: represent φ as inner product with some g.
++  refine ⟨(InnerProductSpace.toDual ℝ (EuclideanSpace ℝ (Fin n))).symm φ, ?_⟩
++  intro v
++  have hinner :
++      ⟪(InnerProductSpace.toDual ℝ (EuclideanSpace ℝ (Fin n))).symm φ, v⟫_ℝ = φ v := by
++    rw [InnerProductSpace.toDual_symm_apply (𝕜 := ℝ)
++        (E := EuclideanSpace ℝ (Fin n)) (x := v) (y := φ)]
++  calc
++    δL v = φ v := hφ v
++    _ = ⟪(InnerProductSpace.toDual ℝ (EuclideanSpace ℝ (Fin n))).symm φ, v⟫_ℝ := by
++      rw [hinner.symm]
+ 
+ end Lagrangian
+ 
+
+commit e35b4702bcbab7d6ba4450e055453e6a8e15cf50
+Author: Joseph Tooby-Smith <72603918+jstoobysmith@users.noreply.github.com>
+Date:   Wed Jan 14 12:51:23 2026 +0000
+
+    Revise project aims to detailed requirements (#904)
+    
+    * Revise project aims to detailed requirements
+    
+    Updated project aims to requirements and detailed objectives.
+    
+    * refactor: Fix spelling
+
+diff --git a/README.md b/README.md
+index b768cf75..2792365f 100644
+--- a/README.md
++++ b/README.md
+@@ -27,15 +27,19 @@
+ </div>
+ 
+ 
+-## Aims of this project
++## Requirements of the project
++
++🎯 The project shall contain results (definitions, theorems, lemmas and calculations) from **physics** formalized (or **digitalized**) into the interactive theorem prover **Lean 4**.
++🎯 The project shall be **organized** by **physics**.
++🎯 Each definition in the project shall carry a physics-based **documentation**.
++🎯 Each module (file) in the project shall carry a physics-based **documentation**.
++🎯 The project shall contain Physics Lean **tactics**, **notation** and **syntax** for physicists.
++🎯 The project shall *not* be tied to physics axiomizations (e.g. axiomatic QFT), but rather lexiable enough to accommodate different approaches and starting points.
++🎯 The content of the project shall be carefully **reviewed** and curated, to ensure reusability, readability and fit.
++🎯 The project shall be completely open-source, community run and independent from any company or organization.
++🎯 The project shall not be tied to any specific AI model or tool.
++🎯 The project shall be for **main-stream** physics only.
+ 
+-🎯 __Digitalize__ results (meaning calculations, definitions, and theorems) from physics
+-into Lean 4.
+-
+-🎯 Develop structures to aid the __creation__ of new results in physics using Lean,
+-  with the potential future use of AI.
+-
+-🎯 Create good documentation so that the project can be used for __pedagogical__ purposes.
+ 
+ ## How to get involved
+ 
+
+commit d632d75345596a151e9a1c1c355cdd37a9ae57a1
+Author: Joseph Tooby-Smith <72603918+jstoobysmith@users.noreply.github.com>
+Date:   Thu Jan 15 16:04:45 2026 +0000
+
+    Update project requirements in README.md (#910)
+
+diff --git a/README.md b/README.md
+index 2792365f..a456acf8 100644
+--- a/README.md
++++ b/README.md
+@@ -30,14 +30,23 @@
+ ## Requirements of the project
+ 
+ 🎯 The project shall contain results (definitions, theorems, lemmas and calculations) from **physics** formalized (or **digitalized**) into the interactive theorem prover **Lean 4**.
++
+ 🎯 The project shall be **organized** by **physics**.
++
+ 🎯 Each definition in the project shall carry a physics-based **documentation**.
++
+ 🎯 Each module (file) in the project shall carry a physics-based **documentation**.
++
+ 🎯 The project shall contain Physics Lean **tactics**, **notation** and **syntax** for physicists.
++
+ 🎯 The project shall *not* be tied to physics axiomizations (e.g. axiomatic QFT), but rather lexiable enough to accommodate different approaches and starting points.
++
+ 🎯 The content of the project shall be carefully **reviewed** and curated, to ensure reusability, readability and fit.
++
+ 🎯 The project shall be completely open-source, community run and independent from any company or organization.
++
+ 🎯 The project shall not be tied to any specific AI model or tool.
++
+ 🎯 The project shall be for **main-stream** physics only.
+ 
+ 
+
+commit c6352531bbf5a110edde4d6ca85462c8bd571b3e
+Author: Joseph Tooby-Smith <72603918+jstoobysmith@users.noreply.github.com>
+Date:   Mon Jan 19 06:20:30 2026 +0000
+
+    feat: Some clean up of damped HO (#914)
+    
+    * feat: Some clean up of damped HO
+    
+    * Update Basic.lean
+
+diff --git a/PhysLean/ClassicalMechanics/DampedHarmonicOscillator/Basic.lean b/PhysLean/ClassicalMechanics/DampedHarmonicOscillator/Basic.lean
+index 5cb1e8a0..bc7a96e1 100644
+--- a/PhysLean/ClassicalMechanics/DampedHarmonicOscillator/Basic.lean
++++ b/PhysLean/ClassicalMechanics/DampedHarmonicOscillator/Basic.lean
+@@ -69,10 +69,6 @@ open InnerProductSpace
+ TODO "DHO01" "Define the DampedHarmonicOscillator structure with mass m, spring constant k,
+   and damping coefficient γ."
+ 
+-TODO "DHO02" "Define the three damping regimes: underdamped, critically damped, and overdamped."
+-
+-TODO "DHO03" "Define the equation of motion for the damped harmonic oscillator."
+-
+ TODO "DHO04" "Prove that energy is not conserved and derive the energy dissipation rate."
+ 
+ TODO "DHO05" "Derive solutions for the underdamped case (oscillatory with exponential decay)."
+@@ -141,8 +137,6 @@ lemma ω₀_sq : S.ω₀^2 = S.k / S.m := by
+   rw [ω₀, sq_sqrt]
+   exact div_nonneg (le_of_lt S.k_pos) (le_of_lt S.m_pos)
+ 
+-/-!
+-
+ /-!
+ ## C. Equation of motion (Tag: DHO03)
+ 
+@@ -191,11 +185,17 @@ the energy is not conserved, and the energy dissipation rate is
+ proportional to the squared velocity.
+ -/
+ 
++/-- The kinetic energy of the damped harmonic oscillator. -/
++noncomputable def kineticEnergy (x : Time → ℝ) : Time → ℝ :=
++  fun t => (1 / 2 : ℝ) * S.m * (Time.deriv x t)^2
++
++/-- The potential energy of the damped harmonic oscillator. -/
++noncomputable def potentialEnergy (x : Time → ℝ) : Time → ℝ :=
++  fun t => (1 / 2 : ℝ) * S.k * (x t)^2
++
+ /-- Mechanical energy of the damped harmonic oscillator. -/
+ noncomputable def energy (x : Time → ℝ) : Time → ℝ :=
+-  fun t =>
+-    (1 / 2 : ℝ) * S.m * (Time.deriv x t)^2 +
+-    (1 / 2 : ℝ) * S.k * (x t)^2
++  S.kineticEnergy x + S.potentialEnergy x
+ 
+ /-- Energy dissipation rate along a trajectory `x : Time → ℝ`.
+ 
+@@ -207,7 +207,9 @@ so the energy is non-increasing and not conserved when `S.γ > 0`. -/
+ noncomputable def energyDissipationRate (x : Time → ℝ) : Time → ℝ :=
+   fun t => - S.γ * (Time.deriv x t)^2
+ 
+-## C. Damping regimes (placeholder)
++/-!
++
++## E. Damping regimes (placeholder)
+ 
+ The three damping regimes will be defined based on the discriminant γ² - 4mk.
+ 
+
+commit cee04e4734322c33df7de072c72cea429846091f
+Author: Adomas Baliuka <52975890+adomasbaliuka@users.noreply.github.com>
+Date:   Mon Jan 19 11:57:26 2026 +0100
+
+    adds API-Docs badge to README (#915)
+    
+    * adds API-Docs badge to README
+    
+    * fix badge colors
+
+diff --git a/README.md b/README.md
+index a456acf8..6f82ba3a 100644
+--- a/README.md
++++ b/README.md
+@@ -19,10 +19,11 @@
+ [![](https://img.shields.io/badge/PhysLean-Search-purple)](https://loogle.physlean.com)
+ [![](https://img.shields.io/badge/PhysLean-Online-purple)](https://live.physlean.com)
+ 
+- [![](https://img.shields.io/badge/View_The-Stats-blue)](https://physlean.com/Stats)
++[![](https://img.shields.io/badge/View_The-Stats-blue)](https://physlean.com/Stats)
+ [![](https://img.shields.io/badge/Lean-v4.26.0-blue)](https://github.com/leanprover/lean4/releases/tag/v4.26.0)
+ [![Gitpod Ready-to-Code](https://img.shields.io/badge/Gitpod-ready--to--code-blue?logo=gitpod)](https://gitpod.io/#https://github.com/HEPLean/HepLean)
+ [![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/HEPLean/PhysLean)
++[![api_docs](https://img.shields.io/badge/doc-API_docs-blue)](https://physlean.com/docs/)
+ 
+ </div>
+ 
+
+commit d646d1f36f9f471efbdd47e5bdb26f29301aabd0
+Author: Joseph Tooby-Smith <72603918+jstoobysmith@users.noreply.github.com>
+Date:   Tue Jan 20 14:48:13 2026 +0000
+
+    feat: Updates to THDM (#916)
+    
+    * feat: Updates to THDM
+    
+    * feat: Improvements to THDM
+    
+    * refactor: Lint
+
+diff --git a/PhysLean.lean b/PhysLean.lean
+index e75f420f..3d74d903 100644
+--- a/PhysLean.lean
++++ b/PhysLean.lean
+@@ -108,7 +108,7 @@ import PhysLean.Particles.BeyondTheStandardModel.RHN.AnomalyCancellation.PlusU1.
+ import PhysLean.Particles.BeyondTheStandardModel.RHN.AnomalyCancellation.PlusU1.QuadSolToSol
+ import PhysLean.Particles.BeyondTheStandardModel.Spin10.Basic
+ import PhysLean.Particles.BeyondTheStandardModel.TwoHDM.Basic
+-import PhysLean.Particles.BeyondTheStandardModel.TwoHDM.GaugeOrbits
++import PhysLean.Particles.BeyondTheStandardModel.TwoHDM.GramMatrix
+ import PhysLean.Particles.BeyondTheStandardModel.TwoHDM.Potential
+ import PhysLean.Particles.FlavorPhysics.CKMMatrix.Basic
+ import PhysLean.Particles.FlavorPhysics.CKMMatrix.Invariants
+diff --git a/PhysLean/ClassicalMechanics/DampedHarmonicOscillator/Basic.lean b/PhysLean/ClassicalMechanics/DampedHarmonicOscillator/Basic.lean
+index bc7a96e1..e52d2027 100644
+--- a/PhysLean/ClassicalMechanics/DampedHarmonicOscillator/Basic.lean
++++ b/PhysLean/ClassicalMechanics/DampedHarmonicOscillator/Basic.lean
+@@ -6,8 +6,6 @@ Authors: Nicola Bernini
+ import PhysLean.Meta.Informal.SemiFormal
+ import PhysLean.ClassicalMechanics.EulerLagrange
+ import PhysLean.ClassicalMechanics.HamiltonsEquations
+-import PhysLean.SpaceAndTime.Time.Derivatives
+-
+ /-!
+ 
+ # The Damped Harmonic Oscillator
+@@ -25,9 +23,9 @@ m ẍ + γ ẋ + k x = 0
+ 
+ Depending on the relationship between the damping coefficient and the natural frequency,
+ the system exhibits three different behaviors:
+-- **Underdamped** (γ² < 4mk): Oscillatory motion with exponentially decaying amplitude
+-- **Critically damped** (γ² = 4mk): Fastest return to equilibrium without oscillation
+-- **Overdamped** (γ² > 4mk): Slow return to equilibrium without oscillation
++- **Underdamped** (γ² < 4mk) : Oscillatory motion with exponentially decaying amplitude
++- **Critically damped** (γ² = 4mk) : Fastest return to equilibrium without oscillation
++- **Overdamped** (γ² > 4mk) : Slow return to equilibrium without oscillation
+ 
+ ## ii. Key results
+ 
+@@ -199,7 +197,7 @@ noncomputable def energy (x : Time → ℝ) : Time → ℝ :=
+ 
+ /-- Energy dissipation rate along a trajectory `x : Time → ℝ`.
+ 
+- if `x` satisfies `S.equationOfMotion x`, then
++  if `x` satisfies `S.equationOfMotion x`, then
+ 
+   Time.deriv (S.energy x) t = - S.γ * (Time.deriv x t)^2,
+ 
+@@ -227,7 +225,6 @@ def IsCriticallyDamped : Prop := S.discriminant = 0
+ /-- The system is overdamped when γ² > 4mk. -/
+ def IsOverdamped : Prop := S.discriminant > 0
+ 
+-
+ end DampedHarmonicOscillator
+ 
+ end ClassicalMechanics
+diff --git a/PhysLean/ClassicalMechanics/HarmonicOscillator/Solution.lean b/PhysLean/ClassicalMechanics/HarmonicOscillator/Solution.lean
+index b3005611..ff1ea0c2 100644
+--- a/PhysLean/ClassicalMechanics/HarmonicOscillator/Solution.lean
++++ b/PhysLean/ClassicalMechanics/HarmonicOscillator/Solution.lean
+@@ -118,7 +118,7 @@ Currently implemented:
+   not necessarily at `t=0`.
+   This is useful for problems where the natural reference time is not zero.
+ 
+-Future work (to be added in separate PRs):
++Future work (to be added in separate PRs) :
+ - Initial conditions from two positions at different times
+ - Initial conditions from two velocities at different times
+ - Amplitude-phase parametrization
+@@ -512,11 +512,11 @@ lemma trajectories_unique (IC : InitialConditions) (x : Time → EuclideanSpace
+       S.m • ∂ₜ (∂ₜ y) t
+           = S.m • (∂ₜ (∂ₜ x) t - ∂ₜ (∂ₜ (IC.trajectory S)) t) := by
+               simp [hy2t]
+-      _   = (S.m • ∂ₜ (∂ₜ x) t) - (S.m • ∂ₜ (∂ₜ (IC.trajectory S)) t) := by
++      _ = (S.m • ∂ₜ (∂ₜ x) t) - (S.m • ∂ₜ (∂ₜ (IC.trajectory S)) t) := by
+               simp [smul_sub]
+-      _   = force S (x t) - force S ((IC.trajectory S) t) := by
++      _ = force S (x t) - force S ((IC.trajectory S) t) := by
+               simp [hNewt_x t, hNewt_traj t]
+-      _   = force S (y t) := by
++      _ = force S (y t) := by
+               -- force = -k•x, so it is linear: force(x) - force(traj) = force(x-traj)
+               -- and y t = x t - traj t by definition
+               simp [hydef, force_eq_linear, smul_sub]
+diff --git a/PhysLean/ClassicalMechanics/Lagrangian/TotalDerivativeEquivalence.lean b/PhysLean/ClassicalMechanics/Lagrangian/TotalDerivativeEquivalence.lean
+index a18cc015..a3f2679b 100644
+--- a/PhysLean/ClassicalMechanics/Lagrangian/TotalDerivativeEquivalence.lean
++++ b/PhysLean/ClassicalMechanics/Lagrangian/TotalDerivativeEquivalence.lean
+@@ -3,12 +3,7 @@ Copyright (c) 2025 Rein Zustand. All rights reserved.
+ Released under Apache 2.0 license as described in the file LICENSE.
+ Authors: Rein Zustand
+ -/
+-import Mathlib.Analysis.InnerProductSpace.EuclideanDist
+-import Mathlib.Analysis.InnerProductSpace.PiL2
+-import Mathlib.Topology.MetricSpace.Basic
+-import Mathlib.Analysis.Calculus.Deriv.Basic
+ import PhysLean.Mathematics.VariationalCalculus.HasVarGradient
+-
+ /-!
+ 
+ # Equivalent Lagrangians under Total Derivatives
+diff --git a/PhysLean/Electromagnetism/Dynamics/IsExtrema.lean b/PhysLean/Electromagnetism/Dynamics/IsExtrema.lean
+index b650449e..6dc89a12 100644
+--- a/PhysLean/Electromagnetism/Dynamics/IsExtrema.lean
++++ b/PhysLean/Electromagnetism/Dynamics/IsExtrema.lean
+@@ -302,7 +302,7 @@ lemma time_deriv_electricField_of_isExtrema {A : ElectromagneticPotential d}
+ We show that the magnetic field matrix $B_{ij}$ satisfies the following wave-like equation
+ 
+ $$\frac{\partial^2 B_{ij}}{\partial t^2} = c^2 \sum_k \frac{\partial^2 B_{ij}}{\partial x_k^2} +
+-  \frac{1}{\epsilon_0} \left( \frac{\partial J_i}{\partial x_j} -
++  \frac{1}{\epsilon_0} \left(\frac{\partial J_i}{\partial x_j} -
+   \frac{\partial J_j}{\partial x_i} \right).$$
+ When the free current density is zero, this reduces to the wave equation.
+ -/
+diff --git a/PhysLean/Particles/BeyondTheStandardModel/TwoHDM/Basic.lean b/PhysLean/Particles/BeyondTheStandardModel/TwoHDM/Basic.lean
+index 883637c0..c4833f8c 100644
+--- a/PhysLean/Particles/BeyondTheStandardModel/TwoHDM/Basic.lean
++++ b/PhysLean/Particles/BeyondTheStandardModel/TwoHDM/Basic.lean
+@@ -4,12 +4,24 @@ Released under Apache 2.0 license as described in the file LICENSE.
+ Authors: Joseph Tooby-Smith
+ -/
+ import PhysLean.Particles.StandardModel.HiggsBoson.Potential
++import Mathlib.Analysis.Matrix.Normed
++import Mathlib.Analysis.Matrix.Order
+ /-!
+ 
+ # The Two Higgs Doublet Model
+ 
+ The two Higgs doublet model is the standard model plus an additional Higgs doublet.
+ 
++## i. Overview
++
++The two Higgs doublet model (2HDM) is an extension of the Standard Model which adds a second Higgs
++doublet.
++
++## References
++
++- https://arxiv.org/abs/hep-ph/0605184
++- https://arxiv.org/abs/1605.03237
++
+ -/
+ 
+ open StandardModel
+@@ -20,9 +32,47 @@ open StandardModel
+ 
+ -/
+ 
+-/-- The configuration space of the two Higgs doublet model. -/
++/-- The configuration space of the two Higgs doublet model.
++  In otherwords, the underlying vector space associated with the model. -/
+ structure TwoHiggsDoublet where
+   /-- The first Higgs doublet. -/
+   Φ1 : HiggsVec
+   /-- The second Higgs doublet. -/
+   Φ2 : HiggsVec
++
++namespace TwoHiggsDoublet
++
++open InnerProductSpace
++
++@[ext]
++lemma ext_of_fst_snd {H1 H2 : TwoHiggsDoublet}
++    (h1 : H1.Φ1 = H2.Φ1) (h2 : H1.Φ2 = H2.Φ2) : H1 = H2 := by
++  cases H1
++  cases H2
++  congr
++/-!
++
++## B. Gauge group actions
++
++-/
++
++noncomputable instance : SMul StandardModel.GaugeGroupI TwoHiggsDoublet where
++  smul g H :=
++    { Φ1 := g • H.Φ1
++      Φ2 := g • H.Φ2 }
++
++@[simp]
++lemma gaugeGroupI_smul_fst (g : StandardModel.GaugeGroupI) (H : TwoHiggsDoublet) :
++    (g • H).Φ1 = g • H.Φ1 := rfl
++
++@[simp]
++lemma gaugeGroupI_smul_snd (g : StandardModel.GaugeGroupI) (H : TwoHiggsDoublet) :
++    (g • H).Φ2 = g • H.Φ2 := rfl
++
++noncomputable instance : MulAction StandardModel.GaugeGroupI TwoHiggsDoublet where
++  one_smul H := by
++    ext <;> simp
++  mul_smul g1 g2 H := by
++    ext <;> simp [mul_smul]
++
++end TwoHiggsDoublet
+diff --git a/PhysLean/Particles/BeyondTheStandardModel/TwoHDM/GaugeOrbits.lean b/PhysLean/Particles/BeyondTheStandardModel/TwoHDM/GaugeOrbits.lean
+deleted file mode 100644
+index 0b181a2c..00000000
+--- a/PhysLean/Particles/BeyondTheStandardModel/TwoHDM/GaugeOrbits.lean
++++ /dev/null
+@@ -1,109 +0,0 @@
+-/-
+-Copyright (c) 2024 Joseph Tooby-Smith. All rights reserved.
+-Released under Apache 2.0 license as described in the file LICENSE.
+-Authors: Joseph Tooby-Smith
+--/
+-import Mathlib.Analysis.Matrix.Normed
+-import PhysLean.Particles.StandardModel.HiggsBoson.Basic
+-import Mathlib.Analysis.Matrix.Order
+-/-!
+-
+-# Gauge orbits for the 2HDM
+-
+-The main reference for material in this section is https://arxiv.org/pdf/hep-ph/0605184.
+-
+--/
+-
+-namespace TwoHDM
+-
+-open StandardModel
+-open ComplexConjugate
+-open HiggsField
+-open Manifold
+-open Matrix
+-open Complex
+-open SpaceTime
+-
+-noncomputable section
+-open InnerProductSpace
+-
+-/-- For two Higgs fields `Φ₁` and `Φ₂`, the map from space time to 2 x 2 complex matrices
+-  defined by `((Φ₁^†Φ₁, Φ₂^†Φ₁), (Φ₁^†Φ₂, Φ₂^†Φ₂))`. -/
+-def prodMatrix (Φ1 Φ2 : HiggsField) (x : SpaceTime) : Matrix (Fin 2) (Fin 2) ℂ :=
+-  !![⟪Φ1, Φ1⟫_(SpaceTime → ℂ) x, ⟪Φ2, Φ1⟫_(SpaceTime → ℂ) x;
+-    ⟪Φ1, Φ2⟫_(SpaceTime → ℂ) x, ⟪Φ2, Φ2⟫_(SpaceTime → ℂ) x]
+-
+-/-- The 2 x 2 complex matrices made up of components of the two Higgs fields. -/
+-def fieldCompMatrix (Φ1 Φ2 : HiggsField) (x : SpaceTime) : Matrix (Fin 2) (Fin 2) ℂ :=
+-  !![Φ1 x 0, Φ1 x 1; Φ2 x 0, Φ2 x 1]
+-
+-/-- The matrix `prodMatrix Φ1 Φ2 x` is equal to the square of `fieldCompMatrix Φ1 Φ2 x`. -/
+-lemma prodMatrix_eq_fieldCompMatrix_sq (Φ1 Φ2 : HiggsField) (x : SpaceTime) :
+-    prodMatrix Φ1 Φ2 x = fieldCompMatrix Φ1 Φ2 x * (fieldCompMatrix Φ1 Φ2 x).conjTranspose := by
+-  rw [fieldCompMatrix]
+-  trans !![Φ1 x 0, Φ1 x 1; Φ2 x 0, Φ2 x 1] *
+-    !![conj (Φ1 x 0), conj (Φ2 x 0); conj (Φ1 x 1), conj (Φ2 x 1)]
+-  · rw [Matrix.mul_fin_two, prodMatrix, inner_expand_conj, inner_expand_conj, inner_expand_conj,
+-      inner_expand_conj]
+-    funext i j
+-    fin_cases i <;> fin_cases j <;> ring_nf
+-  · funext i j
+-    fin_cases i <;> fin_cases j <;> rfl
+-
+-/-- An instance of `PartialOrder` on `ℂ` defined through `Complex.partialOrder`. -/
+-local instance : PartialOrder ℂ := Complex.partialOrder
+-
+-/-- An instance of `NormedAddCommGroup` on `Matrix (Fin 2) (Fin 2) ℂ` defined through
+-  `Matrix.normedAddCommGroup`. -/
+-local instance : NormedAddCommGroup (Matrix (Fin 2) (Fin 2) ℂ) :=
+-  Matrix.normedAddCommGroup
+-
+-/-- An instance of `NormedSpace` on `Matrix (Fin 2) (Fin 2) ℂ` defined through
+-  `Matrix.normedSpace`. -/
+-local instance : NormedSpace ℝ (Matrix (Fin 2) (Fin 2) ℂ) := Matrix.normedSpace
+-
+-open Matrix
+-open MatrixOrder
+-
+-/-- The matrix `prodMatrix` is positive semi-definite. -/
+-lemma prodMatrix_posSemiDef (Φ1 Φ2 : HiggsField) (x : SpaceTime) :
+-    (prodMatrix Φ1 Φ2 x).PosSemidef := by
+-  rw [prodMatrix_eq_fieldCompMatrix_sq Φ1 Φ2 x, ← nonneg_iff_posSemidef]
+-  apply (CStarAlgebra.nonneg_iff_eq_mul_star_self (A := Matrix (Fin 2) (Fin 2) ℂ)).mpr
+-  use (fieldCompMatrix Φ1 Φ2 x)
+-  rfl
+-
+-/-- The matrix `prodMatrix` is hermitian. -/
+-lemma prodMatrix_hermitian (Φ1 Φ2 : HiggsField) (x : SpaceTime) :
+-    (prodMatrix Φ1 Φ2 x).IsHermitian := (prodMatrix_posSemiDef Φ1 Φ2 x).isHermitian
+-
+-/-- The map `prodMatrix` is a smooth function on spacetime. -/
+-lemma prodMatrix_smooth (Φ1 Φ2 : HiggsField) :
+-    ContMDiff 𝓘(ℝ, SpaceTime) 𝓘(ℝ, Matrix (Fin 2) (Fin 2) ℂ) ⊤ (prodMatrix Φ1 Φ2) := by
+-  rw [show 𝓘(ℝ, Matrix (Fin 2) (Fin 2) ℂ) = modelWithCornersSelf ℝ (Fin 2 → Fin 2 → ℂ) from rfl,
+-    contMDiff_pi_space]
+-  intro i
+-  rw [contMDiff_pi_space]
+-  intro j
+-  fin_cases i <;> fin_cases j <;>
+-    simpa only [prodMatrix, Fin.zero_eta, Fin.isValue, of_apply, cons_val', cons_val_zero,
+-      empty_val', cons_val_fin_one] using inner_smooth _ _
+-
+-/-- The map `prodMatrix` is invariant under the simultaneous action of `gaugeAction` on the two
+-Higgs fields. -/
+-informal_lemma prodMatrix_invariant where
+-  deps := [``prodMatrix, ``gaugeAction]
+-  tag := "6V2VS"
+-
+-/-- Given any smooth map `f` from spacetime to 2-by-2 complex matrices landing on positive
+-semi-definite matrices, there exist smooth Higgs fields `Φ1` and `Φ2` such that `f` is equal to
+-`prodMatrix Φ1 Φ2`.
+-
+-See https://arxiv.org/pdf/hep-ph/0605184
+--/
+-informal_lemma prodMatrix_to_higgsField where
+-  deps := [``prodMatrix, ``HiggsField, ``prodMatrix_smooth]
+-  tag := "6V2V2"
+-
+-end
+-end TwoHDM
+diff --git a/PhysLean/Particles/BeyondTheStandardModel/TwoHDM/GramMatrix.lean b/PhysLean/Particles/BeyondTheStandardModel/TwoHDM/GramMatrix.lean
+new file mode 100644
+index 00000000..ecb67ef9
+--- /dev/null
++++ b/PhysLean/Particles/BeyondTheStandardModel/TwoHDM/GramMatrix.lean
+@@ -0,0 +1,322 @@
++/-
++Copyright (c) 2025 Joseph Tooby-Smith. All rights reserved.
++Released under Apache 2.0 license as described in the file LICENSE.
++Authors: Joseph Tooby-Smith
++-/
++import PhysLean.Particles.BeyondTheStandardModel.TwoHDM.Basic
++/-!
++
++# The gram matrix for the two Higgs doublet model
++
++The main reference for material in this section is https://arxiv.org/pdf/hep-ph/0605184.
++
++We will show that the gram matrix of the two Higgs doublet model
++describes the gauge orbits of the configuration space.
++
++-/
++namespace TwoHiggsDoublet
++
++open InnerProductSpace
++open StandardModel
++
++/-!
++
++## C. The Gram matrix
++
++-/
++
++/-- The Gram matrix of the two Higgs doublet.
++  This matrix is used in https://arxiv.org/abs/hep-ph/0605184. -/
++noncomputable def gramMatrix (H : TwoHiggsDoublet) : Matrix (Fin 2) (Fin 2) ℂ :=
++  !![⟪H.Φ1, H.Φ1⟫_ℂ, ⟪H.Φ2, H.Φ1⟫_ℂ; ⟪H.Φ1, H.Φ2⟫_ℂ, ⟪H.Φ2, H.Φ2⟫_ℂ]
++
++lemma gramMatrix_selfAdjoint (H : TwoHiggsDoublet) :
++    IsSelfAdjoint (gramMatrix H) := by
++  rw [gramMatrix]
++  ext i j
++  fin_cases i <;> fin_cases j <;> simp [inner_conj_symm]
++
++lemma eq_fst_norm_of_eq_gramMatrix {H1 H2 : TwoHiggsDoublet}
++    (h : H1.gramMatrix = H2.gramMatrix) : ‖H1.Φ1‖ = ‖H2.Φ1‖ := by
++  rw [gramMatrix, gramMatrix] at h
++  have h1 := congrArg (fun x => x 0 0) h
++  simp only [Matrix.of_apply, Matrix.cons_val', Matrix.cons_val_zero, Fin.isValue] at h1
++  rw [inner_self_eq_norm_sq_to_K, inner_self_eq_norm_sq_to_K] at h1
++  rw [sq_eq_sq_iff_eq_or_eq_neg] at h1
++  rcases h1 with h1 | h1
++  · simpa using h1
++  · rw [← RCLike.ofReal_neg] at h1
++    have hnorm1 : 0 ≤ ‖H1.Φ1‖ := norm_nonneg H1.Φ1
++    have hnorm2 : 0 ≤ ‖H2.Φ1‖ := norm_nonneg H2.Φ1
++    have hl : ‖H1.Φ1‖ = (-‖H2.Φ1‖) := Eq.symm
++      ((fun {z w} => Complex.ofReal_inj.mp) (id (Eq.symm h1)))
++    grind
++
++lemma eq_snd_norm_of_eq_gramMatrix {H1 H2 : TwoHiggsDoublet}
++    (h : H1.gramMatrix = H2.gramMatrix) : ‖H1.Φ2‖ = ‖H2.Φ2‖ := by
++  rw [gramMatrix, gramMatrix] at h
++  have h1 := congrArg (fun x => x 1 1) h
++  simp [Matrix.of_apply, Matrix.cons_val', Matrix.cons_val_one, Fin.isValue] at h1
++  rw [sq_eq_sq_iff_eq_or_eq_neg] at h1
++  rcases h1 with h1 | h1
++  · simpa using h1
++  · erw [← RCLike.ofReal_neg] at h1
++    have hnorm1 : 0 ≤ ‖H1.Φ2‖ := norm_nonneg H1.Φ2
++    have hnorm2 : 0 ≤ ‖H2.Φ2‖ := norm_nonneg H2.Φ2
++    have hl : ‖H1.Φ2‖ = (-‖H2.Φ2‖) := Eq.symm
++      ((fun {z w} => Complex.ofReal_inj.mp) (id (Eq.symm h1)))
++    grind
++
++@[simp]
++lemma gaugeGroupI_smul_gramMatrix (g : StandardModel.GaugeGroupI) (H : TwoHiggsDoublet) :
++    (g • H).gramMatrix = H.gramMatrix := by
++  rw [gramMatrix, gramMatrix, gaugeGroupI_smul_fst, gaugeGroupI_smul_snd]
++  ext i j
++  fin_cases i <;> fin_cases j <;> simp
++
++lemma gramMatrix_det_eq (H : TwoHiggsDoublet) :
++    H.gramMatrix.det = ‖H.Φ1‖ ^ 2 * ‖H.Φ2‖ ^ 2 - ‖⟪H.Φ1, H.Φ2⟫_ℂ‖ ^ 2 := by
++  rw [gramMatrix, Matrix.det_fin_two]
++  simp only [inner_self_eq_norm_sq_to_K, Complex.coe_algebraMap, Fin.isValue, Matrix.of_apply,
++    Matrix.cons_val', Matrix.cons_val_zero, Matrix.cons_val_fin_one, Matrix.cons_val_one,
++    sub_right_inj]
++  rw [← Complex.conj_mul']
++  simp only [inner_conj_symm]
++
++lemma gramMatrix_det_eq_real (H : TwoHiggsDoublet) :
++    H.gramMatrix.det.re = ‖H.Φ1‖ ^ 2 * ‖H.Φ2‖ ^ 2 - ‖⟪H.Φ1, H.Φ2⟫_ℂ‖ ^ 2 := by
++  rw [gramMatrix_det_eq]
++  simp [← Complex.ofReal_pow, Complex.ofReal_im]
++
++lemma gramMatrix_det_nonneg (H : TwoHiggsDoublet) :
++    0 ≤ H.gramMatrix.det.re := by
++  rw [gramMatrix_det_eq_real]
++  simp only [sub_nonneg]
++  convert inner_mul_inner_self_le (𝕜 := ℂ) H.Φ1 H.Φ2
++  · simp [sq, norm_inner_symm]
++  · exact norm_sq_eq_re_inner H.Φ1
++  · exact norm_sq_eq_re_inner H.Φ2
++
++lemma gramMatrix_tr_nonneg (H : TwoHiggsDoublet) :
++    0 ≤ H.gramMatrix.trace.re := by
++  rw [gramMatrix, Matrix.trace_fin_two]
++  simp only [inner_self_eq_norm_sq_to_K, Complex.coe_algebraMap, Fin.isValue, Matrix.of_apply,
++    Matrix.cons_val', Matrix.cons_val_zero, Matrix.cons_val_fin_one, Matrix.cons_val_one,
++    Complex.add_re]
++  apply add_nonneg
++  · rw [← Complex.ofReal_pow, Complex.ofReal_re]
++    exact sq_nonneg ‖H.Φ1‖
++  · rw [← Complex.ofReal_pow, Complex.ofReal_re]
++    exact sq_nonneg ‖H.Φ2‖
++
++lemma gaugeGroupI_exists_fst_eq {H : TwoHiggsDoublet} (h1 : H.Φ1 ≠ 0) :
++    ∃ g : StandardModel.GaugeGroupI,
++      g • H.Φ1 = (!₂[‖H.Φ1‖, 0] : HiggsVec) ∧
++      (g • H.Φ2) 0 = ⟪H.Φ1, H.Φ2⟫_ℂ / ‖H.Φ1‖ ∧
++      ‖(g • H.Φ2) 1‖ = Real.sqrt (H.gramMatrix.det.re) / ‖H.Φ1‖ := by
++  rw [gramMatrix_det_eq_real]
++  obtain ⟨g, h⟩ := (HiggsVec.mem_orbit_gaugeGroupI_iff (H.Φ1) (!₂[‖H.Φ1‖, 0] : HiggsVec)).mpr
++    (by simp [@PiLp.norm_eq_of_L2])
++  use g
++  simp at h
++  simp [h]
++  have h_fst : (g • H.Φ2).ofLp 0 = ⟪H.Φ1, H.Φ2⟫_ℂ / ‖H.Φ1‖ := by
++    have h2 : ⟪H.Φ1, H.Φ2⟫_ℂ = ⟪g • H.Φ1, g • H.Φ2⟫_ℂ := by
++      simp
++    rw [h] at h2
++    conv_rhs at h2 =>
++      simp [PiLp.inner_apply]
++    rw [h2]
++    have hx : (‖H.Φ1‖ : ℂ) ≠ 0 := by
++      simp_all
++    field_simp
++  apply And.intro h_fst
++  have hx : ‖g • H.Φ2‖ ^ 2 = ‖H.Φ2‖ ^ 2 := by
++    simp
++  rw [PiLp.norm_sq_eq_of_L2] at hx
++  simp at hx
++  have hx0 : ‖(g • H.Φ2).ofLp 1‖ ^ 2 = ‖H.Φ2‖ ^ 2 - ‖(g • H.Φ2).ofLp 0‖ ^ 2 := by
++    rw [← hx]
++    simp
++  have h0 : ‖(g • H.Φ2) 1‖ ^ 2 = (‖H.Φ1‖ ^ 2 * ‖H.Φ2‖ ^ 2 - ‖⟪H.Φ1, H.Φ2⟫_ℂ‖ ^ 2) / ‖H.Φ1‖ ^ 2 := by
++    field_simp
++    rw [hx0, h_fst]
++    simp only [Fin.isValue, Complex.norm_div, Complex.norm_real, norm_norm]
++    ring_nf
++    field_simp
++  have habc (a b c : ℝ) (ha : 0 ≤ a) (hx : a ^ 2 = b / c ^2) (hc : c ≠ 0) (hc : 0 < c) :
++      a = Real.sqrt b / c := by
++    field_simp
++    symm
++    have hb : b = a ^ 2 * c ^ 2 := by
++      rw [hx]
++      field_simp
++    subst hb
++    rw [Real.sqrt_eq_iff_eq_sq]
++    · ring
++    · positivity
++    · positivity
++  apply habc
++  rw [h0]
++  ring_nf
++  · exact norm_ne_zero_iff.mpr h1
++  · simpa using h1
++  · exact norm_nonneg ((g • H.Φ2).ofLp 1)
++
++lemma gaugeGroupI_exists_fst_eq_snd_eq {H : TwoHiggsDoublet} (h1 : H.Φ1 ≠ 0) :
++    ∃ g : StandardModel.GaugeGroupI,
++      g • H.Φ1 = (!₂[‖H.Φ1‖, 0] : HiggsVec) ∧
++      g • H.Φ2 = (!₂[⟪H.Φ1, H.Φ2⟫_ℂ / ‖H.Φ1‖, √(H.gramMatrix.det.re) / ‖H.Φ1‖] : HiggsVec) := by
++  obtain ⟨g, h_fst, h_snd_0, h_snd_1⟩ := gaugeGroupI_exists_fst_eq h1
++  obtain ⟨k, h1, h2, h3⟩ := HiggsVec.gaugeGroupI_smul_phase_snd (g • H.Φ2)
++  use k * g
++  apply And.intro
++  · rw [mul_smul, h_fst, h3]
++  · rw [mul_smul]
++    ext i
++    fin_cases i
++    · simp
++      rw [h2, h_snd_0]
++    · simp
++      rw [h1, h_snd_1]
++      simp
++
++lemma mem_orbit_gaugeGroupI_iff_gramMatrix (H1 H2 : TwoHiggsDoublet) :
++    H1 ∈ MulAction.orbit GaugeGroupI H2 ↔ H1.gramMatrix = H2.gramMatrix := by
++  apply Iff.intro
++  · intro h
++    obtain ⟨g, hg⟩ := h
++    simp at hg
++    simp [← hg]
++  by_cases Φ1_zero : H1.Φ1 = 0
++  · intro h
++    obtain ⟨g1, hg1⟩ := (HiggsVec.mem_orbit_gaugeGroupI_iff (H1.Φ2) (!₂[‖H1.Φ2‖, 0] : HiggsVec)).mpr
++      (by simp [@PiLp.norm_eq_of_L2])
++    obtain ⟨g2, hg2⟩ := (HiggsVec.mem_orbit_gaugeGroupI_iff (H2.Φ2) (!₂[‖H2.Φ2‖, 0] : HiggsVec)).mpr
++      (by simp [@PiLp.norm_eq_of_L2])
++    use g1⁻¹ * g2
++    simp only
++    ext:1
++    · simp [Φ1_zero]
++      have hnorm : ‖H2.Φ1‖ = ‖H1.Φ1‖ := by
++        symm
++        rw [← eq_fst_norm_of_eq_gramMatrix h]
++      simp [Φ1_zero] at hnorm
++      simp [hnorm]
++    · simp [mul_smul]
++      refine inv_smul_eq_iff.mpr ?_
++      simp at hg1 hg2
++      simp [hg1, hg2]
++      exact eq_snd_norm_of_eq_gramMatrix (id (Eq.symm h))
++  · intro h
++    obtain ⟨g1, H1_Φ1, H1_Φ2⟩ := gaugeGroupI_exists_fst_eq_snd_eq (H := H1) Φ1_zero
++    have Φ2_nezero : H2.Φ1 ≠ 0 := by
++      intro hzero
++      have hnorm : ‖H1.Φ1‖ = ‖H2.Φ1‖ := by
++        rw [← eq_fst_norm_of_eq_gramMatrix h]
++      simp [hzero] at hnorm
++      simp [hnorm] at Φ1_zero
++    obtain ⟨g2, H2_Φ1, H2_Φ2⟩ := gaugeGroupI_exists_fst_eq_snd_eq (H := H2) Φ2_nezero
++    use g1⁻¹ * g2
++    simp only
++    ext:1
++    · simp [mul_smul]
++      refine inv_smul_eq_iff.mpr ?_
++      simp [H1_Φ1, H2_Φ1]
++      apply eq_fst_norm_of_eq_gramMatrix (id (Eq.symm h))
++    · simp [mul_smul]
++      refine inv_smul_eq_iff.mpr ?_
++      simp [H1_Φ2, H2_Φ2]
++      apply And.intro
++      · congr 1
++        · symm
++          exact congrArg (fun x => x 1 0) h
++        · simp only [Complex.ofReal_inj]
++          exact eq_fst_norm_of_eq_gramMatrix (id (Eq.symm h))
++      · congr 2
++        · simp [h]
++        · exact eq_fst_norm_of_eq_gramMatrix (id (Eq.symm h))
++
++/-!
++
++### C.2. The Gram vector
++
++-/
++
++/-- A real vector containing the components of the Gram matrix in the Pauli basis. -/
++noncomputable def gramVector (H : TwoHiggsDoublet) : Fin 1 ⊕ Fin 3 → ℝ := fun μ =>
++  2 * PauliMatrix.pauliBasis.repr ⟨gramMatrix H, gramMatrix_selfAdjoint H⟩ μ
++
++@[simp]
++lemma gaugeGroupI_smul_fst_gramVector (g : StandardModel.GaugeGroupI)
++    (H : TwoHiggsDoublet) (μ : Fin 1 ⊕ Fin 3) :
++    (g • H).gramVector μ = H.gramVector μ := by
++  rw [gramVector, gramVector]
++  congr 1
++  simp
++
++lemma gramMatrix_eq_gramVector_sum_pauliMatrix (H : TwoHiggsDoublet) :
++    gramMatrix H = (1 / 2 : ℝ) • ∑ μ, H.gramVector μ • PauliMatrix.pauliMatrix μ := by
++  have h1 := congrArg (fun x => x.1) <|
++    PauliMatrix.pauliBasis.sum_repr ⟨gramMatrix H, gramMatrix_selfAdjoint H⟩
++  simp [-Module.Basis.sum_repr] at h1
++  rw [← h1]
++  simp [gramVector, smul_smul, Finset.smul_sum]
++  congr 1
++  · simp [PauliMatrix.pauliBasis, PauliMatrix.pauliSelfAdjoint]
++  · simp [PauliMatrix.pauliBasis, PauliMatrix.pauliSelfAdjoint]
++
++lemma gramMatrix_eq_component_gramVector (H : TwoHiggsDoublet) :
++    gramMatrix H =
++    !![(1 / 2 : ℂ) * (H.gramVector (Sum.inl 0) + H.gramVector (Sum.inr 2)),
++      (1 / 2 : ℂ) * (H.gramVector (Sum.inr 0) - Complex.I * H.gramVector (Sum.inr 1));
++      (1 / 2 : ℂ) * (H.gramVector (Sum.inr 0) + Complex.I * H.gramVector (Sum.inr 1)),
++      (1 / 2 : ℂ) * (H.gramVector (Sum.inl 0) - H.gramVector (Sum.inr 2))] := by
++  rw [gramMatrix_eq_gramVector_sum_pauliMatrix]
++  simp only [one_div, PauliMatrix.pauliMatrix, Matrix.one_fin_two, Fintype.sum_sum_type,
++    Finset.univ_unique, Fin.default_eq_zero, Fin.isValue, Finset.sum_singleton, Matrix.smul_of,
++    Matrix.smul_cons, Complex.real_smul, mul_one, smul_zero, Matrix.smul_empty, Fin.sum_univ_three,
++    smul_neg, Matrix.of_add_of, Matrix.add_cons, Matrix.head_cons, add_zero, Matrix.tail_cons,
++    Matrix.empty_add_empty, zero_add, smul_add, Complex.ofReal_inv, Complex.ofReal_ofNat,
++    EmbeddingLike.apply_eq_iff_eq, Matrix.vecCons_inj, and_true]
++  ring_nf
++  simp
++
++lemma gramVector_inl_eq_trace_gramMatrix (H : TwoHiggsDoublet) :
++    H.gramVector (Sum.inl 0) = H.gramMatrix.trace := by
++  rw [gramMatrix_eq_component_gramVector, Matrix.trace_fin_two]
++  simp only [Fin.isValue, one_div, Matrix.of_apply, Matrix.cons_val', Matrix.cons_val_zero,
++    Matrix.cons_val_fin_one, Matrix.cons_val_one]
++  ring
++
++lemma normSq_Φ1_eq_gramVector (H : TwoHiggsDoublet) :
++    ‖H.Φ1‖ ^ 2 = (1/2 : ℝ) * (H.gramVector (Sum.inl 0) + H.gramVector (Sum.inr 2)) := by
++  trans (gramMatrix H 0 0).re
++  · simp [gramMatrix]
++    rw [← Complex.ofReal_pow, Complex.ofReal_re]
++  · rw [gramMatrix_eq_component_gramVector]
++    simp
++
++lemma normSq_Φ2_eq_gramVector (H : TwoHiggsDoublet) :
++    ‖H.Φ2‖ ^ 2 = (1/2 : ℝ) * (H.gramVector (Sum.inl 0) - H.gramVector (Sum.inr 2)) := by
++  trans (gramMatrix H 1 1).re
++  · simp [gramMatrix]
++    rw [← Complex.ofReal_pow, Complex.ofReal_re]
++  · rw [gramMatrix_eq_component_gramVector]
++    simp
++
++lemma Φ1_inner_Φ2_eq_gramVector (H : TwoHiggsDoublet) :
++    (⟪H.Φ1, H.Φ2⟫_ℂ) = (1/2 : ℝ) * (H.gramVector (Sum.inr 0) +
++    Complex.I * H.gramVector (Sum.inr 1)) := by
++  trans (gramMatrix H 1 0)
++  · simp [gramMatrix]
++  · simp [gramMatrix_eq_component_gramVector]
++
++lemma Φ2_inner_Φ1_eq_gramVector (H : TwoHiggsDoublet) :
++    (⟪H.Φ2, H.Φ1⟫_ℂ) = (1/2 : ℝ) * (H.gramVector (Sum.inr 0) -
++    Complex.I * H.gramVector (Sum.inr 1)) := by
++  trans (gramMatrix H 0 1)
++  · simp [gramMatrix]
++  · simp [gramMatrix_eq_component_gramVector]
++
++end TwoHiggsDoublet
+diff --git a/PhysLean/Particles/BeyondTheStandardModel/TwoHDM/Potential.lean b/PhysLean/Particles/BeyondTheStandardModel/TwoHDM/Potential.lean
+index 5ec50303..cb1f52a6 100644
+--- a/PhysLean/Particles/BeyondTheStandardModel/TwoHDM/Potential.lean
++++ b/PhysLean/Particles/BeyondTheStandardModel/TwoHDM/Potential.lean
+@@ -1,9 +1,9 @@
+ /-
+-Copyright (c) 2024 Joseph Tooby-Smith. All rights reserved.
++Copyright (c) 2025 Joseph Tooby-Smith. All rights reserved.
+ Released under Apache 2.0 license as described in the file LICENSE.
+ Authors: Joseph Tooby-Smith
+ -/
+-import PhysLean.Particles.BeyondTheStandardModel.TwoHDM.Basic
++import PhysLean.Particles.BeyondTheStandardModel.TwoHDM.GramMatrix
+ /-!
+ 
+ # The potential of the two Higgs doublet model
+@@ -13,26 +13,14 @@ import PhysLean.Particles.BeyondTheStandardModel.TwoHDM.Basic
+ In this file we give the potential of the two Higgs doublet model (2HDM) in Lean, and derive
+ properties thereof.
+ 
+-Note: This file is currently independent of TwoHiggsDoublet, it is a TODO to integrate them.
+-
+ -/
+-
+-open StandardModel
+-
+-namespace TwoHDM
+-
++namespace TwoHiggsDoublet
++open InnerProductSpace
+ open StandardModel
+-open ComplexConjugate
+-open HiggsField
+ 
+-noncomputable section
+-
+-TODO "6V2TZ" "Within the definition of the 2HDM potential. The structure `Potential` should be
+-  renamed to TwoHDM and moved out of the TwoHDM namespace.
+-  Then `toFun` should be renamed to `potential`."
+-
+-/-- The parameters of the Two Higgs doublet model potential. -/
+-structure Potential where
++/-- The parameters of the Two Higgs doublet model potential.
++  Following the convention of https://arxiv.org/pdf/1605.03237. -/
++structure PotentialParameters where
+   /-- The parameter corresponding to `m₁₁²` in the 2HDM potential. -/
+   m₁₁2 : ℝ
+   /-- The parameter corresponding to `m₂₂²` in the 2HDM potential. -/
+@@ -54,184 +42,114 @@ structure Potential where
+   /-- The parameter corresponding to `λ₇` in the 2HDM potential. -/
+   𝓵₇ : ℂ
+ 
+-namespace Potential
++namespace PotentialParameters
++
++/-- A reparameterization of the parameters of the quadratic terms of the
++  potential for use with the gramVector. -/
++noncomputable def ξ (P : PotentialParameters) : Fin 1 ⊕ Fin 3 → ℝ := fun μ =>
++  match μ with
++  | Sum.inl 0 => (P.m₁₁2 + P.m₂₂2) / 2
++  | Sum.inr 0 => -Complex.re P.m₁₂2
++  | Sum.inr 1 => Complex.im P.m₁₂2
++  | Sum.inr 2 => (P.m₁₁2 - P.m₂₂2) / 2
++
++/-- A reparameterization of the parameters of the quartic terms of the
++  potential for use with the gramVector. -/
++noncomputable def η (P : PotentialParameters) : Fin 1 ⊕ Fin 3 → Fin 1 ⊕ Fin 3 → ℝ
++  | Sum.inl 0, Sum.inl 0 => (P.𝓵₁ + P.𝓵₂ + 2 * P.𝓵₃) / 8
++  | Sum.inl 0, Sum.inr 0 => (P.𝓵₆.re + P.𝓵₇.re) * (1 / 4)
++  | Sum.inl 0, Sum.inr 1 => (P.𝓵₆.im + P.𝓵₇.im) * (-1 / 4)
++  | Sum.inl 0, Sum.inr 2 => (P.𝓵₁ - P.𝓵₂) * (1 / 8)
++  | Sum.inr 0, Sum.inl 0 => (P.𝓵₆.re + P.𝓵₇.re) * (1 / 4)
++  | Sum.inr 1, Sum.inl 0 => (P.𝓵₆.im + P.𝓵₇.im) * (-1 / 4)
++  | Sum.inr 2, Sum.inl 0 => (P.𝓵₁ - P.𝓵₂) * (1 / 8)
++  /-η_a_a-/
++  | Sum.inr 0, Sum.inr 0 => (P.𝓵₅.re + P.𝓵₄) * (1 / 4)
++  | Sum.inr 1, Sum.inr 1 => (-P.𝓵₅.re + P.𝓵₄) * (1 / 4)
++  | Sum.inr 2, Sum.inr 2 => (P.𝓵₁ + P.𝓵₂ - 2 * P.𝓵₃) * (1 / 8)
++  | Sum.inr 0, Sum.inr 1 => P.𝓵₅.im * (-1 / 4)
++  | Sum.inr 2, Sum.inr 0 => (P.𝓵₆.re - P.𝓵₇.re) * (1 / 4)
++  | Sum.inr 2, Sum.inr 1 => (P.𝓵₇.im - P.𝓵₆.im) * (1 / 4)
++  | Sum.inr 1, Sum.inr 0 => P.𝓵₅.im * (-1 / 4)
++  | Sum.inr 0, Sum.inr 2 => (P.𝓵₆.re - P.𝓵₇.re) * (1 / 4)
++  | Sum.inr 1, Sum.inr 2 => (P.𝓵₇.im - P.𝓵₆.im) * (1 / 4)
++
++lemma η_symm (P : PotentialParameters) (μ ν : Fin 1 ⊕ Fin 3) :
++    P.η μ ν = P.η ν μ := by
++  fin_cases μ <;> fin_cases ν <;> simp [η]
++
++end PotentialParameters
+ 
+-variable (P : Potential) (Φ1 Φ2 : HiggsField)
+-open InnerProductSpace
++open ComplexConjugate
+ 
+-/-- The potential of the two Higgs doublet model. -/
+-def toFun (Φ1 Φ2 : HiggsField) (x : SpaceTime) : ℝ :=
+-  P.m₁₁2 * ‖Φ1‖_H^2 x + P.m₂₂2 * ‖Φ2‖_H^2 x -
+-  (P.m₁₂2 * ⟪Φ1, Φ2⟫_(SpaceTime → ℂ) x + conj P.m₁₂2 * ⟪Φ2, Φ1⟫_(SpaceTime → ℂ) x).re
+-  + 1/2 * P.𝓵₁ * ‖Φ1‖_H^2 x * ‖Φ1‖_H^2 x + 1/2 * P.𝓵₂ * ‖Φ2‖_H^2 x * ‖Φ2‖_H^2 x
+-  + P.𝓵₃ * ‖Φ1‖_H^2 x * ‖Φ2‖_H^2 x
+-  + P.𝓵₄ * ‖⟪Φ1, Φ2⟫_(SpaceTime → ℂ) x‖ ^ 2
+-  + (1/2 * P.𝓵₅ * ⟪Φ1, Φ2⟫_(SpaceTime → ℂ) x ^ 2 +
+-    1/2 * conj P.𝓵₅ * ⟪Φ2, Φ1⟫_(SpaceTime → ℂ) x ^ 2).re
+-  + (P.𝓵₆ * ‖Φ1‖_H^2 x * ⟪Φ1, Φ2⟫_(SpaceTime → ℂ) x +
+-    conj P.𝓵₆ * ‖Φ1‖_H^2 x * ⟪Φ2, Φ1⟫_(SpaceTime → ℂ) x).re
+-  + (P.𝓵₇ * ‖Φ2‖_H^2 x * ⟪Φ1, Φ2⟫_(SpaceTime → ℂ) x +
+-    conj P.𝓵₇ * ‖Φ2‖_H^2 x * ⟪Φ2, Φ1⟫_(SpaceTime → ℂ) x).re
+-
+-/-- The potential where all parameters are zero. -/
+-def zero : Potential := ⟨0, 0, 0, 0, 0, 0, 0, 0, 0, 0⟩
+-
+-lemma swap_fields : P.toFun Φ1 Φ2 =
+-    (Potential.mk P.m₂₂2 P.m₁₁2 (conj P.m₁₂2) P.𝓵₂ P.𝓵₁ P.𝓵₃ P.𝓵₄
+-    (conj P.𝓵₅) (conj P.𝓵₇) (conj P.𝓵₆)).toFun Φ2 Φ1 := by
+-  funext x
+-  simp only [toFun, normSq, Complex.add_re, Complex.mul_re, Complex.conj_re, Complex.conj_im,
+-    neg_mul, sub_neg_eq_add, one_div, Complex.inv_re, Complex.re_ofNat, Complex.normSq_ofNat,
+-    div_self_mul_self', Complex.inv_im, Complex.im_ofNat, neg_zero, zero_div, zero_mul, sub_zero,
+-    Complex.mul_im, add_zero, mul_neg, Complex.ofReal_pow, RingHomCompTriple.comp_apply,
+-    RingHom.id_apply]
+-  ring_nf
+-  simp only [one_div, add_left_inj, add_right_inj, mul_eq_mul_left_iff]
+-  left
+-  rw [← inner_symm]
++/-- The mass term of the two Higgs doublet model potential. -/
++noncomputable def massTerm (P : PotentialParameters) (H : TwoHiggsDoublet) : ℝ :=
++  P.m₁₁2 * ‖H.Φ1‖ ^ 2 + P.m₂₂2 * ‖H.Φ2‖ ^ 2 -
++  (P.m₁₂2 * ⟪H.Φ1, H.Φ2⟫_ℂ + conj P.m₁₂2 * ⟪H.Φ2, H.Φ1⟫_ℂ).re
++
++lemma massTerm_eq_gramVector (P : PotentialParameters) (H : TwoHiggsDoublet) :
++    massTerm P H = ∑ μ, P.ξ μ * H.gramVector μ := by
++  simp [massTerm, Fin.sum_univ_three, PotentialParameters.ξ, normSq_Φ1_eq_gramVector,
++    normSq_Φ2_eq_gramVector, Φ1_inner_Φ2_eq_gramVector, Φ2_inner_Φ1_eq_gramVector]
++  ring
++
++@[simp]
++lemma gaugeGroupI_smul_massTerm (g : StandardModel.GaugeGroupI) (P : PotentialParameters)
++    (H : TwoHiggsDoublet) :
++    massTerm P (g • H) = massTerm P H := by
++  rw [massTerm_eq_gramVector, massTerm_eq_gramVector]
+   simp
+ 
+-/-- If `Φ₂` is zero the potential reduces to the Higgs potential on `Φ₁`. -/
+-lemma right_zero : P.toFun Φ1 0 =
+-    (HiggsField.Potential.mk (- P.m₁₁2) (P.𝓵₁/2)).toFun Φ1 := by
+-  funext x
+-  simp only [toFun, normSq, ContMDiffSection.coe_zero, Pi.zero_apply, norm_zero, ne_eq,
+-    OfNat.ofNat_ne_zero, not_false_eq_true, zero_pow, mul_zero, add_zero,
+-    HiggsField.inner_zero_right, HiggsField.inner_zero_left, Complex.zero_re, sub_zero, one_div,
+-    Complex.ofReal_pow, Complex.ofReal_zero, HiggsField.Potential.toFun, neg_neg, add_right_inj,
+-    mul_eq_mul_right_iff, pow_eq_zero_iff, norm_eq_zero, or_self_right]
+-  ring_nf
+-  simp only [true_or]
+-
+-/-- If `Φ₁` is zero the potential reduces to the Higgs potential on `Φ₂`. -/
+-lemma left_zero : P.toFun 0 Φ2 =
+-    (HiggsField.Potential.mk (- P.m₂₂2) (P.𝓵₂/2)).toFun Φ2 := by
+-  rw [swap_fields, right_zero]
+-
+-/-- Negating `Φ₁` is equivalent to negating `m₁₂2`, `𝓵₆` and `𝓵₇`. -/
+-lemma neg_left : P.toFun (- Φ1) Φ2
+-    = (Potential.mk P.m₁₁2 P.m₂₂2 (- P.m₁₂2) P.𝓵₁ P.𝓵₂ P.𝓵₃ P.𝓵₄ P.𝓵₅ (- P.𝓵₆) (- P.𝓵₇)).toFun
+-    Φ1 Φ2 := by
+-  funext x
+-  simp only [toFun, normSq, ContMDiffSection.coe_neg, Pi.neg_apply, norm_neg,
+-    HiggsField.inner_neg_left, mul_neg, HiggsField.inner_neg_right, Complex.add_re, Complex.neg_re,
+-    Complex.mul_re, neg_sub, Complex.conj_re, Complex.conj_im, neg_mul, sub_neg_eq_add, neg_add_rev,
+-    one_div, even_two, Even.neg_pow, Complex.inv_re, Complex.re_ofNat, Complex.normSq_ofNat,
+-    div_self_mul_self', Complex.inv_im, Complex.im_ofNat, neg_zero, zero_div, zero_mul, sub_zero,
+-    Complex.mul_im, add_zero, Complex.ofReal_pow, map_neg]
+-
+-/-- Negating `Φ₁` is equivalent to negating `m₁₂2`, `𝓵₆` and `𝓵₇`. -/
+-lemma neg_right : P.toFun Φ1 (- Φ2)
+-    = (Potential.mk P.m₁₁2 P.m₂₂2 (- P.m₁₂2) P.𝓵₁ P.𝓵₂ P.𝓵₃ P.𝓵₄ P.𝓵₅ (- P.𝓵₆) (- P.𝓵₇)).toFun
+-    Φ1 Φ2 := by
+-  rw [swap_fields, neg_left, swap_fields]
+-  simp only [map_neg, RingHomCompTriple.comp_apply, RingHom.id_apply]
+-
+-lemma left_eq_right : P.toFun Φ1 Φ1 =
+-    (HiggsField.Potential.mk (- P.m₁₁2 - P.m₂₂2 + 2 * P.m₁₂2.re)
+-    (P.𝓵₁/2 + P.𝓵₂/2 + P.𝓵₃ + P.𝓵₄ + P.𝓵₅.re + 2 * P.𝓵₆.re + 2 * P.𝓵₇.re)).toFun Φ1 := by
+-  funext x
+-  simp only [toFun, normSq, inner_self_eq_normSq, Complex.ofReal_pow, Complex.add_re,
+-    Complex.mul_re, Complex.conj_re, Complex.conj_im, neg_mul, sub_neg_eq_add, sub_add_add_cancel,
+-    one_div, norm_pow, Complex.norm_real, norm_norm, Complex.inv_re, Complex.re_ofNat,
+-    Complex.normSq_ofNat, div_self_mul_self', Complex.inv_im, Complex.im_ofNat, neg_zero, zero_div,
+-    zero_mul, sub_zero, Complex.mul_im, add_zero, mul_neg, HiggsField.Potential.toFun, neg_add_rev,
+-    neg_sub]
++/-- The quartic term of the two Higgs doublet model potential. -/
++noncomputable def quarticTerm (P : PotentialParameters) (H : TwoHiggsDoublet) : ℝ :=
++  1/2 * P.𝓵₁ * ‖H.Φ1‖ ^ 2 * ‖H.Φ1‖ ^ 2 + 1/2 * P.𝓵₂ * ‖H.Φ2‖ ^ 2 * ‖H.Φ2‖ ^ 2
++  + P.𝓵₃ * ‖H.Φ1‖ ^ 2 * ‖H.Φ2‖ ^ 2
++  + P.𝓵₄ * ‖⟪H.Φ1, H.Φ2⟫_ℂ‖ ^ 2
++  + (1/2 * P.𝓵₅ * ⟪H.Φ1, H.Φ2⟫_ℂ ^ 2 + 1/2 * conj P.𝓵₅ * ⟪H.Φ2, H.Φ1⟫_ℂ ^ 2).re
++  + (P.𝓵₆ * ‖H.Φ1‖ ^ 2 * ⟪H.Φ1, H.Φ2⟫_ℂ + conj P.𝓵₆ * ‖H.Φ1‖ ^ 2 * ⟪H.Φ2, H.Φ1⟫_ℂ).re
++  + (P.𝓵₇ * ‖H.Φ2‖ ^ 2 * ⟪H.Φ1, H.Φ2⟫_ℂ + conj P.𝓵₇ * ‖H.Φ2‖ ^ 2 * ⟪H.Φ2, H.Φ1⟫_ℂ).re
++
++lemma quarticTerm_𝓵₄_expand (P : PotentialParameters) (H : TwoHiggsDoublet) :
++    H.quarticTerm P =
++    1/2 * P.𝓵₁ * ‖H.Φ1‖ ^ 2 * ‖H.Φ1‖ ^ 2 + 1/2 * P.𝓵₂ * ‖H.Φ2‖ ^ 2 * ‖H.Φ2‖ ^ 2
++    + P.𝓵₃ * ‖H.Φ1‖ ^ 2 * ‖H.Φ2‖ ^ 2
++    + P.𝓵₄ * (⟪H.Φ1, H.Φ2⟫_ℂ * ⟪H.Φ2, H.Φ1⟫_ℂ).re
++    + (1/2 * P.𝓵₅ * ⟪H.Φ1, H.Φ2⟫_ℂ ^ 2 + 1/2 * conj P.𝓵₅ * ⟪H.Φ2, H.Φ1⟫_ℂ ^ 2).re
++    + (P.𝓵₆ * ‖H.Φ1‖ ^ 2 * ⟪H.Φ1, H.Φ2⟫_ℂ + conj P.𝓵₆ * ‖H.Φ1‖ ^ 2 * ⟪H.Φ2, H.Φ1⟫_ℂ).re
++    + (P.𝓵₇ * ‖H.Φ2‖ ^ 2 * ⟪H.Φ1, H.Φ2⟫_ℂ + conj P.𝓵₇ * ‖H.Φ2‖ ^ 2 * ⟪H.Φ2, H.Φ1⟫_ℂ).re := by
++  simp [quarticTerm]
++  left
++  rw [Complex.sq_norm]
++  rw [← Complex.mul_re]
++  rw [← inner_conj_symm, ← Complex.normSq_eq_conj_mul_self]
++  simp only [inner_conj_symm, Complex.ofReal_re]
++  rw [← inner_conj_symm]
++  exact Complex.normSq_conj ⟪H.Φ2, H.Φ1⟫_ℂ
++
++lemma quarticTerm_eq_gramVector (P : PotentialParameters) (H : TwoHiggsDoublet) :
++    quarticTerm P H = ∑ a, ∑ b, H.gramVector a * H.gramVector b * P.η a b := by
++  simp [quarticTerm_𝓵₄_expand, Fin.sum_univ_three, PotentialParameters.η, normSq_Φ1_eq_gramVector,
++    normSq_Φ2_eq_gramVector, Φ1_inner_Φ2_eq_gramVector, Φ2_inner_Φ1_eq_gramVector]
+   ring_nf
+-  rw [show ((Complex.ofReal ‖Φ1 x‖) ^ 4).re = ‖Φ1 x‖ ^ 4 by
+-    rw [← Complex.ofReal_pow]; rfl]
+-  rw [show ((Complex.ofReal ‖Φ1 x‖) ^ 2).re = ‖Φ1 x‖ ^ 2 by
+-    rw [← Complex.ofReal_pow]; rfl]
+-  rw [show (Complex.ofReal ‖Φ1 x‖ ^ 2).im = 0 by
+-    rw [← Complex.ofReal_pow, Complex.ofReal_im]]
++  simp [← Complex.ofReal_pow, Complex.ofReal_re, normSq_Φ1_eq_gramVector,
++    normSq_Φ2_eq_gramVector]
+   ring
+ 
+-lemma left_eq_neg_right : P.toFun Φ1 (- Φ1) =
+-    (HiggsField.Potential.mk (- P.m₁₁2 - P.m₂₂2 - 2 * P.m₁₂2.re)
+-    (P.𝓵₁/2 + P.𝓵₂/2 + P.𝓵₃ + P.𝓵₄ + P.𝓵₅.re - 2 * P.𝓵₆.re - 2 * P.𝓵₇.re)).toFun Φ1 := by
+-  rw [neg_right, left_eq_right]
+-  simp_all only [Complex.neg_re, mul_neg]
+-  rfl
+-
+-/-!
++@[simp]
++lemma gaugeGroupI_smul_quarticTerm (g : StandardModel.GaugeGroupI) (P : PotentialParameters)
++    (H : TwoHiggsDoublet) :
++    quarticTerm P (g • H) = quarticTerm P H := by
++  rw [quarticTerm_eq_gramVector, quarticTerm_eq_gramVector]
++  simp
+ 
+-## Potential bounded from below
++/-- The potential of the two Higgs doublet model. -/
++noncomputable def potential (P : PotentialParameters) (H : TwoHiggsDoublet) : ℝ :=
++  massTerm P H + quarticTerm P H
+ 
+--/
++lemma gaugeGroupI_smul_potential (g : StandardModel.GaugeGroupI)
++    (P : PotentialParameters) (H : TwoHiggsDoublet) :
++    potential P (g • H) = potential P H := by
++  rw [potential, potential]
++  simp
+ 
+-TODO "6V2UD" "Prove bounded properties of the 2HDM potential.
+-  See e.g. https://inspirehep.net/literature/201299 and
+-  https://arxiv.org/pdf/hep-ph/0605184."
+-
+-/-- The proposition on the coefficients for a potential to be bounded. -/
+-def IsBounded : Prop :=
+-  ∃ c, ∀ Φ1 Φ2 x, c ≤ P.toFun Φ1 Φ2 x
+-
+-section IsBounded
+-
+-variable {P : Potential}
+-
+-lemma isBounded_right_zero (h : P.IsBounded) :
+-    (HiggsField.Potential.mk (- P.m₁₁2) (P.𝓵₁/2)).IsBounded := by
+-  obtain ⟨c, hc⟩ := h
+-  use c
+-  intro Φ x
+-  have hc1 := hc Φ 0 x
+-  rw [right_zero] at hc1
+-  exact hc1
+-
+-lemma isBounded_left_zero (h : P.IsBounded) :
+-    (HiggsField.Potential.mk (- P.m₂₂2) (P.𝓵₂/2)).IsBounded := by
+-  obtain ⟨c, hc⟩ := h
+-  use c
+-  intro Φ x
+-  have hc1 := hc 0 Φ x
+-  rw [left_zero] at hc1
+-  exact hc1
+-
+-lemma isBounded_𝓵₁_nonneg (h : P.IsBounded) :
+-    0 ≤ P.𝓵₁ := by
+-  have h1 := isBounded_right_zero h
+-  have h2 := HiggsField.Potential.isBounded_𝓵_nonneg _ h1
+-  simp only at h2
+-  linarith
+-
+-lemma isBounded_𝓵₂_nonneg (h : P.IsBounded) :
+-    0 ≤ P.𝓵₂ := by
+-  have h1 := isBounded_left_zero h
+-  have h2 := HiggsField.Potential.isBounded_𝓵_nonneg _ h1
+-  simp only at h2
+-  linarith
+-
+-lemma isBounded_of_left_eq_right (h : P.IsBounded) :
+-    0 ≤ P.𝓵₁/2 + P.𝓵₂/2 + P.𝓵₃ + P.𝓵₄ + P.𝓵₅.re + 2 * P.𝓵₆.re + 2 * P.𝓵₇.re := by
+-  obtain ⟨c, hc⟩ := h
+-  refine (HiggsField.Potential.mk (- P.m₁₁2 - P.m₂₂2 + 2 * P.m₁₂2.re)
+-    (P.𝓵₁/2 + P.𝓵₂/2 + P.𝓵₃ + P.𝓵₄ + P.𝓵₅.re + 2 * P.𝓵₆.re + 2 * P.𝓵₇.re)).isBounded_𝓵_nonneg
+-    ⟨c, fun Φ x => ?_⟩
+-  have hc1 := hc Φ Φ x
+-  rw [left_eq_right] at hc1
+-  exact hc1
+-
+-lemma isBounded_of_left_eq_neg_right (h : P.IsBounded) :
+-    0 ≤ P.𝓵₁/2 + P.𝓵₂/2 + P.𝓵₃ + P.𝓵₄ + P.𝓵₅.re - 2 * P.𝓵₆.re - 2 * P.𝓵₇.re := by
+-  obtain ⟨c, hc⟩ := h
+-  refine (HiggsField.Potential.mk (- P.m₁₁2 - P.m₂₂2 - 2 * P.m₁₂2.re)
+-    (P.𝓵₁/2 + P.𝓵₂/2 + P.𝓵₃ + P.𝓵₄ + P.𝓵₅.re - 2 * P.𝓵₆.re - 2 * P.𝓵₇.re)).isBounded_𝓵_nonneg
+-    ⟨c, fun Φ x => ?_⟩
+-  have hc1 := hc Φ (- Φ) x
+-  rw [left_eq_neg_right] at hc1
+-  exact hc1
+-
+-lemma nonneg_sum_𝓵₁_to_𝓵₅_of_isBounded (h : P.IsBounded) :
+-    0 ≤ P.𝓵₁/2 + P.𝓵₂/2 + P.𝓵₃ + P.𝓵₄ + P.𝓵₅.re := by
+-  have h1 := isBounded_of_left_eq_neg_right h
+-  have h2 := isBounded_of_left_eq_right h
+-  linarith
+-
+-end IsBounded
+-
+-end Potential
+-
+-end
+-end TwoHDM
++end TwoHiggsDoublet
+diff --git a/PhysLean/Particles/StandardModel/Basic.lean b/PhysLean/Particles/StandardModel/Basic.lean
+index cb9e2fd1..8927bf02 100644
+--- a/PhysLean/Particles/StandardModel/Basic.lean
++++ b/PhysLean/Particles/StandardModel/Basic.lean
+@@ -72,6 +72,38 @@ instance : InvolutiveStar GaugeGroupI where
+   star_involutive g := by
+     ext1 <;> simp
+ 
++/-- The inclusion of a U(1) subgroup. -/
++def ofU1Subgroup (u1 : unitary ℂ) : GaugeGroupI :=
++  (1,
++  ⟨!![star (u1 ^ 3 : unitary ℂ), 0;0, (u1 ^ 3 : unitary ℂ)], by
++    simp only [SetLike.mem_coe]
++    rw [mem_unitaryGroup_iff']
++    funext i j
++    rw [Matrix.mul_apply]
++    fin_cases i <;> fin_cases j <;> simp [conj_mul'], by
++    simp only [RCLike.star_def, SetLike.mem_coe, MonoidHom.mem_mker, coe_detMonoidHom,
++      det_fin_two_of, conj_mul', mul_zero, sub_zero]
++    simp⟩, u1)
++
++@[simp]
++lemma ofU1Subgroup_toSU3 (u1 : unitary ℂ) :
++    toSU3 (ofU1Subgroup u1) = 1 := rfl
++
++@[simp]
++lemma ofU1Subgroup_toSU2 (u1 : unitary ℂ) :
++    toSU2 (ofU1Subgroup u1) = ⟨!![star (u1 ^ 3 : unitary ℂ), 0;0, (u1 ^ 3 : unitary ℂ)], by
++    simp only [SetLike.mem_coe]
++    rw [mem_unitaryGroup_iff']
++    funext i j
++    rw [Matrix.mul_apply]
++    fin_cases i <;> fin_cases j <;> simp [conj_mul'], by
++    simp only [RCLike.star_def, SetLike.mem_coe, MonoidHom.mem_mker, coe_detMonoidHom,
++      det_fin_two_of, conj_mul', mul_zero, sub_zero]
++    simp⟩ := rfl
++
++@[simp]
++lemma ofU1Subgroup_toU1 (u1 : unitary ℂ) :
++    toU1 (ofU1Subgroup u1) = u1 := rfl
+ end GaugeGroupI
+ 
+ /-- The subgroup of the un-quotiented gauge group which acts trivially on all particles in the
+diff --git a/PhysLean/Particles/StandardModel/HiggsBoson/Basic.lean b/PhysLean/Particles/StandardModel/HiggsBoson/Basic.lean
+index f1a1a0a6..9603e313 100644
+--- a/PhysLean/Particles/StandardModel/HiggsBoson/Basic.lean
++++ b/PhysLean/Particles/StandardModel/HiggsBoson/Basic.lean
+@@ -173,6 +173,11 @@ lemma gaugeGroupI_smul_eq_U1_mul_SU2 (g : StandardModel.GaugeGroupI) (φ : Higgs
+     g • φ = (WithLp.toLp 2 <| g.toSU2.1 *ᵥ (g.toU1 ^ 3 • φ.ofLp)) := by
+   rw [gaugeGroupI_smul_eq, ← mulVec_smul]
+ 
++lemma gaugeGroupI_smul_eq_U1_smul_SU2 (g : StandardModel.GaugeGroupI) (φ : HiggsVec) :
++    g • φ = (WithLp.toLp 2 <| (g.toU1 ^ 3 • g.toSU2.1) *ᵥ φ.ofLp) := by
++  rw [gaugeGroupI_smul_eq]
++  rw [Matrix.smul_mulVec]
++
+ instance : MulAction StandardModel.GaugeGroupI HiggsVec where
+   one_smul φ := by simp [gaugeGroupI_smul_eq]
+   mul_smul g₁ g₂ φ := by
+@@ -181,6 +186,14 @@ instance : MulAction StandardModel.GaugeGroupI HiggsVec where
+     congr
+     simp [mul_pow]
+ 
++instance : DistribMulAction StandardModel.GaugeGroupI HiggsVec where
++  smul_zero g := by
++    rw [gaugeGroupI_smul_eq_U1_smul_SU2]
++    simp
++  smul_add g φ ψ := by
++    rw [gaugeGroupI_smul_eq_U1_smul_SU2]
++    simp [mulVec_add]
++    simp [← gaugeGroupI_smul_eq_U1_smul_SU2]
+ /-!
+ 
+ #### A.5.2. Unitary nature of the action
+@@ -355,6 +368,71 @@ informal_lemma stability_group where
+   deps := [``HiggsVec]
+   tag := "6V2MO"
+ 
++/-!
++
++## A.8. Gauge action removing phase from second component
++
++-/
++
++lemma ofU1Subgroup_smul_eq_smul (g : unitary ℂ) (φ : HiggsVec) :
++    (StandardModel.GaugeGroupI.ofU1Subgroup g) • φ =
++    (WithLp.toLp 2 <| !![1, 0; 0, g.1 ^ 6] *ᵥ φ.ofLp) := by
++  rw [gaugeGroupI_smul_eq_U1_smul_SU2]
++  simp only [GaugeGroupI.ofU1Subgroup_toU1, GaugeGroupI.ofU1Subgroup_toSU2, SubmonoidClass.coe_pow,
++    star_pow, RCLike.star_def, smul_of, smul_cons, smul_zero, smul_empty, cons_mulVec,
++    cons_dotProduct, zero_mul, dotProduct_of_isEmpty, add_zero, zero_add, empty_mulVec, one_mul,
++    WithLp.toLp.injEq, vecCons_inj, mul_eq_mul_right_iff, and_true]
++  apply And.intro
++  · have h0 : g ^ 3 • (starRingEnd ℂ) ↑g ^ 3 = 1 := by
++      trans (normSq (g ^ 3).1 : ℂ)
++      · rw [← mul_conj]
++        simp
++        rfl
++      · rw [normSq_eq_norm_sq]
++        simp
++    simp [h0]
++  · left
++    trans (g ^ 3 : ℂ) • (g ^ 3 : ℂ)
++    · rfl
++    simp only [smul_eq_mul]
++    ring
++
++lemma gaugeGroupI_smul_phase_snd (φ : HiggsVec) :
++    ∃ g : StandardModel.GaugeGroupI,
++      (g • φ).ofLp 1 = ‖(φ.ofLp 1)‖ ∧
++      (∀ φ1 : HiggsVec, (g • φ1).ofLp 0 = φ1.ofLp 0) ∧
++      (∀ a : ℝ, g • (!₂[a, 0] : HiggsVec) = (!₂[a, 0] : HiggsVec)) := by
++  let θ := arg (φ 1)
++  use StandardModel.GaugeGroupI.ofU1Subgroup ⟨Complex.exp (-I * θ / 6), by
++    rw [Unitary.mem_iff]
++    simp [← Complex.exp_conj, ← Complex.exp_add, Complex.conj_ofNat]
++    ring_nf
++    simp⟩
++  apply And.intro
++  · rw [ofU1Subgroup_smul_eq_smul]
++    simp only [Fin.isValue, neg_mul, cons_mulVec, cons_dotProduct, one_mul, zero_mul,
++      dotProduct_of_isEmpty, add_zero, zero_add, empty_mulVec, cons_val_one, cons_val_fin_one]
++    trans Complex.exp (-I * θ / 6) ^ 6 * φ.ofLp 1
++    · congr
++      simp
++    have habs : φ.ofLp 1 = cexp (I * arg (φ.ofLp 1)) * ‖φ.ofLp 1‖ := by
++      conv_lhs => rw [← Complex.norm_mul_exp_arg_mul_I (φ.ofLp 1)]
++      ring_nf
++    conv_lhs => rw [habs]
++    rw [← mul_assoc, ← Complex.exp_nat_mul, ← Complex.exp_add]
++    simp [θ]
++    ring_nf
++    simp
++  apply And.intro
++  · intro φ
++    rw [ofU1Subgroup_smul_eq_smul]
++    simp
++    rfl
++  · intro a
++    simp [ofU1Subgroup_smul_eq_smul]
++    ext i
++    fin_cases i <;> simp
++
+ end HiggsVec
+ 
+ /-!
+diff --git a/PhysLean/Particles/SuperSymmetry/SU5/ChargeSpectrum/Completions.lean b/PhysLean/Particles/SuperSymmetry/SU5/ChargeSpectrum/Completions.lean
+index 60ea1ee6..5fe6ce93 100644
+--- a/PhysLean/Particles/SuperSymmetry/SU5/ChargeSpectrum/Completions.lean
++++ b/PhysLean/Particles/SuperSymmetry/SU5/ChargeSpectrum/Completions.lean
+@@ -306,7 +306,7 @@ lemma self_subset_mem_completions (S5 S10 : Finset 𝓩) (x y : ChargeSpectrum 
+     · simp_all
+ 
+ /-- If `x` is a subset of `y` and `y` is complete, then there is a completion of `x` which is also
+-  a subset of `y`.-/
++  a subset of `y`. -/
+ lemma exist_completions_subset_of_complete (S5 S10 : Finset 𝓩) (x y : ChargeSpectrum 𝓩)
+     (hsubset : x ⊆ y) (hy : y ∈ ofFinset S5 S10) (hycomplete : IsComplete y) :
+     ∃ z ∈ completions S5 S10 x, z ⊆ y := by
+diff --git a/PhysLean/Relativity/LorentzAlgebra/Basis.lean b/PhysLean/Relativity/LorentzAlgebra/Basis.lean
+index c721f1d0..340632cc 100644
+--- a/PhysLean/Relativity/LorentzAlgebra/Basis.lean
++++ b/PhysLean/Relativity/LorentzAlgebra/Basis.lean
+@@ -8,7 +8,7 @@ import PhysLean.Meta.TODO.Basic
+ /-!
+ # Generators of the Lorentz Algebra
+ 
+-This file defines the 6 standard generators of the Lorentz algebra so(1,3):
++This file defines the 6 standard generators of the Lorentz algebra so(1,3) :
+ - **Boost generators** K₀, K₁, K₂: Generate Lorentz transformations (velocity changes)
+ - **Rotation generators** J₀, J₁, J₂: Generate spatial rotations
+ 
+@@ -77,9 +77,9 @@ angular momentum generators.
+ - Satisfies Lorentz algebra condition: J_iᵀ η = -η J_i
+ 
+ ## Structure
+-- J_0 (rotation about x-axis): Acts on (y,z) components
+-- J_1 (rotation about y-axis): Acts on (z,x) components
+-- J_2 (rotation about z-axis): Acts on (x,y) components
++- J_0 (rotation about x-axis) : Acts on (y,z) components
++- J_1 (rotation about y-axis) : Acts on (z,x) components
++- J_2 (rotation about z-axis) : Acts on (x,y) components
+ 
+ ## Physical Meaning
+ Exponentiating θ·J_i produces a finite rotation by angle θ about axis i.
+@@ -88,14 +88,14 @@ def rotationGenerator (i : Fin 3) : Matrix (Fin 1 ⊕ Fin 3) (Fin 1 ⊕ Fin 3) 
+   fun μ ν =>
+     match i with
+     | 0 => if μ = Sum.inr 1 ∧ ν = Sum.inr 2 then -1
+-           else if μ = Sum.inr 2 ∧ ν = Sum.inr 1 then 1
+-           else 0
+-    | 1 => if μ = Sum.inr 0 ∧ ν = Sum.inr 2 then 1
+-           else if μ = Sum.inr 2 ∧ ν = Sum.inr 0 then -1
+-           else 0
+-    | 2 => if μ = Sum.inr 0 ∧ ν = Sum.inr 1 then -1
+-           else if μ = Sum.inr 1 ∧ ν = Sum.inr 0 then 1
+-           else 0
++            else if μ = Sum.inr 2 ∧ ν = Sum.inr 1 then 1
++            else 0
++      | 1 => if μ = Sum.inr 0 ∧ ν = Sum.inr 2 then 1
++            else if μ = Sum.inr 2 ∧ ν = Sum.inr 0 then -1
++            else 0
++      | 2 => if μ = Sum.inr 0 ∧ ν = Sum.inr 1 then -1
++            else if μ = Sum.inr 1 ∧ ν = Sum.inr 0 then 1
++            else 0
+ 
+ /-- The boost generator K_i is in the Lorentz algebra. -/
+ lemma boostGenerator_mem (i : Fin 3) : boostGenerator i ∈ lorentzAlgebra := by
+
+commit 6cd14d28462230a0deb355df7e934b8696c57d9e
+Author: Joseph Tooby-Smith <72603918+jstoobysmith@users.noreply.github.com>
+Date:   Thu Jan 22 11:20:13 2026 +0000
+
+    feat: More properties of gram matrix (#917)
+    
+    * feat: More properties of gram matrix
+    
+    * refactor: Lint
+
+diff --git a/PhysLean/Particles/BeyondTheStandardModel/TwoHDM/GramMatrix.lean b/PhysLean/Particles/BeyondTheStandardModel/TwoHDM/GramMatrix.lean
+index ecb67ef9..759964db 100644
+--- a/PhysLean/Particles/BeyondTheStandardModel/TwoHDM/GramMatrix.lean
++++ b/PhysLean/Particles/BeyondTheStandardModel/TwoHDM/GramMatrix.lean
+@@ -21,7 +21,7 @@ open StandardModel
+ 
+ /-!
+ 
+-## C. The Gram matrix
++## A. The Gram matrix
+ 
+ -/
+ 
+@@ -239,7 +239,82 @@ lemma mem_orbit_gaugeGroupI_iff_gramMatrix (H1 H2 : TwoHiggsDoublet) :
+ 
+ /-!
+ 
+-### C.2. The Gram vector
++### A.1. Gram matrix is surjective
++
++-/
++
++open ComplexConjugate
++
++lemma gramMatrix_surjective_det_tr (K : Matrix (Fin 2) (Fin 2) ℂ)
++    (hKs : IsSelfAdjoint K) (hKdet : 0 ≤ K.det.re) (hKtr : 0 ≤ K.trace.re) :
++    ∃ H : TwoHiggsDoublet, H.gramMatrix = K := by
++  /- Basic results related to K. -/
++  have hK_explicit : K = !![K 0 0, K 0 1; K 1 0, K 1 1] := by
++    ext i j
++    fin_cases i <;> fin_cases j <;> simp
++  have hK_star_explicit : star K = !![star (K 0 0), star (K 1 0); star (K 0 1), star (K 1 1)] := by
++    ext i j
++    fin_cases i <;> fin_cases j <;> simp
++  rw [isSelfAdjoint_iff, hK_star_explicit] at hKs
++  conv_rhs at hKs => rw [hK_explicit]
++  simp at hKs
++  have hK_explicit2 : K = !![((K 0 0).re : ℂ), K 0 1; conj (K 0 1), ((K 1 1).re : ℂ)] := by
++    conv_lhs => rw [hK_explicit]
++    simp [hKs]
++    apply And.intro
++    · refine Eq.symm ((fun {z} => Complex.conj_eq_iff_re.mp) ?_)
++      simp [hKs]
++    · refine Eq.symm ((fun {z} => Complex.conj_eq_iff_re.mp) ?_)
++      simp [hKs]
++  clear hK_explicit hK_star_explicit hKs
++  generalize (K 0 0).re = a at *
++  generalize (K 1 1).re = b at *
++  generalize K 0 1 = c at *
++  have det_eq_abc : K.det = a * b - ‖c‖ ^ 2 := by
++    simp [hK_explicit2]
++    rw [Complex.mul_conj']
++  have tra_eq_abc : K.trace.re = a + b := by
++    simp [hK_explicit2]
++  simp [det_eq_abc, ← Complex.ofReal_pow] at hKdet
++  rw [tra_eq_abc] at hKtr
++  rw [hK_explicit2]
++  clear hK_explicit2 det_eq_abc tra_eq_abc
++  have ha_nonneg : 0 ≤ a := by nlinarith
++  have hb_nonneg : 0 ≤ b := by nlinarith
++  /- Splitting the cases into a = 0 and other. -/
++  by_cases ha : a = 0
++  · use ⟨(0 : HiggsVec), (!₂[√b, 0] : HiggsVec)⟩
++    subst ha
++    simp_all
++    subst hKdet
++    ext i j
++    fin_cases i <;> fin_cases j <;> simp [gramMatrix]
++    simp [PiLp.norm_eq_of_L2, ← Complex.ofReal_pow]
++    exact Real.sq_sqrt hb_nonneg
++  /- The case when a ≠ 0. -/
++  have h1 : (√a : ℂ) ≠ 0 := by
++      simp_all
++  use ⟨(!₂[√a, 0] : HiggsVec), !₂[conj c/ √a, √(a * b - ‖c‖ ^ 2) / √a]⟩
++  ext i j
++  fin_cases i <;> fin_cases j <;> simp [gramMatrix, PiLp.norm_eq_of_L2, ← Complex.ofReal_pow]
++  · exact Real.sq_sqrt ha_nonneg
++  · simp [PiLp.inner_apply]
++    field_simp
++  · simp [PiLp.inner_apply]
++    field_simp
++  · rw [Real.sq_sqrt, abs_of_nonneg, abs_of_nonneg]
++    field_simp
++    rw [Real.sq_sqrt, Real.sq_sqrt]
++    ring
++    · positivity
++    · nlinarith
++    · exact Real.sqrt_nonneg (a * b - ‖c‖ ^ 2)
++    · positivity
++    · positivity
++
++/-!
++
++## B. The Gram vector
+ 
+ -/
+ 
+@@ -283,11 +358,17 @@ lemma gramMatrix_eq_component_gramVector (H : TwoHiggsDoublet) :
+   simp
+ 
+ lemma gramVector_inl_eq_trace_gramMatrix (H : TwoHiggsDoublet) :
+-    H.gramVector (Sum.inl 0) = H.gramMatrix.trace := by
++    H.gramVector (Sum.inl 0) = H.gramMatrix.trace.re := by
+   rw [gramMatrix_eq_component_gramVector, Matrix.trace_fin_two]
+   simp only [Fin.isValue, one_div, Matrix.of_apply, Matrix.cons_val', Matrix.cons_val_zero,
+     Matrix.cons_val_fin_one, Matrix.cons_val_one]
+-  ring
++  ring_nf
++  simp
++
++lemma gramVector_inl_nonneg (H : TwoHiggsDoublet) :
++    0 ≤ H.gramVector (Sum.inl 0) := by
++  rw [gramVector_inl_eq_trace_gramMatrix]
++  exact gramMatrix_tr_nonneg H
+ 
+ lemma normSq_Φ1_eq_gramVector (H : TwoHiggsDoublet) :
+     ‖H.Φ1‖ ^ 2 = (1/2 : ℝ) * (H.gramVector (Sum.inl 0) + H.gramVector (Sum.inr 2)) := by
+@@ -319,4 +400,114 @@ lemma Φ2_inner_Φ1_eq_gramVector (H : TwoHiggsDoublet) :
+   · simp [gramMatrix]
+   · simp [gramMatrix_eq_component_gramVector]
+ 
++open ComplexConjugate
++
++lemma Φ1_inner_Φ2_normSq_eq_gramVector (H : TwoHiggsDoublet) :
++    ‖⟪H.Φ1, H.Φ2⟫_ℂ‖ ^ 2 =
++    (1/4 : ℝ) * (H.gramVector (Sum.inr 0) ^ 2 + H.gramVector (Sum.inr 1) ^ 2) := by
++  trans (⟪H.Φ1, H.Φ2⟫_ℂ * conj ⟪H.Φ1, H.Φ2⟫_ℂ).re
++  · rw [Complex.mul_conj', ← Complex.ofReal_pow]
++    rfl
++  rw [conj_inner_symm H.Φ2 H.Φ1]
++  rw [Φ1_inner_Φ2_eq_gramVector, Φ2_inner_Φ1_eq_gramVector]
++  simp only [one_div, Complex.ofReal_inv, Complex.ofReal_ofNat, Fin.isValue, Complex.mul_re,
++    Complex.inv_re, Complex.re_ofNat, Complex.normSq_ofNat, div_self_mul_self', Complex.add_re,
++    Complex.ofReal_re, Complex.I_re, zero_mul, Complex.I_im, Complex.ofReal_im, mul_zero, sub_self,
++    add_zero, Complex.inv_im, Complex.im_ofNat, neg_zero, zero_div, Complex.add_im, Complex.mul_im,
++    one_mul, zero_add, sub_zero, Complex.sub_re, Complex.sub_im, zero_sub, mul_neg, sub_neg_eq_add]
++  ring
++
++lemma gramVector_inl_zero_eq (H : TwoHiggsDoublet) :
++    H.gramVector (Sum.inl 0) = ‖H.Φ1‖ ^ 2 + ‖H.Φ2‖ ^ 2 := by
++  rw [normSq_Φ1_eq_gramVector, normSq_Φ2_eq_gramVector]
++  ring
++
++lemma gramVector_inl_zero_eq_gramMatrix (H : TwoHiggsDoublet) :
++    H.gramVector (Sum.inl 0) = (H.gramMatrix 0 0).re + (H.gramMatrix 1 1).re := by
++  simp [gramVector_inl_zero_eq, gramMatrix, ← Complex.ofReal_pow, Complex.ofReal_re]
++
++lemma gramVector_inr_zero_eq (H : TwoHiggsDoublet) :
++    H.gramVector (Sum.inr 0) = 2 * (⟪H.Φ1, H.Φ2⟫_ℂ).re := by
++  rw [Φ1_inner_Φ2_eq_gramVector]
++  simp
++
++lemma gramVector_inr_zero_eq_gramMatrix (H : TwoHiggsDoublet) :
++    H.gramVector (Sum.inr 0) = 2 * (H.gramMatrix 1 0).re := by
++  rw [gramMatrix, gramVector_inr_zero_eq]
++  simp
++
++lemma gramVector_inr_one_eq (H : TwoHiggsDoublet) :
++    H.gramVector (Sum.inr 1) = 2 * (⟪H.Φ1, H.Φ2⟫_ℂ).im := by
++  rw [Φ1_inner_Φ2_eq_gramVector]
++  simp
++
++lemma gramVector_inr_one_eq_gramMatrix (H : TwoHiggsDoublet) :
++    H.gramVector (Sum.inr 1) = 2 * (H.gramMatrix 1 0).im := by
++  rw [gramMatrix, gramVector_inr_one_eq]
++  simp
++
++lemma gramVector_inr_two_eq (H : TwoHiggsDoublet) :
++    H.gramVector (Sum.inr 2) = ‖H.Φ1‖ ^ 2 - ‖H.Φ2‖ ^ 2 := by
++  rw [normSq_Φ1_eq_gramVector, normSq_Φ2_eq_gramVector]
++  ring
++
++lemma gramVector_inr_two_eq_gramMatrix (H : TwoHiggsDoublet) :
++    H.gramVector (Sum.inr 2) = (H.gramMatrix 0 0).re - (H.gramMatrix 1 1).re := by
++  simp [gramVector_inr_two_eq, gramMatrix, ← Complex.ofReal_pow, Complex.ofReal_re]
++
++lemma gramMatrix_det_eq_gramVector (H : TwoHiggsDoublet) :
++    H.gramMatrix.det.re =
++    (1/4 : ℝ) * (H.gramVector (Sum.inl 0) ^ 2 -
++    ∑ μ : Fin 3, H.gramVector (Sum.inr μ) ^ 2) := by
++  rw [gramMatrix_det_eq_real]
++  simp [normSq_Φ1_eq_gramVector, normSq_Φ2_eq_gramVector, Φ1_inner_Φ2_normSq_eq_gramVector,
++    Fin.sum_univ_three]
++  ring
++
++lemma gramVector_inr_sum_sq_le_inl (H : TwoHiggsDoublet) :
++    ∑ μ : Fin 3, H.gramVector (Sum.inr μ) ^ 2 ≤ H.gramVector (Sum.inl 0) ^ 2 := by
++  apply sub_nonneg.mp
++  trans (4 : ℝ) * H.gramMatrix.det.re
++  · apply mul_nonneg
++    · norm_num
++    · exact gramMatrix_det_nonneg H
++  apply (le_of_eq _)
++  rw [gramMatrix_det_eq_gramVector]
++  ring
++
++lemma gramVector_surjective (v : Fin 1 ⊕ Fin 3 → ℝ)
++    (h_inl : 0 ≤ v (Sum.inl 0))
++    (h_det : ∑ μ : Fin 3, v (Sum.inr μ) ^ 2 ≤ v (Sum.inl 0) ^ 2) :
++    ∃ H : TwoHiggsDoublet, H.gramVector = v := by
++  let K := !![(1 / 2 : ℂ) * (v (Sum.inl 0) + v (Sum.inr 2)),
++      (1 / 2 : ℂ) * (v (Sum.inr 0) - Complex.I * v (Sum.inr 1));
++      (1 / 2 : ℂ) * (v (Sum.inr 0) + Complex.I * v (Sum.inr 1)),
++      (1 / 2 : ℂ) * (v (Sum.inl 0) - v (Sum.inr 2))]
++  have K_star : star K = !![(1 / 2 : ℂ) * (v (Sum.inl 0) + v (Sum.inr 2)),
++      (1 / 2 : ℂ) * (v (Sum.inr 0) - Complex.I * v (Sum.inr 1));
++      (1 / 2 : ℂ) * (v (Sum.inr 0) + Complex.I * v (Sum.inr 1)),
++      (1 / 2 : ℂ) * (v (Sum.inl 0) - v (Sum.inr 2))] := by
++    ext i j
++    fin_cases i <;> fin_cases j <;> simp [K]
++    ring
++  have hK_selfAdjoint : IsSelfAdjoint K := by
++    exact K_star
++  have hK_det_nonneg : 0 ≤ K.det.re := by
++    simp [K]
++    simp [Fin.sum_univ_three] at h_det
++    linarith
++  have hK_tr : 0 ≤ K.trace.re := by
++    simp [K]
++    linarith
++  obtain ⟨H, hH⟩ := gramMatrix_surjective_det_tr K hK_selfAdjoint hK_det_nonneg hK_tr
++  use H
++  ext μ
++  fin_cases μ
++  · simp [gramVector_inl_zero_eq_gramMatrix, hH, K]
++    ring
++  · simp [gramVector_inr_zero_eq_gramMatrix, hH, K]
++  · simp [gramVector_inr_one_eq_gramMatrix, hH, K]
++  · simp [gramVector_inr_two_eq_gramMatrix, hH, K]
++    ring
++
+ end TwoHiggsDoublet
+diff --git a/PhysLean/Particles/BeyondTheStandardModel/TwoHDM/Potential.lean b/PhysLean/Particles/BeyondTheStandardModel/TwoHDM/Potential.lean
+index cb1f52a6..9aedc485 100644
+--- a/PhysLean/Particles/BeyondTheStandardModel/TwoHDM/Potential.lean
++++ b/PhysLean/Particles/BeyondTheStandardModel/TwoHDM/Potential.lean
+@@ -146,10 +146,42 @@ lemma gaugeGroupI_smul_quarticTerm (g : StandardModel.GaugeGroupI) (P : Potentia
+ noncomputable def potential (P : PotentialParameters) (H : TwoHiggsDoublet) : ℝ :=
+   massTerm P H + quarticTerm P H
+ 
++@[simp]
+ lemma gaugeGroupI_smul_potential (g : StandardModel.GaugeGroupI)
+     (P : PotentialParameters) (H : TwoHiggsDoublet) :
+     potential P (g • H) = potential P H := by
+   rw [potential, potential]
+   simp
++/-!
++
++## Boundedness of the potential
++
++-/
++
++/-- The condition that the potential is bounded from below. -/
++def PotentialIsBounded (P : PotentialParameters) : Prop :=
++  ∃ c : ℝ, ∀ H : TwoHiggsDoublet, c ≤ potential P H
++
++lemma potentialIsBounded_iff_forall_gramVector (P : PotentialParameters) :
++    PotentialIsBounded P ↔ ∃ c : ℝ, ∀ K : Fin 1 ⊕ Fin 3 → ℝ, 0 ≤ K (Sum.inl 0) →
++      ∑ μ : Fin 3, K (Sum.inr μ) ^ 2 ≤ K (Sum.inl 0) ^ 2 →
++      c ≤ ∑ μ, P.ξ μ * K μ + ∑ a, ∑ b, K a * K b * P.η a b := by
++  apply Iff.intro
++  · intro h
++    obtain ⟨c, hc⟩ := h
++    use c
++    intro v hv₀ hv_sum
++    obtain ⟨H, hH⟩ := gramVector_surjective v hv₀ hv_sum
++    apply (hc H).trans
++    apply le_of_eq
++    rw [potential, massTerm_eq_gramVector, quarticTerm_eq_gramVector]
++    simp [hH]
++  · intro h
++    obtain ⟨c, hc⟩ := h
++    use c
++    intro H
++    apply (hc H.gramVector (gramVector_inl_nonneg H) (gramVector_inr_sum_sq_le_inl H)).trans
++    apply le_of_eq
++    rw [potential, massTerm_eq_gramVector, quarticTerm_eq_gramVector]
+ 
+ end TwoHiggsDoublet
+
+commit 977833b1b75fd77da39f3119775552accea14adc
+Author: kastch <kastcheev.nb@gmail.com>
+Date:   Fri Jan 23 02:53:53 2026 -0300
+
+    7RKA6: Replaced informal with sorryful (#919)
+    
+    * 7RKA6: Replaced informal with sorryful
+    
+    * 7RKA6: Line length fix
+    
+    * 7RKA6: Linter multiline fix
+    
+    * 7RKA6: Naming fix
+    
+    ---------
+    
+    Co-authored-by: kastch <kastch>
+
+diff --git a/PhysLean/Relativity/Tensors/RealTensor/ToComplex.lean b/PhysLean/Relativity/Tensors/RealTensor/ToComplex.lean
+index 4c2f8261..6e63defe 100644
+--- a/PhysLean/Relativity/Tensors/RealTensor/ToComplex.lean
++++ b/PhysLean/Relativity/Tensors/RealTensor/ToComplex.lean
+@@ -117,10 +117,26 @@ lemma toComplex_equivariant {n} {c : Fin n → realLorentzTensor.Color}
+ 
+ -/
+ 
++/-- The `PermCond` condition is preserved under `colorToComplex`. -/
++@[simp] lemma permCond_colorToComplex {n m : ℕ}
++    {c : Fin n → realLorentzTensor.Color} {c1 : Fin m → realLorentzTensor.Color}
++    {σ : Fin m → Fin n} (h : PermCond c c1 σ) :
++    PermCond (colorToComplex ∘ c) (colorToComplex ∘ c1) σ := by
++  refine And.intro h.1 ?_
++  intro i
++  simpa [Function.comp_apply] using congrArg colorToComplex (h.2 i)
++
+ /-- The map `toComplex` commutes with permT. -/
+-informal_lemma permT_toComplex where
+-  deps := [``permT]
+-  tag := "7RKA6"
++@[sorryful]
++lemma permT_toComplex {n m : ℕ}
++    {c : Fin n → realLorentzTensor.Color}
++    {c1 : Fin m → realLorentzTensor.Color}
++    {σ : Fin m → Fin n} (h : PermCond c c1 σ) (t : ℝT(3, c)) :
++    toComplex (permT (S := realLorentzTensor) σ h t)
++      =
++    permT (S := complexLorentzTensor) σ (permCond_colorToComplex (c := c) (c1 := c1) h)
++      (toComplex (c := c) t) := by
++  sorry
+ 
+ /-- The map `toComplex` commutes with prodT. -/
+ informal_lemma prodT_toComplex where
+
+commit 0e4ace1bfb3748542ca12d58e885769c41d86417
+Author: physlean0 <physlean0@gmail.com>
+Date:   Fri Jan 23 01:15:32 2026 -0800
+
+    feat: Complete TightBindingChain Hamiltonian hermiticity and eigenstate orthogonality proofs (#918)
+    
+    * feat: Complete TightBindingChain Hamiltonian hermiticity and eigenstate orthogonality proofs
+    
+    This PR completes two key sorryful lemmas in the tight binding chain model:
+    
+    1. `hamiltonian_hermitian`: Proves that the tight binding Hamiltonian is Hermitian
+       by showing that the inner products satisfy ⟨Hψ, φ⟩ = ⟨ψ, Hφ⟩
+       - Adds helper lemma `localizedComp_adjoint`: adjoint of |m⟩⟨n| is |n⟩⟨m|
+       - Adds helper lemma `localizedComp_self_adjoint`: diagonal terms are self-adjoint
+    
+    2. `energyEigenstate_orthogonal`: Proves energy eigenstates with distinct
+       wavenumbers are orthogonal using the geometric series identity
+       - The key insight is that the inner product reduces to ∑ω^n where ω is
+         an N-th root of unity (from periodic boundary conditions)
+       - Different wavenumbers give ω ≠ 1, and ∑ω^n = (ω^N - 1)/(ω - 1) = 0
+    
+    These proofs formalize fundamental quantum mechanical results about the
+    tight binding model commonly used in condensed matter physics.
+    
+    * refactor: Address PR review comments
+    
+    - Move localizedComp_adjoint to section C (after localizedComp_apply_localizedState)
+    - Delete redundant localizedComp_self_adjoint lemma
+    - Use localizedComp_adjoint directly in hamiltonian_hermitian
+    - Golf energyEigenstate_orthogonal proof (37 lines shorter):
+      - Replace match/with with obtain for cleaner destructuring
+      - Combine initial simp steps
+      - Use calc block for hω_pow
+      - Inline intermediate computations
+      - Remove verbose comments while preserving key insights
+
+diff --git a/PhysLean/CondensedMatter/TightBindingChain/Basic.lean b/PhysLean/CondensedMatter/TightBindingChain/Basic.lean
+index dc498b91..61f03e9a 100644
+--- a/PhysLean/CondensedMatter/TightBindingChain/Basic.lean
++++ b/PhysLean/CondensedMatter/TightBindingChain/Basic.lean
+@@ -193,6 +193,13 @@ lemma localizedComp_apply_localizedState (m n p : Fin T.N) :
+   rw [localizedComp, LinearMap.coe_mk, AddHom.coe_mk,
+     orthonormal_iff_ite.mp T.localizedState_orthonormal n p, ite_smul, one_smul, zero_smul]
+ 
++/-- The adjoint of localizedComp |m⟩⟨n| is |n⟩⟨m|. -/
++lemma localizedComp_adjoint (m n : Fin T.N) (ψ φ : T.HilbertSpace) :
++    ⟪|m⟩⟨n| ψ, φ⟫_ℂ = ⟪ψ, |n⟩⟨m| φ⟫_ℂ := by
++  simp only [localizedComp, LinearMap.coe_mk, AddHom.coe_mk]
++  rw [inner_smul_left, inner_smul_right, inner_conj_symm]
++  ring
++
+ /-!
+ 
+ ## D. The Hamiltonian of the tight binding chain
+@@ -213,9 +220,28 @@ noncomputable def hamiltonian : T.HilbertSpace →ₗ[ℂ] T.HilbertSpace :=
+ -/
+ 
+ /-- The hamiltonian of the tight binding chain is hermitian. -/
+-@[sorryful]
+ lemma hamiltonian_hermitian (ψ φ : T.HilbertSpace) :
+-    ⟪T.hamiltonian ψ, φ⟫_ℂ = ⟪ψ, T.hamiltonian φ⟫_ℂ := by sorry
++    ⟪T.hamiltonian ψ, φ⟫_ℂ = ⟪ψ, T.hamiltonian φ⟫_ℂ := by
++  simp only [hamiltonian, LinearMap.sub_apply, LinearMap.smul_apply, LinearMap.coe_sum,
++    Finset.sum_apply, LinearMap.add_apply]
++  rw [inner_sub_left, inner_sub_right]
++  congr 1
++  · -- E0 term
++    simp only [Finset.smul_sum]
++    rw [sum_inner, inner_sum]
++    apply Finset.sum_congr rfl
++    intro n _
++    simp only [inner_smul_left_eq_smul, inner_smul_right_eq_smul]
++    rw [localizedComp_adjoint]
++  · -- t term
++    simp only [Finset.smul_sum, smul_add]
++    rw [sum_inner, inner_sum]
++    apply Finset.sum_congr rfl
++    intro n _
++    rw [inner_add_left, inner_add_right]
++    simp only [inner_smul_left_eq_smul, inner_smul_right_eq_smul]
++    rw [localizedComp_adjoint, localizedComp_adjoint]
++    ring
+ 
+ /-!
+ 
+@@ -478,10 +504,73 @@ noncomputable def energyEigenstate (k : T.QuantaWaveNumber) : T.HilbertSpace :=
+ 
+ -/
+ 
+-/-- The energy eigenstates of the tight binding chain are orthogonal. -/
+-@[sorryful]
++/-- The energy eigenstates of the tight binding chain are orthogonal.
++
++This is a fundamental quantum mechanical result: eigenstates of a Hermitian operator
++(the Hamiltonian) with distinct eigenvalues are orthogonal. Here we prove it directly
++using the periodic boundary conditions which quantize the wavenumbers.
++
++The key physical insight is that different wavenumbers k₁ ≠ k₂ give rise to different
++N-th roots of unity exp(i(k₂-k₁)a), and the sum of all N-th roots of unity equals zero. -/
+ lemma energyEigenstate_orthogonal :
+-    Pairwise fun k1 k2 => ⟪T.energyEigenstate k1, T.energyEigenstate k2⟫_ℂ = 0 := by sorry
++    Pairwise fun k1 k2 => ⟪T.energyEigenstate k1, T.energyEigenstate k2⟫_ℂ = 0 := by
++  intro k1 k2 hne
++  simp only [energyEigenstate, sum_inner]
++  simp_rw [inner_sum, inner_smul_left, inner_smul_right,
++    orthonormal_iff_ite.mp T.localizedState_orthonormal]
++  simp only [mul_ite, mul_one, mul_zero, Finset.sum_ite_eq, Finset.mem_univ, ↓reduceIte]
++  set ω := Complex.exp (Complex.I * (k2 - k1) * T.a) with hω_def
++  have hsum_eq : ∑ n : Fin T.N, (starRingEnd ℂ) (Complex.exp (Complex.I * k1 * n * T.a)) *
++      Complex.exp (Complex.I * k2 * n * T.a) = ∑ i ∈ Finset.range T.N, ω ^ i := by
++    rw [Fin.sum_univ_eq_sum_range (fun n =>
++      (starRingEnd ℂ) (Complex.exp (Complex.I * k1 * n * T.a)) *
++      Complex.exp (Complex.I * k2 * n * T.a))]
++    refine Finset.sum_congr rfl fun i _ => ?_
++    rw [starRingEnd_apply, Complex.star_def, ← Complex.exp_conj]
++    simp only [map_mul, Complex.conj_I, Complex.conj_ofReal, Complex.conj_natCast]
++    rw [← Complex.exp_add, hω_def, ← Complex.exp_nat_mul]
++    ring_nf
++  rw [hsum_eq]
++  have hω_pow : ω ^ T.N = 1 := by
++    simp only [hω_def, ← Complex.exp_nat_mul]
++    have h2 := quantaWaveNumber_exp_N T 1 k2
++    have h1 := quantaWaveNumber_exp_N T 1 k1
++    simp only [Nat.cast_one] at h2 h1
++    calc _ = Complex.exp (Complex.I * k2 * 1 * T.N * T.a - Complex.I * k1 * 1 * T.N * T.a) := by
++             ring_nf
++         _ = 1 := by rw [Complex.exp_sub, h2, h1, div_one]
++  have hω_ne_one : ω ≠ 1 := by
++    intro hω_eq_one
++    apply hne
++    obtain ⟨_, ⟨n1, rfl⟩⟩ := k1
++    obtain ⟨_, ⟨n2, rfl⟩⟩ := k2
++    simp only [Subtype.mk.injEq]
++    have hexp := Complex.exp_eq_one_iff.mp (hω_def ▸ hω_eq_one)
++    obtain ⟨m, hm⟩ := hexp
++    have ha : (T.a : ℂ) ≠ 0 := Complex.ne_zero_of_re_pos T.a_pos
++    have hN : (T.N : ℂ) ≠ 0 := by simp [Ne.symm (NeZero.ne' T.N)]
++    simp only [Complex.ofReal_mul, Complex.ofReal_div, Complex.ofReal_ofNat,
++      Complex.ofReal_natCast, Complex.ofReal_sub] at hm
++    field_simp at hm
++    have hm_int : (n2 : ℤ) - n1 = T.N * m := by
++      have hm_eq : (n2 : ℂ) - n1 = (T.N : ℂ) * m := by ring_nf at hm ⊢; exact hm
++      exact_mod_cast congrArg Complex.re hm_eq
++    have hn1_lt : (n1 : ℤ) < T.N := by exact_mod_cast n1.isLt
++    have hn2_lt : (n2 : ℤ) < T.N := by exact_mod_cast n2.isLt
++    have hN_pos : (0 : ℤ) < T.N := by exact_mod_cast Nat.pos_of_ne_zero (NeZero.ne T.N)
++    have hm_bound : m = 0 := by
++      have h1 : -(T.N : ℤ) < (n2 : ℤ) - n1 := by omega
++      have h2 : (n2 : ℤ) - n1 < T.N := by omega
++      rw [hm_int] at h1 h2
++      nlinarith
++    simp only [hm_bound, mul_zero] at hm_int
++    have heq : n1.val = n2.val := by omega
++    simp only [heq]
++  -- Use the geometric series formula: (ω - 1) * ∑ω^i = ω^N - 1
++  -- Since ω^N = 1 and ω ≠ 1, the sum must be zero
++  have hgeom := mul_geom_sum ω T.N
++  rw [hω_pow, sub_self] at hgeom
++  exact mul_eq_zero.mp hgeom |>.resolve_left (sub_ne_zero.mpr hω_ne_one)
+ 
+ /-!
+ 
+
+commit 6cd4ff17bab069314e067c014d91003fbd7fae7c
+Author: kastch <kastcheev.nb@gmail.com>
+Date:   Fri Jan 23 11:41:27 2026 -0300
+
+    7RKFF: Replaced informal with sorryful (#920)
+    
+    * 7RKFF: Replaced informal with sorryful
+    
+    * 7RKFF: prodTColorToComplex fixed
+    
+    ---------
+    
+    Co-authored-by: kastch <kastch>
+
+diff --git a/PhysLean/Relativity/Tensors/RealTensor/ToComplex.lean b/PhysLean/Relativity/Tensors/RealTensor/ToComplex.lean
+index 6e63defe..5d8e3948 100644
+--- a/PhysLean/Relativity/Tensors/RealTensor/ToComplex.lean
++++ b/PhysLean/Relativity/Tensors/RealTensor/ToComplex.lean
+@@ -138,10 +138,39 @@ lemma permT_toComplex {n m : ℕ}
+       (toComplex (c := c) t) := by
+   sorry
+ 
++/-- `colorToComplex` commutes with `Fin.append` (as functions). -/
++@[simp]
++lemma colorToComplex_append {n m : ℕ}
++    (c : Fin n → realLorentzTensor.Color) (c1 : Fin m → realLorentzTensor.Color) :
++    (colorToComplex ∘ Fin.append c c1) = Fin.append (colorToComplex ∘ c) (colorToComplex ∘ c1) := by
++  funext x
++  -- breaking down x : Fin (n+m) into left/right parts
++  refine Fin.addCases (fun i => ?_) (fun j => ?_) x
++  · -- left case: x = castAdd m i
++    -- here `simp` should expand `Fin.append` on castAdd
++    simp [Fin.append, Function.comp_apply]
++  · -- right case: x = natAdd n j
++    simp [Fin.append, Function.comp_apply]
++
++/-- `prodT` on the complex side, with colors written as `colorToComplex ∘ Fin.append ...`.
++This is `prodT` followed by a cast using `colorToComplex_append`. -/
++noncomputable def prodTColorToComplex {n m : ℕ}
++    {c : Fin n → realLorentzTensor.Color} {c1 : Fin m → realLorentzTensor.Color} :
++    ℂT(colorToComplex ∘ c) → ℂT(colorToComplex ∘ c1) → ℂT(colorToComplex ∘ Fin.append c c1) :=
++    fun x y => permT (S := complexLorentzTensor) id (by simp) <|
++      prodT (S := complexLorentzTensor) x y
++
+ /-- The map `toComplex` commutes with prodT. -/
+-informal_lemma prodT_toComplex where
+-  deps := [``prodT]
+-  tag := "7RKFF"
++@[sorryful]
++lemma prodT_toComplex {n m : ℕ}
++    {c : Fin n → realLorentzTensor.Color}
++    {c1 : Fin m → realLorentzTensor.Color}
++    (t : ℝT(3, c)) (t1 : ℝT(3, c1)) :
++    toComplex (c := Fin.append c c1) (prodT (S := realLorentzTensor) t t1)
++      =
++    prodTColorToComplex (c := c) (c1 := c1)
++      (toComplex (c := c) t) (toComplex (c := c1) t1) := by
++  sorry
+ 
+ /-- The map `toComplex` commutes with contrT. -/
+ informal_lemma contrT_toComplex where
+
+commit 9aa1f3142e8d101f1e172a36e7e880ef2c4953b4
+Author: kastch <kastcheev.nb@gmail.com>
+Date:   Sat Jan 24 05:59:35 2026 -0300
+
+    7RKFR: Replaced informal with sorryful (#921)
+    
+    * 7RKFR: Replaced informal with sorryful
+    
+    * 7RKFR: Removed redundant lemma
+    
+    ---------
+    
+    Co-authored-by: kastch <kastch>
+
+diff --git a/PhysLean/Relativity/Tensors/RealTensor/ToComplex.lean b/PhysLean/Relativity/Tensors/RealTensor/ToComplex.lean
+index 5d8e3948..6f449247 100644
+--- a/PhysLean/Relativity/Tensors/RealTensor/ToComplex.lean
++++ b/PhysLean/Relativity/Tensors/RealTensor/ToComplex.lean
+@@ -172,10 +172,29 @@ lemma prodT_toComplex {n m : ℕ}
+       (toComplex (c := c) t) (toComplex (c := c1) t1) := by
+   sorry
+ 
++/-- `τ` commutes with `colorToComplex` on the Lorentz `up/down` colors. -/
++@[simp]
++lemma tau_colorToComplex (x : realLorentzTensor.Color) :
++    (complexLorentzTensor).τ (colorToComplex x) = colorToComplex ((realLorentzTensor).τ x) := by
++  cases x <;> rfl
++
+ /-- The map `toComplex` commutes with contrT. -/
+-informal_lemma contrT_toComplex where
+-  deps := [``contrT]
+-  tag := "7RKFR"
++@[sorryful]
++lemma contrT_toComplex {n : ℕ}
++    {c : Fin (n + 1 + 1) → realLorentzTensor.Color} {i j : Fin (n + 1 + 1)}
++    (h : i ≠ j ∧ (realLorentzTensor).τ (c i) = c j) (t : ℝT(3, c)) :
++    toComplex (c := c ∘ Pure.dropPairEmb i j) (contrT (S := realLorentzTensor) n i j h t)
++      =
++    contrT (S := complexLorentzTensor) n i j (by
++        -- если у simp достаточно информации, то это закрывается:
++        simpa [Function.comp_apply] using
++          And.intro h.1 (by
++            -- τ-совместимость
++            simpa [tau_colorToComplex] using congrArg colorToComplex h.2
++          )
++      )
++      (toComplex (c := c) t) := by
++  sorry
+ 
+ /-- The map `toComplex` commutes with evalT. -/
+ informal_lemma evalT_toComplex where
+
+commit 7ba876c3f5fcd9f67fa2ee9326dd5d0b1e70079a
+Author: kastch <kastcheev.nb@gmail.com>
+Date:   Sun Jan 25 10:44:36 2026 -0300
+
+    7RKGK: Replaced informal with sorryful (#922)
+    
+    Co-authored-by: kastch <kastch>
+
+diff --git a/PhysLean/Relativity/Tensors/RealTensor/ToComplex.lean b/PhysLean/Relativity/Tensors/RealTensor/ToComplex.lean
+index 6f449247..1e88218c 100644
+--- a/PhysLean/Relativity/Tensors/RealTensor/ToComplex.lean
++++ b/PhysLean/Relativity/Tensors/RealTensor/ToComplex.lean
+@@ -196,9 +196,51 @@ lemma contrT_toComplex {n : ℕ}
+       (toComplex (c := c) t) := by
+   sorry
+ 
+-/-- The map `toComplex` commutes with evalT. -/
+-informal_lemma evalT_toComplex where
+-  deps := [``evalT]
+-  tag := "7RKGK"
++@[simp]
++lemma complex_repDim_up :
++    (complexLorentzTensor).repDim complexLorentzTensor.Color.up = 4 := rfl
++
++@[simp]
++lemma complex_repDim_down :
++    (complexLorentzTensor).repDim complexLorentzTensor.Color.down = 4 := rfl
++
++/-- Convert an evaluation index from the real repDim to the complex repDim. -/
++def evalIdxToComplex {n : ℕ}
++    {c : Fin (n + 1) → realLorentzTensor.Color} (i : Fin (n + 1))
++    (b : Fin ((realLorentzTensor).repDim (c i))) :
++    Fin ((complexLorentzTensor).repDim ((colorToComplex ∘ c) i)) :=
++  Fin.cast (by
++    cases hci : c i with
++    | up =>
++        simp [hci, colorToComplex, Function.comp_apply, complex_repDim_up]
++    | down =>
++        simp [hci, colorToComplex, Function.comp_apply, complex_repDim_down]
++  ) b
++
++/-- `evalT` on the complex side, but with output colors as `colorToComplex ∘ (c ∘ i.succAbove)`.
++Implemented via `permT (σ := id) (by simp)` as a transport. -/
++noncomputable def evalTColorToComplex {n : ℕ}
++    {c : Fin (n + 1) → realLorentzTensor.Color} (i : Fin (n + 1))
++    (b : Fin ((realLorentzTensor).repDim (c i))) :
++    ℂT(colorToComplex ∘ c) → ℂT(colorToComplex ∘ (c ∘ i.succAbove)) :=
++  fun t =>
++    permT (S := complexLorentzTensor) (σ := (id : Fin n → Fin n))
++      (by
++        -- transport ((colorToComplex ∘ c) ∘ i.succAbove) and (colorToComplex ∘ (c ∘ i.succAbove))
++        simp [Function.comp_apply]
++      )
++      ((TensorSpecies.Tensor.evalT (S := complexLorentzTensor) (c := (colorToComplex ∘ c))
++          i (evalIdxToComplex (c := c) i b)) t)
++
++/-- The map `toComplex` commutes with `evalT`. -/
++@[sorryful]
++lemma evalT_toComplex {n : ℕ}
++    {c : Fin (n + 1) → realLorentzTensor.Color}
++    (i : Fin (n + 1)) (b : Fin ((realLorentzTensor).repDim (c i))) (t : ℝT(3, c)) :
++    toComplex (c := c ∘ i.succAbove)
++        ((TensorSpecies.Tensor.evalT (S := realLorentzTensor) (c := c) i b) t)
++      =
++    evalTColorToComplex (c := c) i b (toComplex (c := c) t) := by
++  sorry
+ 
+ end realLorentzTensor
+
+commit 2bad08ecd2d92f9b42716cd08d04d82759ead466
+Author: Joseph Tooby-Smith <72603918+jstoobysmith@users.noreply.github.com>
+Date:   Tue Jan 27 15:01:19 2026 +0000
+
+    feat: More properties of the two Higgs doublet model potential (#923)
+    
+    * feat: Update potential
+    
+    * feat: Update potential
+    
+    * refactor: style
+
+diff --git a/PhysLean/Particles/BeyondTheStandardModel/TwoHDM/Potential.lean b/PhysLean/Particles/BeyondTheStandardModel/TwoHDM/Potential.lean
+index 9aedc485..61abb57e 100644
+--- a/PhysLean/Particles/BeyondTheStandardModel/TwoHDM/Potential.lean
++++ b/PhysLean/Particles/BeyondTheStandardModel/TwoHDM/Potential.lean
+@@ -184,4 +184,258 @@ lemma potentialIsBounded_iff_forall_gramVector (P : PotentialParameters) :
+     apply le_of_eq
+     rw [potential, massTerm_eq_gramVector, quarticTerm_eq_gramVector]
+ 
++lemma potentialIsBounded_iff_forall_euclid (P : PotentialParameters) :
++    PotentialIsBounded P ↔ ∃ c, ∀ K0 : ℝ, ∀ K : EuclideanSpace ℝ (Fin 3), 0 ≤ K0 →
++      ‖K‖ ^ 2 ≤ K0 ^ 2 → c ≤ P.ξ (Sum.inl 0) * K0 + ∑ μ, P.ξ (Sum.inr μ) * K μ
++      + K0 ^ 2 * P.η (Sum.inl 0) (Sum.inl 0)
++      + 2 * K0 * ∑ b, K b * P.η (Sum.inl 0) (Sum.inr b) +
++      ∑ a, ∑ b, K a * K b * P.η (Sum.inr a) (Sum.inr b) := by
++  rw [potentialIsBounded_iff_forall_gramVector]
++  refine exists_congr (fun c => ?_)
++  rw [Equiv.forall_congr_left (Equiv.sumArrowEquivProdArrow (Fin 1) (Fin 3) ℝ)]
++  simp only [Fin.isValue, Fintype.sum_sum_type, Finset.univ_unique, Fin.default_eq_zero,
++    Finset.sum_singleton, Prod.forall, Equiv.sumArrowEquivProdArrow_symm_apply_inl,
++    Equiv.sumArrowEquivProdArrow_symm_apply_inr]
++  rw [Equiv.forall_congr_left <| Equiv.funUnique (Fin 1) ℝ]
++  apply forall_congr'
++  intro K0
++  rw [Equiv.forall_congr_left <| (WithLp.equiv 2 ((i : Fin 3) → (fun x => ℝ) i)).symm]
++  apply forall_congr'
++  intro K
++  simp only [Fin.isValue, Equiv.funUnique_symm_apply, uniqueElim_const, Equiv.symm_symm,
++    WithLp.equiv_apply]
++  refine imp_congr_right ?_
++  intro hle
++  simp only [PiLp.norm_sq_eq_of_L2]
++  simp only [Fin.isValue, Real.norm_eq_abs, sq_abs]
++  refine imp_congr_right ?_
++  intro hle'
++  apply le_iff_le_of_cmp_eq_cmp
++  congr 1
++  simp [add_assoc, sq, Finset.sum_add_distrib]
++  ring_nf
++  simp [mul_assoc, ← Finset.mul_sum]
++  conv_lhs =>
++    enter [2, 2, 2, i]
++    rw [PotentialParameters.η_symm]
++  ring
++
++lemma potentialIsBounded_iff_forall_euclid_lt (P : PotentialParameters) :
++    PotentialIsBounded P ↔ ∃ c ≤ 0, ∀ K0 : ℝ, ∀ K : EuclideanSpace ℝ (Fin 3), 0 < K0 →
++      ‖K‖ ^ 2 ≤ K0 ^ 2 → c ≤ P.ξ (Sum.inl 0) * K0 + ∑ μ, P.ξ (Sum.inr μ) * K μ
++      + K0 ^ 2 * P.η (Sum.inl 0) (Sum.inl 0)
++      + 2 * K0 * ∑ b, K b * P.η (Sum.inl 0) (Sum.inr b) +
++      ∑ a, ∑ b, K a * K b * P.η (Sum.inr a) (Sum.inr b) := by
++  rw [potentialIsBounded_iff_forall_euclid]
++  apply Iff.intro
++  · intro h
++    obtain ⟨c, hc⟩ := h
++    use c
++    apply And.intro
++    · simpa using hc 0 0 (by simp) (by simp)
++    · intro K0 K hk0 hle
++      exact hc K0 K hk0.le hle
++  · intro h
++    obtain ⟨c, hc₀, hc⟩ := h
++    use c
++    intro K0 K hK0 hle
++    by_cases hK0' : K0 = 0
++    · subst hK0'
++      simp_all
++    · refine hc K0 K ?_ hle
++      grind
++
++/-!
++
++## Mass term reduced
++
++-/
++
++/-- A function related to the mass term of the potential, used in the boundedness
++  condition and equivalent to the term `J2` in
++  https://arxiv.org/abs/hep-ph/0605184. -/
++noncomputable def massTermReduced (P : PotentialParameters) (k : EuclideanSpace ℝ (Fin 3)) : ℝ :=
++  P.ξ (Sum.inl 0) + ∑ μ, P.ξ (Sum.inr μ) * k μ
++
++lemma massTermReduced_lower_bound (P : PotentialParameters) (k : EuclideanSpace ℝ (Fin 3))
++    (hk : ‖k‖ ^ 2 ≤ 1) : P.ξ (Sum.inl 0) - √(∑ a, |P.ξ (Sum.inr a)| ^ 2) ≤ massTermReduced P k := by
++  simp only [Fin.isValue, massTermReduced]
++  have h1 (a b c : ℝ) (h : - b ≤ c) : a - b ≤ a + c:= by grind
++  apply h1
++  let ξEuclid : EuclideanSpace ℝ (Fin 3) := WithLp.toLp 2 (fun a => P.ξ (Sum.inr a))
++  trans - ‖ξEuclid‖
++  · simp [@PiLp.norm_eq_of_L2, ξEuclid]
++  trans - (‖k‖ * ‖ξEuclid‖)
++  · simp
++    simp at hk
++    have ha (a b : ℝ) (h : a ≤ 1) (ha : 0 ≤ a) (hb : 0 ≤ b) : a * b ≤ b := by nlinarith
++    apply ha
++    · exact hk
++    · exact norm_nonneg k
++    · exact norm_nonneg ξEuclid
++  trans - ‖⟪k, ξEuclid⟫_ℝ‖
++  · simp
++    exact abs_real_inner_le_norm k ξEuclid
++  trans ⟪k, ξEuclid⟫_ℝ
++  · simp
++    grind
++  simp [PiLp.inner_apply, ξEuclid]
++
++/-!
++
++## Quartic term reduced
++
++-/
++
++/-- A function related to the quartic term of the potential, used in the boundedness
++  condition and equivalent to the term `J4` in
++  https://arxiv.org/abs/hep-ph/0605184. -/
++noncomputable def quarticTermReduced (P : PotentialParameters) (k : EuclideanSpace ℝ (Fin 3)) : ℝ :=
++  P.η (Sum.inl 0) (Sum.inl 0) + 2 * ∑ b, k b * P.η (Sum.inl 0) (Sum.inr b) +
++  ∑ a, ∑ b, k a * k b * P.η (Sum.inr a) (Sum.inr b)
++
++lemma potentialIsBounded_iff_exists_forall_forall_reduced (P : PotentialParameters) :
++    PotentialIsBounded P ↔ ∃ c ≤ 0, ∀ K0 : ℝ, ∀ k : EuclideanSpace ℝ (Fin 3), 0 < K0 →
++      ‖k‖ ^ 2 ≤ 1 → c ≤ K0 * massTermReduced P k + K0 ^ 2 * quarticTermReduced P k := by
++  rw [potentialIsBounded_iff_forall_euclid_lt]
++  refine exists_congr <| fun c => and_congr_right <| fun hc => forall_congr' <| fun K0 => ?_
++  apply Iff.intro
++  · refine fun h k hK0 k_le_one => (h (K0 • k) hK0 ?_).trans (le_of_eq ?_)
++    · simp [norm_smul]
++      rw [abs_of_nonneg (by positivity), mul_pow]
++      nlinarith
++    · simp [add_assoc, massTermReduced, quarticTermReduced]
++      ring_nf
++      simp [add_assoc, mul_assoc, ← Finset.mul_sum, sq]
++      ring
++  · intro h K hK0 hle
++    refine (h ((1 / K0) • K) hK0 ?_).trans (le_of_eq ?_)
++    · simp [norm_smul]
++      field_simp
++      rw [sq_le_sq] at hle
++      simpa using hle
++    · simp [add_assoc, massTermReduced, quarticTermReduced]
++      ring_nf
++      simp [add_assoc, mul_assoc, ← Finset.mul_sum, sq]
++      field_simp
++      ring_nf
++      simp only [← Finset.sum_mul, Fin.isValue]
++      field_simp
++      ring
++
++lemma quarticTermReduced_nonneg_of_potentialIsBounded (P : PotentialParameters)
++    (hP : PotentialIsBounded P) (k : EuclideanSpace ℝ (Fin 3))
++    (hk : ‖k‖ ^ 2 ≤ 1) : 0 ≤ quarticTermReduced P k := by
++  rw [potentialIsBounded_iff_exists_forall_forall_reduced] at hP
++  suffices hp : ∀ (a b : ℝ), (∃ c ≤ 0, ∀ x, 0 < x → c ≤ a * x + b * x ^ 2) →
++      0 ≤ b ∧ (b = 0 → 0 ≤ a) by
++    obtain ⟨c, hc, h⟩ := hP
++    refine (hp (massTermReduced P k) (quarticTermReduced P k) ⟨c, hc, ?_⟩).1
++    grind
++  intro a b
++  by_cases hb : b = 0
++  /- The case of b = 0. -/
++  · subst hb
++    by_cases ha : a = 0
++    · subst ha
++      simp
++    · simp only [zero_mul, add_zero, le_refl, forall_const, true_and]
++      rintro ⟨c, hc, hx⟩
++      by_contra h2
++      simp_all
++      refine not_lt_of_ge (hx (c/a + 1) ?_) ?_
++      · exact add_pos_of_nonneg_of_pos (div_nonneg_of_nonpos hc (Std.le_of_lt h2))
++          Real.zero_lt_one
++      · field_simp
++        grind
++  /- The case of b ≠ 0. -/
++  have h1 (x : ℝ) : a * x + b * x ^ 2 = b * (x + a / (2 * b)) ^ 2 - a ^ 2 / (4 * b) := by grind
++  generalize a ^ 2 / (4 * b) = c1 at h1
++  generalize a / (2 * b) = d at h1
++  simp only [hb, IsEmpty.forall_iff, and_true]
++  have hlt (c : ℝ) (x : ℝ) : (c ≤ a * x + b * x ^ 2) ↔ c + c1 ≤ b * (x + d) ^ 2 := by grind
++  conv_lhs => enter [1, c, 2, x]; rw [hlt c]
++  trans ∃ c, ∀ x, 0 < x → c ≤ b * (x + d) ^ 2
++  · rintro ⟨c, hc, hx⟩
++    use c + c1
++  rintro ⟨c, hc⟩
++  by_contra hn
++  suffices hs : ∀ x, x ^ 2 ≤ c/b from not_lt_of_ge (hs √(|c/b| + 1)) (by grind)
++  suffices hs : ∀ x, 0 < x → (x + d) ^ 2 ≤ c/b from
++    fun x => le_trans ((Real.sqrt_le_left (by grind)).mp
++      (by grind [Real.sqrt_sq_eq_abs])) (hs (|x| + |d| + 1) (by positivity))
++  exact fun x hx => (le_div_iff_of_neg (by grind)).mpr (by grind)
++
++lemma potentialIsBounded_iff_exists_forall_reduced (P : PotentialParameters) :
++    PotentialIsBounded P ↔ ∃ c, 0 ≤ c ∧ ∀ k : EuclideanSpace ℝ (Fin 3), ‖k‖ ^ 2 ≤ 1 →
++      0 ≤ quarticTermReduced P k ∧
++      (massTermReduced P k < 0 →
++      massTermReduced P k ^ 2 ≤ 4 * quarticTermReduced P k * c) := by
++  rw [potentialIsBounded_iff_exists_forall_forall_reduced]
++  refine Iff.intro (fun ⟨c, hc, h⟩ => ⟨-c, by grind, fun k hk => ?_⟩)
++    (fun ⟨c, hc, h⟩ => ⟨-c, by grind, fun K0 k hk0 hk => ?_⟩)
++  · have hJ4_nonneg : 0 ≤ quarticTermReduced P k := by
++      refine quarticTermReduced_nonneg_of_potentialIsBounded P ?_ k hk
++      rw [potentialIsBounded_iff_exists_forall_forall_reduced]
++      exact ⟨c, hc, h⟩
++    have h0 : ∀ K0, 0 < K0 → c ≤ K0 * massTermReduced P k + K0 ^ 2 * quarticTermReduced P k :=
++      fun K0 a => h K0 k a hk
++    clear h
++    generalize massTermReduced P k = j2 at *
++    generalize quarticTermReduced P k = j4 at *
++    by_cases j4_zero : j4 = 0
++    · subst j4_zero
++      simp_all
++      intro hj2
++      by_contra hn
++      specialize h0 ((c - 1) / j2) <| by
++        refine div_pos_iff.mpr (Or.inr ?_)
++        grind
++      field_simp at h0
++      linarith
++    · have hsq (K0 : ℝ) : K0 * j2 + K0 ^ 2 * j4 =
++            j4 * (K0 + j2 / (2 * j4)) ^ 2 - j2 ^ 2 / (4 * j4) := by
++        grind
++      have hj_pos : 0 < j4 := by grind
++      apply And.intro
++      · grind
++      · intro j2_neg
++        conv at h0 => enter [2]; rw [hsq]
++        specialize h0 (- j2 / (2 * j4)) <| by
++          field_simp
++          grind
++        ring_nf at h0
++        field_simp at h0
++        grind
++  · specialize h k hk
++    generalize massTermReduced P k = j2 at *
++    generalize quarticTermReduced P k = j4 at *
++    by_cases hJ4 : j4 = 0
++    · subst j4
++      simp_all
++      trans 0
++      · grind
++      · by_cases hJ2 : j2 = 0
++        · simp_all
++        · simp_all
++    · have hJ4_pos : 0 < j4 := by grind
++      have h0 : K0 * j2 + K0 ^ 2 * j4 = j4 * (K0 + j2 / (2 * j4)) ^ 2 - j2 ^ 2 / (4 * j4) := by
++          grind
++      rw [h0]
++      by_cases hJ2_neg : j2 < 0
++      · trans j4 * (K0 + j2 / (2 * j4)) ^ 2 - c
++        · nlinarith
++        · field_simp
++          grind
++      · refine neg_le_sub_iff_le_add.mpr ?_
++        trans j4 * (K0 + j2 / (2 * j4)) ^ 2
++        · nlinarith
++        · grind
++
++@[sorryful]
++lemma potentialIsBounded_iff_forall_reduced (P : PotentialParameters) :
++    PotentialIsBounded P ↔ ∀ k : EuclideanSpace ℝ (Fin 3), ‖k‖ ^ 2 ≤ 1 →
++      0 ≤ quarticTermReduced P k ∧ (quarticTermReduced P k = 0 → 0 ≤ massTermReduced P k) := by
++  sorry
++
+ end TwoHiggsDoublet
+
+commit d127ae0f9184cd4fe24d13f9adbe94c65e1308fb
+Author: Joseph Tooby-Smith <72603918+jstoobysmith@users.noreply.github.com>
+Date:   Thu Jan 29 13:12:56 2026 +0000
+
+    feat: Linting and small lemma (#924)
+
+diff --git a/PhysLean/CondensedMatter/TightBindingChain/Basic.lean b/PhysLean/CondensedMatter/TightBindingChain/Basic.lean
+index 61f03e9a..dc37fcf0 100644
+--- a/PhysLean/CondensedMatter/TightBindingChain/Basic.lean
++++ b/PhysLean/CondensedMatter/TightBindingChain/Basic.lean
+@@ -538,7 +538,7 @@ lemma energyEigenstate_orthogonal :
+     simp only [Nat.cast_one] at h2 h1
+     calc _ = Complex.exp (Complex.I * k2 * 1 * T.N * T.a - Complex.I * k1 * 1 * T.N * T.a) := by
+              ring_nf
+-         _ = 1 := by rw [Complex.exp_sub, h2, h1, div_one]
++        _ = 1 := by rw [Complex.exp_sub, h2, h1, div_one]
+   have hω_ne_one : ω ≠ 1 := by
+     intro hω_eq_one
+     apply hne
+diff --git a/PhysLean/Particles/BeyondTheStandardModel/TwoHDM/Potential.lean b/PhysLean/Particles/BeyondTheStandardModel/TwoHDM/Potential.lean
+index 61abb57e..7f2660fc 100644
+--- a/PhysLean/Particles/BeyondTheStandardModel/TwoHDM/Potential.lean
++++ b/PhysLean/Particles/BeyondTheStandardModel/TwoHDM/Potential.lean
+@@ -432,6 +432,17 @@ lemma potentialIsBounded_iff_exists_forall_reduced (P : PotentialParameters) :
+         · nlinarith
+         · grind
+ 
++lemma massTermReduced_pos_of_quarticTermReduced_zero_potentialIsBounded (P : PotentialParameters)
++    (hP : PotentialIsBounded P) (k : EuclideanSpace ℝ (Fin 3))
++    (hk : ‖k‖ ^ 2 ≤ 1) (hq : quarticTermReduced P k = 0) : 0 ≤ massTermReduced P k := by
++  rw [potentialIsBounded_iff_exists_forall_reduced] at hP
++  obtain ⟨c, hc₀, hc⟩ := hP
++  specialize hc k hk
++  rw [hq] at hc
++  simp only [le_refl, mul_zero, zero_mul, sq_nonpos_iff, true_and] at hc
++  generalize massTermReduced P k = j2 at *
++  grind
++
+ @[sorryful]
+ lemma potentialIsBounded_iff_forall_reduced (P : PotentialParameters) :
+     PotentialIsBounded P ↔ ∀ k : EuclideanSpace ℝ (Fin 3), ‖k‖ ^ 2 ≤ 1 →
+diff --git a/PhysLean/Relativity/Tensors/RealTensor/ToComplex.lean b/PhysLean/Relativity/Tensors/RealTensor/ToComplex.lean
+index 1e88218c..2e3760f9 100644
+--- a/PhysLean/Relativity/Tensors/RealTensor/ToComplex.lean
++++ b/PhysLean/Relativity/Tensors/RealTensor/ToComplex.lean
+@@ -227,8 +227,7 @@ noncomputable def evalTColorToComplex {n : ℕ}
+     permT (S := complexLorentzTensor) (σ := (id : Fin n → Fin n))
+       (by
+         -- transport ((colorToComplex ∘ c) ∘ i.succAbove) and (colorToComplex ∘ (c ∘ i.succAbove))
+-        simp [Function.comp_apply]
+-      )
++        simp [Function.comp_apply])
+       ((TensorSpecies.Tensor.evalT (S := complexLorentzTensor) (c := (colorToComplex ∘ c))
+           i (evalIdxToComplex (c := c) i b)) t)
+ 

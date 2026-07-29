@@ -1,0 +1,132 @@
+[
+  {
+    "month": "2026-01",
+    "label": "Jan 2026",
+    "contributors": [
+      "Adomas Baliuka",
+      "Alex Meiburg",
+      "Joseph Tooby-Smith",
+      "Miles Cranmer",
+      "Nicola Bernini",
+      "Riad",
+      "ValentinBredemestre",
+      "kastch",
+      "physlean0",
+      "rht"
+    ],
+    "linesChanged": 2762,
+    "diffFile": "2026-01.diff"
+  },
+  {
+    "month": "2026-02",
+    "label": "Feb 2026",
+    "contributors": [
+      "Alex Meiburg",
+      "Curly-Howard-Chungus Correspondence | Lamport-Cabot-Codd-Backus-Naur Form",
+      "Daniel Morrison",
+      "Gabe",
+      "Gregory Loges",
+      "Joseph Tooby-Smith",
+      "Nicola Bernini",
+      "Pietro Monticone",
+      "ZhiKai Pong",
+      "kastch",
+      "zhikaip"
+    ],
+    "linesChanged": 26719,
+    "diffFile": "2026-02.diff"
+  },
+  {
+    "month": "2026-03",
+    "label": "Mar 2026",
+    "contributors": [
+      "Alex Meiburg",
+      "Daniel Morrison",
+      "Gregory Loges",
+      "JayYarlott",
+      "Joseph Tooby-Smith",
+      "Pietro Monticone",
+      "Zhi Kai Pong",
+      "ZhiKai Pong",
+      "jkr11",
+      "jstoobysmith",
+      "zhikaip"
+    ],
+    "linesChanged": 32155,
+    "diffFile": "2026-03.diff"
+  },
+  {
+    "month": "2026-04",
+    "label": "Apr 2026",
+    "contributors": [
+      "Alex Meiburg",
+      "Gregory Loges",
+      "Joseph Tooby-Smith",
+      "Zhi Kai Pong",
+      "doxtor6",
+      "juanjfndz",
+      "kastch"
+    ],
+    "linesChanged": 20705,
+    "diffFile": "2026-04.diff"
+  },
+  {
+    "month": "2026-05",
+    "label": "May 2026",
+    "contributors": [
+      "Alex Meiburg",
+      "Christian Krause",
+      "Daniel Morrison",
+      "Dennj",
+      "Florian Wiesner",
+      "Gregory Loges",
+      "Hannah",
+      "Joseph Tooby-Smith",
+      "Matteo Cipollina",
+      "Nicola Bernini",
+      "Pietro Monticone",
+      "Pranav-Magdum",
+      "Zhi Kai Pong",
+      "juanjfndz",
+      "wock"
+    ],
+    "linesChanged": 26881,
+    "diffFile": "2026-05.diff"
+  },
+  {
+    "month": "2026-06",
+    "label": "Jun 2026",
+    "contributors": [
+      "Andrea Pari",
+      "Bj\u00f8rn Kjos-Hanssen",
+      "Christian Krause",
+      "Florian Wiesner",
+      "Gregory Loges",
+      "Jake Uribe",
+      "Joseph Tooby-Smith",
+      "Justin Findlay",
+      "Lazar Milikic",
+      "LibertasSpZ",
+      "Nicola Bernini",
+      "Paul Lezeau",
+      "Ranjan Sharma",
+      "Robby Sneiderman",
+      "Shibashish",
+      "Shlok Vaibhav Singh",
+      "Tracy McSheery",
+      "Vasily Ilin",
+      "Wouter Deconinck",
+      "Yanting Teng",
+      "Yidi Qi",
+      "Zhi Kai Pong",
+      "abudjum",
+      "doxtor6",
+      "giuseppe.sorge",
+      "juanjfndz",
+      "kastch",
+      "nateabr"
+    ],
+    "linesChanged": 52063,
+    "diffFile": "2026-06.diff"
+  }
+]
