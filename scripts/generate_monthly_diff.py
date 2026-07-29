@@ -1,10 +1,11 @@
 #!/usr/bin/env python3
 """
-Generates a monthly-diffs/<YYYY-MM>.diff plain-text file (every commit made
-in the given month on leanprover-community/physlib's default branch,
-concatenated) plus an updated monthly-diffs/index.json summary (contributors,
-total lines changed, diff filename) consumed by the physlib-website
-"Monthly Updates" page.
+Generates a monthly-diffs/<YYYY-MM>.diff plain-text file - every line added
+to every file between the start and end of the given month on
+leanprover-community/physlib's default branch, with diff syntax stripped
+(just the file path as a header, then the raw added lines) - plus an updated
+monthly-diffs/index.json summary (contributors, total lines changed, diff
+filename) consumed by the physlib-website "Monthly Updates" page.
 
 Expects a git remote named "upstream" pointing at
 https://github.com/leanprover-community/physlib.git to already be fetched.
@@ -26,6 +27,7 @@ REPO_ROOT = Path(__file__).resolve().parent.parent
 OUT_DIR = REPO_ROOT / "monthly-diffs"
 INDEX_PATH = OUT_DIR / "index.json"
 REF = "upstream/master"
+EMPTY_TREE = "4b825dc642cb6eb9a060e54bf8d69288fbee4904"  # sha of an empty git tree
 
 
 def month_range(year: int, month: int) -> tuple[str, str]:
@@ -53,22 +55,72 @@ def contributors(since: str, until: str) -> list[str]:
     return sorted(set(names))
 
 
-def lines_changed(since: str, until: str) -> int:
-    stat = git("log", REF, f"--since={since}", f"--until={until}", "--shortstat")
+def commit_before(date_str: str) -> str:
+    """Latest first-parent (mainline) commit on REF strictly before date_str,
+    or the empty tree if none. Restricting to --first-parent matters here:
+    REF's history isn't linear (feature branches get merged in), so two
+    commits picked by date alone aren't guaranteed to be ancestors of each
+    other - diffing them can pull in unrelated parallel-branch content and
+    wildly overstate the change. The first-parent chain is guaranteed to be
+    a single ancestor line, so any two commits on it are always comparable."""
+    out = git("rev-list", "-1", REF, "--first-parent", f"--before={date_str}").strip()
+    return out if out else EMPTY_TREE
+
+
+def lines_changed(start_commit: str, end_commit: str) -> int:
+    stat = git("diff", "--shortstat", start_commit, end_commit)
     total = 0
-    for line in stat.splitlines():
-        line = line.strip()
-        if "changed" not in line:
-            continue
-        for part in line.split(","):
-            part = part.strip()
-            if "insertion" in part or "deletion" in part:
-                total += int(part.split()[0])
+    for part in stat.split(","):
+        part = part.strip()
+        if "insertion" in part or "deletion" in part:
+            total += int(part.split()[0])
     return total
 
 
-def diff_text(since: str, until: str) -> str:
-    return git("log", REF, f"--since={since}", f"--until={until}", "-p", "--reverse")
+SKIP_PREFIXES = (
+    "--- ",
+    "@@",
+    "index ",
+    "new file mode",
+    "deleted file mode",
+    "old mode",
+    "new mode",
+    "similarity index",
+    "rename from",
+    "rename to",
+    "Binary files",
+)
+
+
+def added_lines_only(diff: str) -> str:
+    """Strips diff syntax down to, per changed file, just the raw lines added
+    between the two commits - no +/- markers, no hunk headers, no per-commit
+    breakdown."""
+    sections: list[str] = []
+    current_file: str | None = None
+    current_lines: list[str] = []
+
+    def flush() -> None:
+        if current_file and current_lines:
+            sections.append(f"=== {current_file} ===\n" + "\n".join(current_lines))
+
+    for line in diff.splitlines():
+        if line.startswith("diff --git "):
+            flush()
+            current_file, current_lines = None, []
+        elif line.startswith("+++ "):
+            path = line[4:]
+            current_file = (
+                None
+                if path == "/dev/null"
+                else path[2:] if path.startswith("b/") else path
+            )
+        elif line.startswith(SKIP_PREFIXES):
+            continue
+        elif line.startswith("+") and current_file:
+            current_lines.append(line[1:])
+    flush()
+    return "\n\n".join(sections) + "\n"
 
 
 def update_index(entry: dict) -> None:
@@ -89,8 +141,11 @@ def generate(year: int, month: int) -> None:
         print(f"No commits found for {label} ({since} to {until}), skipping.")
         return
 
-    total_lines = lines_changed(since, until)
-    diff = diff_text(since, until)
+    start_commit = commit_before(since)
+    end_commit = commit_before(until)
+
+    total_lines = lines_changed(start_commit, end_commit)
+    diff = added_lines_only(git("diff", start_commit, end_commit))
 
     OUT_DIR.mkdir(exist_ok=True)
     diff_file = f"{month_key}.diff"
