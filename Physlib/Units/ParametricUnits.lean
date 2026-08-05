@@ -11,8 +11,8 @@ public import Physlib.Units.Basic
 # The unit side, parametrised in the same basis
 
 The dimension basis is parametric (`Dimension B`), but the *unit* side of the
-bridge is hardwired in parallel: `UnitChoices` has five named unit fields and
-`UnitChoices.dimScale` folds over exactly those five. This module provides the
+bridge is hardwired in parallel: `LTMCTUnitChoices` has five named unit fields and
+`LTMCTUnitChoices.dimScale` folds over exactly those five. This module provides the
 generic twin, parametrised in the same basis `B`.
 
 Every PhysLib base unit (`LengthUnit`, `TimeUnit`, …) is, structurally, a positive
@@ -24,8 +24,8 @@ scaling homomorphism folds the per-base unit ratio over `B`:
 * `UnitScale.dimScale : UnitScale B → UnitScale B → Dimension B →* ℝ≥0` — the
   `MonoidHom` `d ↦ ∏ b, (u₁ b / u₂ b) ^ d.exponent b`, generic in `B`.
 
-The current five-field `UnitChoices.dimScale` is the `LTMCTDimensionBase` instance of this
-fold, written out by hand; `UnitChoices.toScale` exhibits the correspondence.
+The current five-field `LTMCTUnitChoices.dimScale` is the `LTMCTDimensionBase` instance of this
+fold, written out by hand; `LTMCTUnitChoices.toScale` exhibits the correspondence.
 
 -/
 
@@ -35,7 +35,8 @@ open NNReal
 open scoped BigOperators
 
 /-- A choice of unit for each base dimension of `B`: a positive-real magnitude per
-  base. This is the basis-generic form of `UnitChoices`. -/
+  base. This is the basis-generic form of `LTMCTUnitChoices`. -/
+@[ext]
 structure UnitScale (B : Type) where
   /-- The positive-real magnitude of the chosen unit at each base dimension. -/
   scale : B → ℝ≥0
@@ -52,7 +53,7 @@ lemma ratio_ne_zero (u1 u2 : UnitScale B) (b : B) : u1.scale b / u2.scale b ≠ 
 /-- The dimension-scaling homomorphism, generic in the basis `B`: a quantity of
   dimension `d` rescales by `∏ b, (u1 b / u2 b) ^ d.exponent b` when changing the
   unit choice from `u1` to `u2`. This is the basis-generic form of
-  `UnitChoices.dimScale`. -/
+  `LTMCTUnitChoices.dimScale`. -/
 noncomputable def dimScale [Fintype B] (u1 u2 : UnitScale B) : Dimension B →* ℝ≥0 where
   toFun d := ∏ b, (u1.scale b / u2.scale b) ^ (d.exponent b : ℝ)
   map_one' := by simp
@@ -85,17 +86,17 @@ lemma dimScale_transitive [Fintype B] (u1 u2 u3 : UnitScale B) (d : Dimension B)
 end UnitScale
 
 /-!
-## The current five-field `UnitChoices` is the `LTMCTDimensionBase` instance
+## The current five-field `LTMCTUnitChoices` is the `LTMCTDimensionBase` instance
 
-`UnitChoices.toScale` reads the five typed units as a `UnitScale LTMCTDimensionBase`,
+`LTMCTUnitChoices.toScale` reads the five typed units as a `UnitScale LTMCTDimensionBase`,
 exhibiting the existing bespoke `dimScale` as the `LTMCTDimensionBase` case of the generic
 fold.
 -/
 
-namespace UnitChoices
+namespace LTMCTUnitChoices
 
-/-- Read a five-field `UnitChoices` as a `UnitScale` over `LTMCTDimensionBase`. -/
-noncomputable def toScale (u : UnitChoices) : UnitScale LTMCTDimensionBase where
+/-- Read a five-field `LTMCTUnitChoices` as a `UnitScale` over `LTMCTDimensionBase`. -/
+noncomputable def toScale (u : LTMCTUnitChoices) : UnitScale LTMCTDimensionBase where
   scale
     | .length => ⟨u.length.val, u.length.val_pos.le⟩
     | .time => ⟨u.time.val, u.time.val_pos.le⟩
@@ -110,4 +111,4 @@ noncomputable def toScale (u : UnitChoices) : UnitScale LTMCTDimensionBase where
     · exact NNReal.coe_pos.mp u.charge.val_pos
     · exact NNReal.coe_pos.mp u.temperature.val_pos
 
-end UnitChoices
+end LTMCTUnitChoices

@@ -16,7 +16,7 @@ The dimension `d : Dimension B` may be taken over any basis `B` of base dimensio
 The *algebraic* structure of `WithDim d M` (its additive, order, scalar-action,
 multiplication, division and casting instances) is available for every basis `B`.
 The *unit-scaling* structure (`HasDim`, `DMul`, and the `scaleUnit` lemmas), which
-routes through `UnitChoices.dimScale`, is provided for the standard basis
+routes through `LTMCTUnitChoices.dimScale`, is provided for the standard basis
 `LTMCTDimensionBase`.
 
 -/
@@ -205,7 +205,7 @@ lemma val_pow_two_eq_mul {B : Type} {d1 : Dimension B} (m1 : WithDim d1 ℝ) :
 
 @[simp]
 lemma scaleUnit_val_eq_scaleUnit_val {d : Dimension LTMCTDimensionBase} (M : Type) [MulAction ℝ≥0 M]
-    (u1 u2 : UnitChoices) (m1 m2 : WithDim d M) :
+    (u1 u2 : LTMCTUnitChoices) (m1 m2 : WithDim d M) :
     (scaleUnit u1 u2 m1).val = (scaleUnit u1 u2 m2).val ↔ m1.val = m2.val := by
   rw [← WithDim.ext_iff]
   simp only [scaleUnit_injective]
@@ -213,14 +213,14 @@ lemma scaleUnit_val_eq_scaleUnit_val {d : Dimension LTMCTDimensionBase} (M : Typ
 
 lemma scaleUnit_val_eq_scaleUnit_val_of_dim_eq {d1 d2 : Dimension LTMCTDimensionBase} {M : Type}
     [MulAction ℝ≥0 M]
-    {u1 u2 : UnitChoices} {m1 : WithDim d1 M} {m2 : WithDim d2 M}
+    {u1 u2 : LTMCTUnitChoices} {m1 : WithDim d1 M} {m2 : WithDim d2 M}
     (h : d1 = d2 := by ext <;> {simp; try ring}) :
     (scaleUnit u1 u2 m1).val = (scaleUnit u1 u2 m2).val ↔ m1.val = m2.val := by
   subst h
   simp
 
 lemma scaleUnit_val {d : Dimension LTMCTDimensionBase} (M : Type) [MulAction ℝ≥0 M]
-    (u1 u2 : UnitChoices) (m1 : WithDim d M) :
+    (u1 u2 : LTMCTUnitChoices) (m1 : WithDim d M) :
     (scaleUnit u1 u2 m1).val = u1.dimScale u2 d • m1.val := rfl
 
 /-!
@@ -239,7 +239,7 @@ lemma val_div_val {B : Type} {d1 d2 : Dimension B} (m1 : WithDim d1 ℝ) (m2 : W
 
 @[simp]
 lemma div_scaleUnit {d1 d2 : Dimension LTMCTDimensionBase} (m1 : WithDim d1 ℝ) (m2 : WithDim d2 ℝ)
-    (u1 u2 : UnitChoices) :
+    (u1 u2 : LTMCTUnitChoices) :
     (scaleUnit u1 u2 m1) / (scaleUnit u1 u2 m2) = scaleUnit u1 u2 (m1 / m2) := by
   symm
   ext
@@ -253,7 +253,7 @@ lemma div_scaleUnit {d1 d2 : Dimension LTMCTDimensionBase} (m1 : WithDim d1 ℝ)
 
 @[simp]
 lemma scaleUnit_dim_eq_zero {d : Dimension LTMCTDimensionBase} (m : WithDim d ℝ)
-    (u1 u2 : UnitChoices) (h : d = 1 := by ext <;> {simp; try ring}) :
+    (u1 u2 : LTMCTUnitChoices) (h : d = 1 := by ext <;> {simp; try ring}) :
     scaleUnit u1 u2 m = m := by
   subst h
   ext
@@ -277,7 +277,7 @@ lemma cast_refl {B : Type} {d : Dimension B} {M : Type} (m : WithDim d M) :
 @[simp]
 lemma cast_scaleUnit {d d2 : Dimension LTMCTDimensionBase} {M : Type} [MulAction ℝ≥0 M]
     (m : WithDim d M)
-    (h : d = d2) (u1 u2 : UnitChoices) :
+    (h : d = d2) (u1 u2 : LTMCTUnitChoices) :
     cast (scaleUnit u1 u2 m) h = scaleUnit u1 u2 (cast m h) := by
   subst h
   simp

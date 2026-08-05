@@ -25,7 +25,7 @@ abbrev DimSpeed : Type := Dimensionful (WithDim (L𝓭 * T𝓭⁻¹) ℝ≥0)
 
 namespace DimSpeed
 
-open UnitChoices
+open LTMCTUnitChoices
 
 /-!
 
@@ -33,21 +33,21 @@ open UnitChoices
 
 -/
 open Dimensionful
-open UnitChoices CarriesDimension
+open LTMCTUnitChoices CarriesDimension
 /-- The dimensional speed corresponding to 1 meter per second. -/
 noncomputable def oneMeterPerSecond : DimSpeed := toDimensionful SI ⟨1⟩
 
 /-- The dimensional speed corresponding to 1 mile per hour. -/
 noncomputable def oneMilePerHour : DimSpeed := toDimensionful ({SI with
-  length := LengthUnit.miles, time := TimeUnit.hours} : UnitChoices) ⟨1⟩
+  length := LengthUnit.miles, time := TimeUnit.hours} : LTMCTUnitChoices) ⟨1⟩
 
 /-- The dimensional speed corresponding to 1 kilometer per hour. -/
 noncomputable def oneKilometerPerHour : DimSpeed := toDimensionful ({SI with
-  length := LengthUnit.kilometers, time := TimeUnit.hours} : UnitChoices) ⟨1⟩
+  length := LengthUnit.kilometers, time := TimeUnit.hours} : LTMCTUnitChoices) ⟨1⟩
 
 /-- The dimensional speed corresponding to 1 knot, aka, one nautical mile per hour. -/
 noncomputable def oneKnot : DimSpeed := toDimensionful ({SI with
-  length := LengthUnit.nauticalMiles, time := TimeUnit.hours} : UnitChoices) ⟨1⟩
+  length := LengthUnit.nauticalMiles, time := TimeUnit.hours} : LTMCTUnitChoices) ⟨1⟩
 
 /-- The dimensionful speed of light corresponding to 299792458 meters per second. -/
 noncomputable def speedOfLight : Dimensionful (WithDim (L𝓭 * T𝓭⁻¹) ℝ) :=

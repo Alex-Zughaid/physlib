@@ -25,7 +25,7 @@ abbrev DimArea : Type := Dimensionful (WithDim (L𝓭 * L𝓭) ℝ≥0)
 
 namespace DimArea
 
-open UnitChoices
+open LTMCTUnitChoices
 
 /-!
 
@@ -40,11 +40,11 @@ noncomputable def squareMeter : DimArea := toDimensionful SI ⟨1⟩
 
 /-- The dimensional area corresponding to 1 square foot. -/
 noncomputable def squareFoot : DimArea := toDimensionful ({SI with
-  length := LengthUnit.feet} : UnitChoices) ⟨1⟩
+  length := LengthUnit.feet} : LTMCTUnitChoices) ⟨1⟩
 
 /-- The dimensional area corresponding to 1 square mile. -/
 noncomputable def squareMile : DimArea := toDimensionful ({SI with
-  length := LengthUnit.miles} : UnitChoices) ⟨1⟩
+  length := LengthUnit.miles} : LTMCTUnitChoices) ⟨1⟩
 
 /-- The dimensional area corresponding to 1 are (100 square meters). -/
 noncomputable def are : DimArea := toDimensionful SI ⟨100⟩
@@ -54,7 +54,7 @@ noncomputable def hectare : DimArea := toDimensionful SI ⟨10000⟩
 
 /-- The dimensional area corresponding to 1 acre (1/640 square miles). -/
 noncomputable def acre : DimArea := toDimensionful ({SI with
-  length := LengthUnit.miles} : UnitChoices) ⟨(1/640)⟩
+  length := LengthUnit.miles} : LTMCTUnitChoices) ⟨(1/640)⟩
 
 /-!
 
