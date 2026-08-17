@@ -28,8 +28,16 @@ public import PhyslibAlpha.SpaceAndTime.Space.Surfaces.SolidCylinder
 public import PhyslibAlpha.SpaceAndTime.Space.Surfaces.SolidSphere
 public import PhyslibAlpha.SpaceAndTime.Space.Surfaces.SphericalShell
 public import PhyslibAlpha.QuantumMechanics.QuantumHarmonicOscillator
+public import PhyslibAlpha.QuantumMechanics.HarmonicOscillator.Basic
+public import PhyslibAlpha.QuantumMechanics.HarmonicOscillator.LadderOperators
+public import PhyslibAlpha.QuantumMechanics.HarmonicOscillator.Vacuum
 public import PhyslibAlpha.QuantumMechanics.StinespringDilation
 public import PhyslibAlpha.Mathematics.PartialDerivativeTest
+public import PhyslibAlpha.Mathematics.LadderSystem.Basic
+public import PhyslibAlpha.Mathematics.LadderSystem.Vacuum
+public import PhyslibAlpha.Mathematics.LadderSystem.Irreducibility
+public import PhyslibAlpha.Mathematics.LadderSystem.OccupationBasis
+public import PhyslibAlpha.Mathematics.LadderSystem.SymmetricPower
 public import PhyslibAlpha.ClassicalMechanics.CoupledSpringPotential
 public import PhyslibAlpha.Particles.BeyondTheStandardModel.TwoHDM.ChargeBalance
 public import PhyslibAlpha.Particles.BeyondTheStandardModel.TwoHDM.EffectivePotential
