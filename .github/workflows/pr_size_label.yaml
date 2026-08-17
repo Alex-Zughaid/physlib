@@ -22,9 +22,9 @@ jobs:
         with:
           script: |
             const SIZES = [
-              { label: 'green-small', color: '2ea44f', max: 100 },
-              { label: 'orange-medium', color: 'f66a0a', max: 500 },
-              { label: 'red-large', color: 'd73a4a', max: Infinity },
+              { label: 'small', color: '2ea44f', max: 100 },
+              { label: 'medium', color: 'f66a0a', max: 500 },
+              { label: 'large', color: 'd73a4a', max: Infinity },
             ];
 
             const { data: pr } = await github.rest.pulls.get({
