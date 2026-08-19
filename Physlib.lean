@@ -115,6 +115,7 @@ public import Physlib.Mathematics.Fin
 public import Physlib.Mathematics.Fin.Involutions
 public import Physlib.Mathematics.Geometry.Metric.PseudoRiemannian.Defs
 public import Physlib.Mathematics.Geometry.Metric.Riemannian.Defs
+public import Physlib.Mathematics.HasTemperateGrowth
 public import Physlib.Mathematics.InnerProductSpace.Adjoint
 public import Physlib.Mathematics.InnerProductSpace.Basic
 public import Physlib.Mathematics.InnerProductSpace.Calculus
@@ -309,6 +310,7 @@ public import Physlib.QFT.QED.AnomalyCancellation.VectorLike
 public import Physlib.QuantumMechanics.FiniteTarget
 public import Physlib.QuantumMechanics.FreeParticle.Basic
 public import Physlib.QuantumMechanics.HarmonicOscillator.Basic
+public import Physlib.QuantumMechanics.HarmonicOscillator.Eigenstates
 public import Physlib.QuantumMechanics.HarmonicOscillator.LadderOperators
 public import Physlib.QuantumMechanics.HarmonicOscillator.OneDimension.Basic
 public import Physlib.QuantumMechanics.HarmonicOscillator.OneDimension.Completeness

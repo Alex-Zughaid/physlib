@@ -465,6 +465,12 @@ lemma eval_contDiff {d n} (i : Fin d) :
   convert (coordCLM i).contDiff
   simp [coordCLM_apply, coord]
 
+@[fun_prop]
+lemma eval_hasTemperateGrowth {d} (i : Fin d) :
+    Function.HasTemperateGrowth (fun p : Space d => p i) := by
+  convert (coordCLM i).hasTemperateGrowth
+  simp [coordCLM_apply, coord]
+
 /-- The continuous linear equivalence between `Space d` and the corresponding `Pi` type. -/
 noncomputable def equivPi (d : ℕ) :
     Space d ≃L[ℝ] Π (_ : Fin d), ℝ := LinearEquiv.toContinuousLinearEquiv <|

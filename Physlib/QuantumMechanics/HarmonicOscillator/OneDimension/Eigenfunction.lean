@@ -11,6 +11,9 @@ public import Physlib.Mathematics.SpecialFunctions.PhysHermite
 
 # Eigenfunction of the Harmonic Oscillator
 
+Note: These eigenfunctions have been generalized to `d` dimensions in
+`QuantumMechanics/HarmonicOscillator/Eigenstates.lean`.
+
 -/
 
 @[expose] public section
