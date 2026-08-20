@@ -266,6 +266,33 @@ def pauliSelfAdjoint' (i : Fin 1 ⊕ Fin 3) : selfAdjoint (Matrix (Fin 2) (Fin 2
   | Sum.inr 1 => ⟨-σ2, by rw [AddSubgroup.neg_mem_iff]; exact pauliMatrix_selfAdjoint _⟩
   | Sum.inr 2 => ⟨-σ3, by rw [AddSubgroup.neg_mem_iff]; exact pauliMatrix_selfAdjoint _⟩
 
+/-- Trace orthogonality of the covariant Pauli basis:
+  `tr (σ'_a σ'_b) = 2 δ_{a b}`. -/
+lemma trace_pauliSelfAdjoint'_mul (a b : Fin 1 ⊕ Fin 3) :
+    Matrix.trace ((pauliSelfAdjoint' a).1 * (pauliSelfAdjoint' b).1) =
+      if a = b then 2 else 0 := by
+  rcases a with a | a <;> rcases b with b | b <;>
+    fin_cases a <;> fin_cases b <;>
+    simp only [pauliSelfAdjoint', Matrix.neg_mul, Matrix.mul_neg,
+      Matrix.trace_neg, neg_neg, trace_pauliMatrix_mul_pauliMatrix,
+      KroneckerDelta.kroneckerDelta] <;>
+    simp
+
+/-- The trace pairing of a covariant Pauli matrix with an arbitrary matrix, expressed through the
+matrix entries. -/
+lemma trace_pauliSelfAdjoint'_mul_apply (l : Fin 1 ⊕ Fin 3)
+    (N : Matrix (Fin 2) (Fin 2) ℂ) :
+    Matrix.trace ((pauliSelfAdjoint' l).1 * N) =
+      match l with
+      | Sum.inl 0 => N 0 0 + N 1 1
+      | Sum.inr 0 => -(N 0 1 + N 1 0)
+      | Sum.inr 1 => -(Complex.I * (N 0 1 - N 1 0))
+      | Sum.inr 2 => -(N 0 0 - N 1 1) := by
+  rcases l with l | l <;> fin_cases l <;>
+    simp [pauliSelfAdjoint', pauliMatrix, Matrix.trace, Matrix.mul_apply,
+      Fin.sum_univ_two, Matrix.diag] <;>
+    ring
+
 /-- The Pauli matrices where `σi` are negated are linearly independent. -/
 lemma pauliSelfAdjoint'_linearly_independent : LinearIndependent ℝ pauliSelfAdjoint' := by
   apply Fintype.linearIndependent_iff.mpr

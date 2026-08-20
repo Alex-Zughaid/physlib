@@ -378,6 +378,7 @@ public import Physlib.Relativity.LorentzAlgebra.Basis
 public import Physlib.Relativity.LorentzAlgebra.ExponentialMap
 public import Physlib.Relativity.LorentzGroup.Basic
 public import Physlib.Relativity.LorentzGroup.Boosts.Apply
+public import Physlib.Relativity.LorentzGroup.Boosts.Axis
 public import Physlib.Relativity.LorentzGroup.Boosts.Basic
 public import Physlib.Relativity.LorentzGroup.Boosts.Generalized
 public import Physlib.Relativity.LorentzGroup.Orthochronous.Basic
@@ -393,6 +394,7 @@ public import Physlib.Relativity.PauliMatrices.CliffordAlgebra
 public import Physlib.Relativity.PauliMatrices.Relations
 public import Physlib.Relativity.PauliMatrices.SelfAdjoint
 public import Physlib.Relativity.PauliMatrices.ToTensor
+public import Physlib.Relativity.SL2C.AxisRotations
 public import Physlib.Relativity.SL2C.Basic
 public import Physlib.Relativity.SL2C.SelfAdjoint
 public import Physlib.Relativity.Special.ProperTime
