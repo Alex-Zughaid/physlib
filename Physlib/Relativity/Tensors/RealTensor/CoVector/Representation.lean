@@ -30,7 +30,7 @@ namespace Lorentz
 namespace CoVector
 attribute [-simp] Fintype.sum_sum_type
 
-/-- The representation of the Lorentz group on Lorentz vectors. -/
+/-- The representation of the Lorentz group on Lorentz covectors. -/
 def rep {d : ℕ} : Representation ℝ (LorentzGroup d) (CoVector d) where
   toFun Λ := Matrix.toLinAlgEquiv basis (LorentzGroup.transpose Λ⁻¹)
   map_one' := by
@@ -71,6 +71,7 @@ lemma rep_injective (d : ℕ) (Λ : LorentzGroup d) : Function.Injective (rep Λ
   rw [rep_apply_eq_mulVec, rep_apply_eq_mulVec] at h
   exact Matrix.mulVec_injective_of_isUnit (isUnit_of_invertible _) h
 
+set_option backward.isDefEq.respectTransparency false in
 lemma rep_surjective (d : ℕ) (Λ : LorentzGroup d) : Function.Surjective (rep Λ) := by
   intro v
   use (LorentzGroup.transpose Λ) *ᵥ v

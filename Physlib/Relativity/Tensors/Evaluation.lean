@@ -190,8 +190,61 @@ lemma evalT_permT {n m : ℕ} {c : Fin (n + 1) → C} {c' : Fin (m + 1) → C}
 
 -/
 
-TODO "Add the lemma corresponding the the commutation of two evaluations of tensor
-  indices."
+set_option backward.isDefEq.respectTransparency false in
+/-- Commutation of two evaluations on a tensor basis vector. -/
+lemma evalT_evalT_basis {n : ℕ} {c : Fin (n + 1 + 1) → C}
+    (k1 : Fin (n + 1 + 1)) (k2 : Fin (n + 1)) (φ1 : basisIdx (c k1))
+    (φ2 : basisIdx ((c ∘ k1.succAbove) k2)) (ψ : ComponentIdx (S := S) c) :
+    evalT k2 φ2 (evalT k1 φ1 (basis (S := S) c ψ)) =
+      permT id (IsReindexing.succAbove_succAbove_comm k1 k2)
+        (evalT (k2.predAbove k1)
+          (basisIdxCongr
+            (congrArg c (Fin.succAbove_succAbove_predAbove k1 k2).symm) φ1)
+          (evalT (k1.succAbove k2) φ2 (basis (S := S) c ψ))) := by
+  simp only [evalT_basis, apply_ite, map_zero]
+  have hk1 : (k1.succAbove k2).succAbove (k2.predAbove k1) = k1 :=
+    Fin.succAbove_succAbove_predAbove k1 k2
+  have hcond :
+      (ψ ((k1.succAbove k2).succAbove (k2.predAbove k1)) =
+          basisIdxCongr (congrArg c hk1.symm) φ1) ↔ ψ k1 = φ1 := by
+    rw [ComponentIdx.congr_right ψ _ k1 hk1]
+    exact (basisIdxCongr _).apply_eq_iff_eq
+  by_cases h2 : ψ (k1.succAbove k2) = φ2
+  · by_cases h1 : ψ k1 = φ1
+    · have htr :
+          ψ ((k1.succAbove k2).succAbove (k2.predAbove k1)) =
+            basisIdxCongr (congrArg c hk1.symm) φ1 := hcond.mpr h1
+      simp only [h2, h1, htr, ↓reduceIte]
+      rw [permT_basis]
+      congr 1
+      funext i
+      exact ComponentIdx.congr_right ψ _ _
+        (Fin.succAbove_succAbove_succAbove_predAbove k1 k2 i).symm
+    · have hntr :
+          ¬ ψ ((k1.succAbove k2).succAbove (k2.predAbove k1)) =
+              basisIdxCongr (congrArg c hk1.symm) φ1 := by
+        intro htr
+        exact h1 (hcond.mp htr)
+      simp only [h2, h1, hntr, ↓reduceIte]
+  · simp only [h2, ↓reduceIte, ite_self]
+
+set_option backward.isDefEq.respectTransparency false in
+/-- Evaluating two tensor indices commutes, up to the canonical reindexing
+identifying the two possible orders in which the indices are removed. -/
+lemma evalT_evalT {n : ℕ} {c : Fin (n + 1 + 1) → C}
+    (k1 : Fin (n + 1 + 1)) (k2 : Fin (n + 1)) (φ1 : basisIdx (c k1))
+    (φ2 : basisIdx ((c ∘ k1.succAbove) k2)) (t : Tensor S c) :
+    evalT k2 φ2 (evalT k1 φ1 t) =
+      permT id (IsReindexing.succAbove_succAbove_comm k1 k2)
+        (evalT (k2.predAbove k1)
+          (basisIdxCongr
+            (congrArg c (Fin.succAbove_succAbove_predAbove k1 k2).symm) φ1)
+          (evalT (k1.succAbove k2) φ2 t)) := by
+  induction' t using Tensor.induction_on_basis with ψ a t ht t1 t2 ht1 ht2
+  · exact evalT_evalT_basis (S := S) k1 k2 φ1 φ2 ψ
+  · simp
+  · simp only [map_smul, ht]
+  · simp only [map_add, ht1, ht2]
 
 /-!
 
@@ -328,6 +381,7 @@ TODO "Add a lemmas related to the commutation of evaluation with contraction."
 ## Other properties of evaluation
 
 -/
+set_option backward.isDefEq.respectTransparency false in
 /-- Evaluating the single-index basis tensor `basis ![c] (single.symm b)` at the index `x`
   yields the field element `1` if `b = x` (transported across `![c] 0 = c`) and `0` otherwise:
   evaluation of a one-index basis tensor is the Kronecker delta. -/
@@ -356,6 +410,7 @@ lemma eq_sum_evalT_of_single_tensor_basis {c : C} (t : Tensor S ![c]) :
   · simp [add_smul, Finset.sum_add_distrib]
     grind
 
+set_option backward.isDefEq.respectTransparency false in
 /-- Reconstruction of a tensor from the evaluations of its last index: every `t : Tensor S c`
   is the sum over basis indices `i` of the evaluation `evalT (Fin.last n) i t` tensored with
   the basis covector `basis ![c (Fin.last n)] (single.symm i)`, with the appended index
@@ -379,7 +434,6 @@ lemma eq_sum_evalT {n : ℕ} {c : Fin (n + 1) → C} (t : Tensor S c) :
         exact ComponentIdx.congr_right b _ _ (by rw [Fin.succAbove_last]; rfl)
       · simp only [id_eq, ComponentIdx.prod_symm_natAdd, ComponentIdx.single_symm_apply,
           basisIdxCongr_apply_apply]
-        erw [basisIdxCongr_apply_apply]
         exact ComponentIdx.congr_right _ _ _ (by fin_cases j; rfl)
     · intro j h1 h1
       rw [if_neg (by grind)]

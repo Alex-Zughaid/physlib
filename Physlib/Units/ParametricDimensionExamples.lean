@@ -37,7 +37,7 @@ equality definitional, so a cast on a proven equality is the correct idiom.
 
 Because `Dimension` is parametric, the same dimensional algebra and the same
 `cast`-based comparison are available over *any* basis — not just the physical
-`LTMCTDimensionBase`. The unit-scaling layer (`UnitChoices`, `dimScale`) is not needed
+`LTMCTDimensionBase`. The unit-scaling layer (`LTMCTUnitChoices`, `dimScale`) is not needed
 for either the algebra or the comparison, so neither is referenced here.
 
 This module is illustrative and should not be imported by other modules.
