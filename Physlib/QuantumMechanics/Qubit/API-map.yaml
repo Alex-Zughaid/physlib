@@ -3,7 +3,7 @@ version: v0.1
 Title: Qubits
 
 Overview: |
-    The key data structure is `Qubit`, the two element type labelling the computational
+    Test change. The key data structure is `Qubit`, the two element type labelling the computational
     basis of a two-level quantum system. The content specific to qubits is the standard
     single-qubit gates, the controlled version of a unitary with a qubit as control
     register, and the Bloch sphere with its angular parameterization. Qubit states are
