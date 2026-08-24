@@ -14,8 +14,10 @@ Overview: |
     modulo a full turn, carries the manifold structure and the map into `Space`; it has its own API
     map in `Physlib/ClassicalMechanics/Pendulum/SimplePendulum`. The coplanar double pendulum's
     configuration space is declared but not yet defined, and the miscellaneous pivot-motion problems
-    have documentation only. Trajectories and the lagrangian remain open and are recorded below with
-    location N/A.
+    have documentation only. The simple pendulum's Lagrangian and equation of motion on the
+    Euclidean lift are recorded in its own API map; the trajectory based on the configuration
+    space, and the Lagrangian derived from it, remain open and are recorded below with location
+    N/A.
 
 ParentAPIs:
   - Classical mechanics Lagrangian (Physlib/ClassicalMechanics/Lagrangian)
