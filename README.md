@@ -86,6 +86,10 @@ or
 - Clone this repository (or download the repository as a Zip file)
 - Open a terminal at the top-level in the corresponding directory.
 - Run `lake exe cache get`. The command `lake` should have been installed when you installed Lean.
+  This downloads Mathlib's prebuilt files.
+- Run `./scripts/get-cache.sh`. This downloads Physlib's own prebuilt files, so that
+  your first build does not have to compile the library from scratch. It is optional —
+  if it fails for any reason you can carry on, the next step will just take longer.
 - Run `lake build`.
 - Open the directory (not a single file) in Visual Studio Code (or another Lean compatible code editor).
 
