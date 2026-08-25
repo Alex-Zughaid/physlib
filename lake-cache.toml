@@ -1,0 +1,47 @@
+# Lake cache configuration for Physlib.
+#
+# Point Lake at this file with LAKE_CONFIG, e.g.
+#
+#   LAKE_CONFIG=$PWD/lake-cache.toml lake cache get
+#
+# `scripts/get-cache.sh` does that for you. Bucket endpoints are public
+# information, which is why this file is committed; the credential that
+# authorises uploads is NOT here. It is supplied via the LAKE_CACHE_KEY
+# environment variable, held as an encrypted GitHub Actions secret.
+#
+# Two services are defined because reads and writes need different access:
+#
+#   physlib-r2         anonymous, public read endpoint. What contributors and
+#                      `lake cache get` use. No credential required.
+#   physlib-r2-upload  authenticated S3 endpoint, used only by CI to publish.
+#                      Requires LAKE_CACHE_KEY.
+#
+# Keeping them separate means a contributor can never accidentally write to
+# the cache, and mirrors how Mathlib separates its read and write paths.
+#
+# ---------------------------------------------------------------------------
+# SETUP (one-time, needs a Cloudflare account -- see docs/cache-setup.md)
+#
+# Replace the two placeholders below:
+#   <R2_PUBLIC_HOST>  the bucket's public hostname, either the r2.dev domain
+#                     Cloudflare assigns when you enable public access, or a
+#                     custom domain you attach to the bucket.
+#   <R2_ACCOUNT_ID>   your Cloudflare account ID, from the R2 dashboard.
+# ---------------------------------------------------------------------------
+
+cache.defaultService = "physlib-r2"
+cache.defaultUploadService = "physlib-r2-upload"
+
+# Anonymous read path used by contributors.
+[[cache.service]]
+name = "physlib-r2"
+kind = "s3"
+artifactEndpoint = "https://<R2_PUBLIC_HOST>/artifacts"
+revisionEndpoint = "https://<R2_PUBLIC_HOST>/revisions"
+
+# Authenticated write path used by CI only. Same bucket, S3 API endpoint.
+[[cache.service]]
+name = "physlib-r2-upload"
+kind = "s3"
+artifactEndpoint = "https://<R2_ACCOUNT_ID>.r2.cloudflarestorage.com/physlib-cache/artifacts"
+revisionEndpoint = "https://<R2_ACCOUNT_ID>.r2.cloudflarestorage.com/physlib-cache/revisions"

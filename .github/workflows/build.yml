@@ -15,6 +15,13 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: write
+    env:
+      # Keep Lake's artifact cache inside the workspace rather than the
+      # toolchain directory, so it is scoped to this run and easy to stage.
+      LAKE_CACHE_DIR: .lake/cache
+      # Job-level so the cache steps can gate on it: a step's own `env:` block
+      # is not visible to that step's `if:` condition.
+      HAVE_CACHE_KEY: ${{ secrets.LAKE_CACHE_KEY != '' }}
     steps:
 
       - uses: actions/checkout@v4
@@ -41,7 +48,42 @@ jobs:
         with:
           linters: gcc
           run: |
-            bash -o pipefail -c "env LEAN_ABORT_ON_PANIC=1 lake build -KCI | tee stdout.log"
+            bash -o pipefail -c "env LEAN_ABORT_ON_PANIC=1 LAKE_ARTIFACT_CACHE=true lake build -KCI | tee stdout.log"
+
+      # Publish to the R2 bucket via Lake's own content-addressed cache. Unlike
+      # the release tarball below, this stores artifacts per-file keyed by an
+      # input hash, so contributors on a branch that is not tip-of-master still
+      # get hits, and `lake cache get --max-revs` can backtrack to find them.
+      #
+      # Skipped entirely until LAKE_CACHE_KEY exists, so CI keeps working
+      # before the bucket is provisioned. See docs/cache-setup.md.
+      - name: stage build outputs for the cache
+        if: github.event_name == 'push' && env.HAVE_CACHE_KEY == 'true'
+        run: |
+          set -euo pipefail
+          # `--no-build` here does not build anything; it emits the
+          # input-to-output mappings for what was just built.
+          lake build --no-build -KCI -o .lake/outputs.jsonl
+          lake cache stage .lake/outputs.jsonl ../lake-cache-staging
+
+      - name: publish to R2 cache
+        if: github.event_name == 'push' && env.HAVE_CACHE_KEY == 'true'
+        env:
+          LAKE_CACHE_KEY_RAW: ${{ secrets.LAKE_CACHE_KEY }}
+          LAKE_CONFIG: ${{ github.workspace }}/lake-cache.toml
+        run: |
+          set -euo pipefail
+          # GitHub secrets commonly carry a trailing newline, which breaks the
+          # SigV4 signature. Trim it, and mask the value so it cannot surface
+          # in logs.
+          KEY="$(printf %s "$LAKE_CACHE_KEY_RAW" | sed -e 's/[[:space:]]*$//')"
+          echo "::add-mask::$KEY"
+          export LAKE_CACHE_KEY="$KEY"
+
+          lake cache put-staged ../lake-cache-staging \
+            --scope=physlib-master \
+            --rev="${{ github.sha }}" \
+            --toolchain="$(cat lean-toolchain)"
 
       # Publish the freshly built artifacts so contributors can download them
       # instead of compiling Physlib from source. Only on pushes to master --

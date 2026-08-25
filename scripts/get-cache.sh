@@ -99,6 +99,25 @@ if [ "$force" -eq 0 ] && [ -f "$INFO" ] && [ -f "$DEST/Physlib.olean" ]; then
   fi
 fi
 
+# Preferred path: Lake's own content-addressed cache, backed by the project's
+# R2 bucket. Unlike the release tarball this is per-file and keyed by an input
+# hash, so a branch that is not tip-of-master still gets hits and Lake can
+# backtrack revisions to find them.
+#
+# The committed config still carries placeholders until the bucket is
+# provisioned (see docs/cache-setup.md); until then this is skipped and we fall
+# through to the release tarball below.
+LAKE_CACHE_CONF="$PWD/lake-cache.toml"
+if [ "$force" -eq 0 ] && [ -f "$LAKE_CACHE_CONF" ] && ! grep -q '<R2_' "$LAKE_CACHE_CONF"; then
+  echo "Fetching via Lake's cache from the Physlib R2 bucket ..."
+  if LAKE_CONFIG="$LAKE_CACHE_CONF" lake cache get --scope=physlib-master 2>&1; then
+    echo
+    echo "Done. Now run: lake build"
+    exit 0
+  fi
+  echo "  Lake cache fetch did not succeed -- falling back to the release tarball."
+fi
+
 mkdir -p "$DEST" "$CACHE_DIR"
 
 # Sweep up .part files left by a download that was killed rather than failing
