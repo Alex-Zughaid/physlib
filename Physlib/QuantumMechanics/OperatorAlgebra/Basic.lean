@@ -6,7 +6,6 @@ Authors: Tom Ole Diem
 module
 
 public import Mathlib.Analysis.CStarAlgebra.CompletelyPositiveMap
-public import Mathlib.Analysis.InnerProductSpace.StarOrder
 
 /-!
 
@@ -48,18 +47,15 @@ variable {A : Type*} [OperatorAlgebra A]
 /-- An observable is a self-adjoint element of `A`: position, momentum, energy, spin, ... .
 Self-adjointness is exactly what makes an element a *measurable* quantity — it is what forces its
 spectrum, the possible measurement outcomes, to be real. -/
-noncomputable abbrev Observable (A : Type*) [CStarAlgebra A] :=
-  selfAdjoint A
+noncomputable abbrev Observable (A : Type*) [OperatorAlgebra A] := selfAdjoint A
 
 /-- A positive element of `A`: an observable whose measurement outcomes are all `≥ 0`.
 Positivity is what gives observables a meaningful order (`a ≤ b` meaning `b - a` is positive). -/
-abbrev PositiveElement (A : Type*) [OperatorAlgebra A] :=
-  {a : Observable A // 0 ≤ (a : A)}
+abbrev PositiveElement (A : Type*) [OperatorAlgebra A] := {a : Observable A // 0 ≤ (a : A)}
 
 /-- An effect is an observable between zero and the identity, representing a yes/no measurement
 outcome. -/
-abbrev Effect (A : Type*) [OperatorAlgebra A] :=
-  Set.Icc (0 : Observable A) 1
+abbrev Effect (A : Type*) [OperatorAlgebra A] := Set.Icc (0 : Observable A) 1
 
 /-- A finite POVM on `A`: the most general notion of a measurement with outcomes in `X`,
 generalizing a single yes/no `Effect` to several possible outcomes. -/
@@ -71,8 +67,7 @@ structure POVM (A : Type*) [OperatorAlgebra A] (X : Type*) [Fintype X] where
 
 /-- A unitary element of `A`: implements a reversible transformation of the system — a symmetry,
 or time evolution under a Hamiltonian — acting on observables by conjugation, `a ↦ U a U⋆`. -/
-noncomputable abbrev Unitary (A : Type*) [CStarAlgebra A] :=
-  unitary A
+noncomputable abbrev Unitary (A : Type*) [OperatorAlgebra A] := unitary A
 
 /-- A state on `A`: a positive complex-linear functional normalized by `ω 1 = 1`. `ω a` is the
 expected outcome of measuring observable `a` in this state — a state records everything that can
@@ -89,30 +84,5 @@ abbrev Channel (A₁ A₂ : Type*) [OperatorAlgebra A₁] [OperatorAlgebra A₂]
   {φ : A₁ →CP A₂ // φ 1 = 1}
 
 end ObservableAlgebra
-
-/-!
-## Hilbert-space representations
-
-The abstract observable algebra need not initially be presented as operators on
-a Hilbert space.
-
-A concrete realization is a unital ⋆-representation into the C⋆-algebra of
-bounded operators on a complex Hilbert space.
-
-This is also the target of the GNS construction associated with a state.
--/
-
-section Representation
-
-variable {A : Type*} {H : Type*} [CStarAlgebra A] [NormedAddCommGroup H] [InnerProductSpace ℂ H]
-  [CompleteSpace H]
-
-/-- A Hilbert-space representation of `A`: a unital ⋆-homomorphism from `A` into the algebra of
-bounded operators on the Hilbert space `H`. -/
-abbrev Representation (A : Type*) (H : Type*) [CStarAlgebra A] [NormedAddCommGroup H]
-    [InnerProductSpace ℂ H] [CompleteSpace H] :=
-  A →⋆ₐ[ℂ] (H →L[ℂ] H)
-
-end Representation
 
 end OperatorAlgebra
