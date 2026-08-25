@@ -89,7 +89,13 @@ jobs:
               || { echo "::error::could not create or locate the cache-master release"; exit 1; }
           fi
 
-          gh release upload cache-master physlib-cache.tar.gz --clobber
+          # A tiny marker asset naming the commit these artifacts were built
+          # from. scripts/get-cache.sh fetches this first (a few bytes) so it
+          # can check its local cache before pulling ~160MB it may already have.
+          # Same idea as the per-commit marker blobs in Mathlib's Cache/Marker.lean.
+          echo "${{ github.sha }}" > cache-commit.txt
+
+          gh release upload cache-master physlib-cache.tar.gz cache-commit.txt --clobber
 
       - name: check file imports
         run: |

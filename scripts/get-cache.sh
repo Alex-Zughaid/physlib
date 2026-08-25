@@ -9,13 +9,18 @@
 # The artifacts are published by CI on every merge to master (see
 # .github/workflows/build.yml and alphaBuild.yml).
 #
+# Downloaded archives are kept in a local cache directory that persists across
+# checkouts, so returning to a commit you have fetched before costs nothing.
+# Override its location with PHYSLIB_CACHE_DIR.
+#
 # Safe to run at any time, and safe to skip. If anything goes wrong -- no
 # network, nothing published yet, a bad download -- this warns and exits 0, and
 # `lake build` simply compiles from source as it always did.
 #
 # Usage:
-#   ./scripts/get-cache.sh            download the cache if it would help
-#   ./scripts/get-cache.sh --force    download even if the cache looks current
+#   ./scripts/get-cache.sh            fetch the cache if it would help
+#   ./scripts/get-cache.sh --force    re-fetch even if things look current
+#   ./scripts/get-cache.sh --clean    delete the local cache directory
 
 set -u
 
@@ -23,17 +28,29 @@ set -u
 DEFAULT_REPO="Alex-Zughaid/physlib"
 REPO="${PHYSLIB_CACHE_REPO:-$DEFAULT_REPO}"
 TAG="cache-master"
-ASSETS=("physlib-cache.tar.gz" "physlibalpha-cache.tar.gz")
+MAIN_ASSET="physlib-cache.tar.gz"
+ALPHA_ASSET="physlibalpha-cache.tar.gz"
+MARKER="cache-commit.txt"
 
 DEST=".lake/build/lib/lean"
 INFO="$DEST/.physlib-cache-info"
+
+# Persistent store of downloaded archives, keyed by the commit they were built
+# from. This is what makes switching between commits you have already fetched
+# free, rather than re-downloading ~160MB each time.
+CACHE_DIR="${PHYSLIB_CACHE_DIR:-${XDG_CACHE_HOME:-$HOME/.cache}/physlib}"
+KEEP=3   # how many commits' archives to retain
 
 force=0
 for arg in "$@"; do
   case "$arg" in
     -f|--force) force=1 ;;
+    --clean)
+      rm -rf "$CACHE_DIR" && echo "Removed local cache: $CACHE_DIR"
+      exit 0
+      ;;
     -h|--help)
-      sed -n '3,18p' "$0" | sed 's/^# \{0,1\}//'
+      sed -n '3,24p' "$0" | sed 's/^# \{0,1\}//'
       exit 0
       ;;
     *)
@@ -69,73 +86,131 @@ if [ "$REPO" != "$DEFAULT_REPO" ]; then
   } >&2
 fi
 
-# If the cache already in place was built from exactly the commit we are sitting
-# on, re-downloading cannot improve anything: a newer published cache would be
-# for a different commit and would fit this checkout no better. Skipping keeps
-# repeat runs free instead of re-fetching and re-extracting ~160MB every time.
+head_commit="$(git rev-parse HEAD 2>/dev/null)"
+
+# Cheapest case: the artifacts are already unpacked and were built from exactly
+# the commit we are on. Nothing to download, nothing to extract.
 if [ "$force" -eq 0 ] && [ -f "$INFO" ] && [ -f "$DEST/Physlib.olean" ]; then
   have_commit="$(sed -n 's/^commit=//p' "$INFO" 2>/dev/null | head -1)"
-  head_commit="$(git rev-parse HEAD 2>/dev/null)"
   if [ -n "$have_commit" ] && [ "$have_commit" = "$head_commit" ]; then
-    echo "Cache for ${have_commit:0:8} is already in place -- nothing to download."
+    echo "Cache for ${have_commit:0:8} is already in place -- nothing to do."
     echo "Run with --force to fetch it again anyway."
     exit 0
   fi
 fi
 
-TMP="$(mktemp -d)"
-trap 'rm -rf "$TMP"' EXIT
+mkdir -p "$DEST" "$CACHE_DIR"
 
-mkdir -p "$DEST"
+# Sweep up .part files left by a download that was killed rather than failing
+# cleanly. Done on every run, including ones that go on to fail, so they cannot
+# accumulate. They are never reused -- a partial archive must not look usable.
+find "$CACHE_DIR" -maxdepth 1 -name '.*.part' -delete 2>/dev/null
 
-echo "Fetching Physlib build cache from $REPO ..."
+# Unpack the archives held locally for $1, if they are there. Returns non-zero
+# if the main archive is missing, so callers can fall through to downloading.
+extract_from_local() {
+  local sha="$1" main="$CACHE_DIR/$1-$MAIN_ASSET" alpha="$CACHE_DIR/$1-$ALPHA_ASSET" n=0
+  [ -f "$main" ] || return 1
 
-fetched=0
-for asset in "${ASSETS[@]}"; do
-  url="https://github.com/$REPO/releases/download/$TAG/$asset"
+  for archive in "$main" "$alpha"; do
+    [ -f "$archive" ] || continue
+    # These archives came off the network, so re-check before every unpack that
+    # nothing escapes $DEST -- not just on the run that downloaded them.
+    if tar -tzf "$archive" 2>/dev/null | grep -qE '^/|(^|/)\.\.(/|$)'; then
+      echo "  $(basename "$archive") contains unsafe paths -- refusing to extract it."
+      continue
+    fi
+    if tar -xzf "$archive" -C "$DEST" 2>/dev/null; then
+      n=$((n + 1))
+    else
+      echo "  could not extract $(basename "$archive")."
+    fi
+  done
 
-  if ! curl -fL --retry 3 --progress-bar -o "$TMP/$asset" "$url"; then
-    echo "  could not download $asset -- skipping it."
-    continue
-  fi
+  [ "$n" -gt 0 ]
+}
 
-  # These archives come off the network, so make sure nothing escapes $DEST
-  # before unpacking them.
-  if tar -tzf "$TMP/$asset" | grep -qE '^/|(^|/)\.\.(/|$)'; then
-    echo "  $asset contains unsafe paths -- refusing to extract it."
-    continue
-  fi
+# Keep only the $KEEP most recently used commits' archives.
+prune_cache() {
+  local shas
+  shas="$(ls -t "$CACHE_DIR" 2>/dev/null | sed -n "s/-$MAIN_ASSET$//p" | tail -n +$((KEEP + 1)))"
+  for old in $shas; do
+    rm -f "$CACHE_DIR/$old-$MAIN_ASSET" "$CACHE_DIR/$old-$ALPHA_ASSET"
+  done
+}
 
-  if ! tar -xzf "$TMP/$asset" -C "$DEST"; then
-    echo "  could not extract $asset -- skipping it."
-    continue
-  fi
+used_local=0
 
-  fetched=$((fetched + 1))
-done
-
-if [ "$fetched" -eq 0 ]; then
-  echo
-  echo "No cache was downloaded. This is not fatal -- run 'lake build' as usual,"
-  echo "it will just take longer."
-  exit 0
+# Do we already hold archives built from the commit we are sitting on? If so we
+# need no network at all -- this is the case that makes branch switching cheap.
+if [ "$force" -eq 0 ] && [ -n "$head_commit" ] && [ -f "$CACHE_DIR/$head_commit-$MAIN_ASSET" ]; then
+  echo "Using locally cached archives for ${head_commit:0:8} (no download needed)."
+  extract_from_local "$head_commit" && used_local=1
 fi
+
+if [ "$used_local" -eq 0 ]; then
+  # Ask the release which commit it was built from before pulling ~160MB: the
+  # marker is a few bytes, and we may already hold that commit's archives.
+  remote_sha="$(curl -fsL --retry 3 "https://github.com/$REPO/releases/download/$TAG/$MARKER" 2>/dev/null | tr -d '[:space:]')"
+
+  if [ -n "$remote_sha" ] && [ "$force" -eq 0 ] && [ -f "$CACHE_DIR/$remote_sha-$MAIN_ASSET" ]; then
+    echo "Published cache is ${remote_sha:0:8}, already held locally (no download needed)."
+    extract_from_local "$remote_sha" && used_local=1
+  fi
+
+  if [ "$used_local" -eq 0 ]; then
+    # Fall back to the SHA in the archive's own metadata if the marker is
+    # unavailable, e.g. a release published before markers existed.
+    sha="${remote_sha:-unknown}"
+    echo "Fetching Physlib build cache from $REPO ..."
+
+    got=0
+    for asset in "$MAIN_ASSET" "$ALPHA_ASSET"; do
+      tmp="$CACHE_DIR/.$sha-$asset.part"
+      if curl -fL --retry 3 --progress-bar -o "$tmp" \
+           "https://github.com/$REPO/releases/download/$TAG/$asset"; then
+        # Rename only once the download is complete, so an interrupted run
+        # never leaves a truncated archive looking like a usable cache entry.
+        mv "$tmp" "$CACHE_DIR/$sha-$asset"
+        got=$((got + 1))
+      else
+        rm -f "$tmp"
+        echo "  could not download $asset -- skipping it."
+      fi
+    done
+
+    if [ "$got" -eq 0 ]; then
+      echo
+      echo "No cache was downloaded. This is not fatal -- run 'lake build' as usual,"
+      echo "it will just take longer."
+      exit 0
+    fi
+
+    extract_from_local "$sha" || {
+      echo
+      echo "Nothing could be unpacked. Run 'lake build' as usual."
+      exit 0
+    }
+  fi
+fi
+
+prune_cache
 
 # Report how well the cache matches this checkout. A mismatch is expected and
 # harmless: Lake rebuilds whatever no longer matches and reuses the rest.
 cache_commit="$(sed -n 's/^commit=//p' "$INFO" 2>/dev/null | head -1)"
-local_commit="$(git rev-parse HEAD 2>/dev/null)"
 
 echo
-if [ -n "$cache_commit" ] && [ -n "$local_commit" ]; then
-  if [ "$cache_commit" = "$local_commit" ]; then
+if [ -n "$cache_commit" ] && [ -n "$head_commit" ]; then
+  if [ "$cache_commit" = "$head_commit" ]; then
     echo "Cache matches your checkout exactly. 'lake build' should have little left to do."
   else
-    echo "Cache was built from ${cache_commit:0:8}, you are on ${local_commit:0:8}."
+    echo "Cache was built from ${cache_commit:0:8}, you are on ${head_commit:0:8}."
     echo "'lake build' will rebuild the files that changed between them, plus"
     echo "anything importing them."
   fi
 fi
 
+echo "Local cache: $CACHE_DIR ($(du -sh "$CACHE_DIR" 2>/dev/null | cut -f1) held)"
 echo
 echo "Done. Now run: lake build"

@@ -90,6 +90,8 @@ or
 - Run `./scripts/get-cache.sh`. This downloads Physlib's own prebuilt files, so that
   your first build does not have to compile the library from scratch. It is optional —
   if it fails for any reason you can carry on, the next step will just take longer.
+  Downloaded archives are kept in `~/.cache/physlib`, so coming back to a commit you
+  have already fetched costs nothing. `--clean` empties that directory.
 - Run `lake build`.
 - Open the directory (not a single file) in Visual Studio Code (or another Lean compatible code editor).
 
