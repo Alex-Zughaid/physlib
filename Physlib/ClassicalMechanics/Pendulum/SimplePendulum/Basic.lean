@@ -31,9 +31,11 @@ file are written instead on the Euclidean lift `Time → EuclideanSpace ℝ (Fin
 carried by a real number, from which the configuration is recovered by
 `SimplePendulum.ConfigurationSpace.ofAngle`, and the one-dimensional Euclidean space stands in for
 both the configuration space and its tangent space, so that the Euler–Lagrange operator of Physlib
-applies verbatim. Two lifts differing by `2π n` describe the same motion, as a subsequent
-contribution proves; the connection of the model here with the geometric configuration space is
-made in a later module.
+applies verbatim. Two lifts differing by `2π n` describe the same motion: the invariance of the
+dynamics under such shifts is proved in the module `SimplePendulum.LiftInvariance`, and the full
+connection of the model here with the geometric configuration space is made in a later module.
+The first consequences of the dynamics — the equilibria, and the below- and above-separatrix
+energy bounds characteristic of libration and rotation — follow in `SimplePendulum.Equilibria`.
 
 ## ii. Key results
 
@@ -55,7 +57,14 @@ made in a later module.
   `SimplePendulum.IsSolution` is a smooth solution of it.
 - `SimplePendulum.gradLagrangian` is the variational derivative of the action, computed by
   `gradLagrangian_eq_eulerLagrangeOp` and `gradLagrangian_eq_torque`.
-
+- `SimplePendulum.equationOfMotion_iff_gradLagrangian_zero` identifies the equation of motion,
+  for smooth lifts of the angle, with the vanishing of the variational derivative of the action,
+  and `SimplePendulum.isSolution_iff` characterizes the solutions as the smooth critical points
+  of the action.
+- `SimplePendulum.energy_conservation_of_equationOfMotion`,
+  `SimplePendulum.energy_conservation_of_equationOfMotion'` and
+  `SimplePendulum.IsSolution.energy_eq` express the conservation of energy along the motions of
+  the pendulum.
 ## iii. Table of contents
 
 - A. The input data
@@ -82,7 +91,13 @@ made in a later module.
   - F.1. The definition of the variational derivative
   - F.2. Equality with the Euler–Lagrange operator
   - F.3. The variational derivative in terms of the torque
-
+- G. Equation of motion and the variational principle
+  - G.1. Equivalence with the vanishing of the variational derivative
+  - G.2. The variational characterization of solutions
+- H. Energy conservation
+  - H.1. Energy conservation in terms of time derivatives
+  - H.2. Energy conservation in terms of constant energy
+  - H.3. Energy conservation for solutions
 ## iv. References
 
 References for the simple gravity pendulum include:
@@ -547,9 +562,8 @@ time. A rough lift can still satisfy the equation accidentally — a discontinuo
 between equilibrium angles solves it, as section E.3 explains — which is why the notion of a
 solution, `IsSolution`, demands smoothness as well. It is also the form in which the equation of
 motion is solved and used. The two agree for smooth lifts, by
-`equationOfMotion_iff_gradLagrangian_zero`, proved in a subsequent contribution; the present
-module goes as far as `gradLagrangian_eq_torque`, from which that equivalence is one rearrangement
-away.
+`equationOfMotion_iff_gradLagrangian_zero` of section G, which is one rearrangement away from
+`gradLagrangian_eq_torque` of section F.
 
 -/
 
@@ -595,8 +609,7 @@ about the pivot with the torque of gravity, at every instant.
 
   This pointwise relation, and not the vanishing of the variational derivative of the action, is
   the definition of the equation of motion here; see the discussion in section E. For a smooth
-  lift of the angle the two agree, by `equationOfMotion_iff_gradLagrangian_zero` in a subsequent
-  contribution. -/
+  lift of the angle the two agree, by `equationOfMotion_iff_gradLagrangian_zero` of section G. -/
 def EquationOfMotion (θ : Time → EuclideanSpace ℝ (Fin 1)) : Prop :=
   ∀ t, S.inertia • ∂ₜ (∂ₜ θ) t = S.torque (θ t)
 
@@ -732,9 +745,8 @@ lemma gradLagrangian_eq_eulerLagrangeOp (θ : Time → EuclideanSpace ℝ (Fin 1
 
 Evaluating the Euler–Lagrange operator with the gradients of section D.3 gives the variational
 derivative as the torque minus the rate of change of the angular momentum. Its vanishing is
-therefore the equation of motion of section E; that equivalence,
-`equationOfMotion_iff_gradLagrangian_zero`, is proved in a subsequent contribution, together
-with energy conservation, so that this module carries the model of the pendulum alone.
+therefore the equation of motion of section E; that equivalence is
+`equationOfMotion_iff_gradLagrangian_zero` of section G.
 
 -/
 
@@ -746,6 +758,123 @@ lemma gradLagrangian_eq_torque (θ : Time → EuclideanSpace ℝ (Fin 1)) (hθ :
   rw [S.gradLagrangian_eq_eulerLagrangeOp θ hθ, eulerLagrangeOp]
   simp [S.gradient_lagrangian_position_eq, S.gradient_lagrangian_velocity_eq, S.torque_eq,
     Time.deriv_smul _ S.inertia (deriv_differentiable_of_contDiff θ hθ)]
+
+/-!
+
+## G. Equation of motion and the variational principle
+
+Section E took the pointwise balance of the angular momentum's rate of change against the torque
+as the definition of the equation of motion, and section F computed the variational derivative of
+the action. This section proves that for smooth lifts of the angle the two agree: the pointwise
+law is exactly the Euler–Lagrange equation of the action, the statement that the motion is a
+critical point of the action. The equivalence holds only under smoothness — the variational
+derivative is `0` by convention on lifts too rough to admit a variational gradient, so on such
+lifts its vanishing says nothing — which is why section E took the pointwise form as primary.
+
+-/
+
+/-!
+
+### G.1. Equivalence with the vanishing of the variational derivative
+
+By `gradLagrangian_eq_torque` the variational derivative of the action along a smooth lift is
+the torque minus the rate of change of the angular momentum, so its vanishing is a rearrangement
+of the equation of motion.
+
+-/
+
+/-- For a smooth lift of the angle the equation of motion of the simple pendulum holds if and
+  only if the variational derivative of the action vanishes: the smooth motions of the pendulum
+  are the critical points of its action. -/
+lemma equationOfMotion_iff_gradLagrangian_zero (θ : Time → EuclideanSpace ℝ (Fin 1))
+    (hθ : ContDiff ℝ ∞ θ) :
+    S.EquationOfMotion θ ↔ S.gradLagrangian θ = 0 := by
+  rw [S.gradLagrangian_eq_torque θ hθ, funext_iff]
+  simp only [EquationOfMotion, Pi.zero_apply, sub_eq_zero]
+  exact forall_congr' fun t => eq_comm
+
+/-!
+
+### G.2. The variational characterization of solutions
+
+A solution was defined in section E.3 as a smooth lift satisfying the equation of motion.
+Substituting the equivalence of G.1 for the equation of motion turns this into the variational
+characterization: the solutions of the pendulum are exactly the smooth lifts of the angle along
+which the variational derivative of the action vanishes.
+
+-/
+
+/-- A lift of the angle is a solution of the simple pendulum if and only if it is smooth and the
+  variational derivative of the action vanishes along it. -/
+lemma isSolution_iff (θ : Time → EuclideanSpace ℝ (Fin 1)) :
+    S.IsSolution θ ↔ ContDiff ℝ ∞ θ ∧ S.gradLagrangian θ = 0 :=
+  and_congr_right fun hθ => S.equationOfMotion_iff_gradLagrangian_zero θ hθ
+
+/-!
+
+## H. Energy conservation
+
+The pendulum is conservative: along any smooth lift of the angle satisfying the equation of
+motion the energy is constant. No computation remains to be done here: by `energy_deriv` the
+rate of change of the energy is the angular velocity paired with the sum of `I θ̈` and the
+gradient of the potential, and the equation of motion is exactly the vanishing of that sum.
+
+-/
+
+/-!
+
+### H.1. Energy conservation in terms of time derivatives
+
+The first form of energy conservation: the time derivative of the energy vanishes identically
+along any smooth lift of the angle satisfying the equation of motion.
+
+-/
+
+/-- Along a smooth lift of the angle satisfying the equation of motion the time derivative of
+  the energy of the simple pendulum vanishes. -/
+lemma energy_conservation_of_equationOfMotion (θ : Time → EuclideanSpace ℝ (Fin 1))
+    (hθ : ContDiff ℝ ∞ θ) (h : S.EquationOfMotion θ) : ∂ₜ (S.energy θ) = 0 := by
+  rw [S.equationOfMotion_iff_newtons_2nd_law θ] at h
+  funext t
+  rw [S.energy_deriv θ hθ]
+  simp [h t]
+
+/-!
+
+### H.2. Energy conservation in terms of constant energy
+
+The second form: the energy is differentiable in time along a smooth lift of the angle, so the
+vanishing of its derivative makes it a constant function of the time, equal to its initial
+value.
+
+-/
+
+/-- Along a smooth lift of the angle satisfying the equation of motion the energy of the simple
+  pendulum at any time is equal to its initial value. -/
+lemma energy_conservation_of_equationOfMotion' (θ : Time → EuclideanSpace ℝ (Fin 1))
+    (hθ : ContDiff ℝ ∞ θ) (h : S.EquationOfMotion θ) (t : Time) :
+    S.energy θ t = S.energy θ 0 := by
+  apply is_const_of_fderiv_eq_zero (𝕜 := ℝ) (S.energy_differentiable θ hθ)
+  intro t
+  ext p
+  rw [p.eq_one_smul, map_smul, ← Time.deriv_eq,
+    S.energy_conservation_of_equationOfMotion θ hθ h]
+  simp
+
+/-!
+
+### H.3. Energy conservation for solutions
+
+The hypotheses of energy conservation — smoothness and the equation of motion — are exactly the
+two components of being a solution, so for solutions conservation takes its most compact form.
+
+-/
+
+/-- The energy of the simple pendulum along a solution at any time is equal to its initial
+  value. -/
+lemma IsSolution.energy_eq {S : SimplePendulum} {θ : Time → EuclideanSpace ℝ (Fin 1)}
+    (h : S.IsSolution θ) (t : Time) : S.energy θ t = S.energy θ 0 :=
+  S.energy_conservation_of_equationOfMotion' θ h.contDiff h.equationOfMotion t
 
 end SimplePendulum
 
