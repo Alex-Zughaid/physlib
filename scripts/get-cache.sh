@@ -1,12 +1,13 @@
 #!/usr/bin/env bash
 
-# Download prebuilt Physlib artifacts so that your first `lake build` does not
-# have to compile the whole library from source.
+# Download everything needed before a first build, so that `lake build` does
+# not have to compile from source.
 #
-# This is the Physlib counterpart to `lake exe cache get`, which fetches
-# Mathlib's prebuilt files but knows nothing about Physlib's own code.
+# Fetches both halves: Mathlib's prebuilt files (via Mathlib's own
+# `lake exe cache get`) and Physlib's. Running one command rather than two is
+# the only reason the Mathlib step lives here -- pass --no-mathlib to skip it.
 #
-# The artifacts are published by CI on every merge to master (see
+# Physlib's artifacts are published by CI on every merge to master (see
 # .github/workflows/build.yml and alphaBuild.yml).
 #
 # Downloaded archives are kept in a local cache directory that persists across
@@ -18,9 +19,10 @@
 # `lake build` simply compiles from source as it always did.
 #
 # Usage:
-#   ./scripts/get-cache.sh            fetch the cache if it would help
-#   ./scripts/get-cache.sh --force    re-fetch even if things look current
-#   ./scripts/get-cache.sh --clean    delete the local cache directory
+#   ./scripts/get-cache.sh              fetch everything needed
+#   ./scripts/get-cache.sh --force      re-fetch even if things look current
+#   ./scripts/get-cache.sh --no-mathlib skip Mathlib, fetch only Physlib's
+#   ./scripts/get-cache.sh --clean      delete the local cache directory
 
 set -u
 
@@ -42,15 +44,17 @@ CACHE_DIR="${PHYSLIB_CACHE_DIR:-${XDG_CACHE_HOME:-$HOME/.cache}/physlib}"
 KEEP=3   # how many commits' archives to retain
 
 force=0
+skip_mathlib=0
 for arg in "$@"; do
   case "$arg" in
     -f|--force) force=1 ;;
+    --no-mathlib) skip_mathlib=1 ;;
     --clean)
       rm -rf "$CACHE_DIR" && echo "Removed local cache: $CACHE_DIR"
       exit 0
       ;;
     -h|--help)
-      sed -n '3,24p' "$0" | sed 's/^# \{0,1\}//'
+      sed -n '3,25p' "$0" | sed 's/^# \{0,1\}//'
       exit 0
       ;;
     *)
@@ -84,6 +88,19 @@ if [ "$REPO" != "$DEFAULT_REPO" ]; then
     echo "  repository you trust."
     echo
   } >&2
+fi
+
+# Mathlib's artifacts first. This is `lake exe cache get`, Mathlib's own tool,
+# which knows nothing about Physlib -- but there is no reason to make people
+# run two commands, so it is done here. It is cheap when already present
+# (~15s), and skipping it would leave Physlib's artifacts unusable, since they
+# were built against Mathlib's.
+if [ "$skip_mathlib" -eq 0 ]; then
+  echo "Fetching Mathlib's prebuilt files ..."
+  if ! lake exe cache get > /dev/null 2>&1; then
+    echo "  could not fetch Mathlib's cache -- continuing anyway."
+    echo "  ('lake build' may then have to compile Mathlib, which is slow.)"
+  fi
 fi
 
 head_commit="$(git rev-parse HEAD 2>/dev/null)"

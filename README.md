@@ -89,14 +89,12 @@ rather than the hour-plus a full build costs.
 
 - Clone this repository (or download the repository as a Zip file)
 - Open a terminal at the top-level in the corresponding directory.
-- Run `lake exe cache get`. The command `lake` should have been installed when you
-  installed Lean. This downloads **Mathlib's** prebuilt files. (~2-3 minutes, and
-  much faster on later projects, since these are cached machine-wide.)
-- Run `./scripts/get-cache.sh`. This downloads **Physlib's own** prebuilt files.
-  (~10 seconds.) It is optional: if it fails for any reason you can carry on, and
-  the next step will just take a lot longer.
-- Run `lake build`. With both caches in place this compiles nothing — it only
-  unpacks what was downloaded. (~2 minutes the first time, ~15 seconds after.)
+- Run `./scripts/get-cache.sh`. This downloads the prebuilt files — both
+  Mathlib's and Physlib's. (~2-3 minutes; faster afterwards, as Mathlib's are
+  cached machine-wide and shared with any other Lean project.) It is optional:
+  if it fails you can carry on, and the next step will just take a lot longer.
+- Run `lake build`. With the cache in place this compiles nothing — it only
+  unpacks what was downloaded. (~1-2 minutes the first time, ~15 seconds after.)
 - Open the directory (not a single file) in Visual Studio Code (or another Lean
   compatible code editor).
 
