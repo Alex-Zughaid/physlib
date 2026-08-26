@@ -110,12 +110,22 @@ fi
 LAKE_CACHE_CONF="$PWD/lake-cache.toml"
 if [ "$force" -eq 0 ] && [ -f "$LAKE_CACHE_CONF" ] && ! grep -q '<R2_' "$LAKE_CACHE_CONF"; then
   echo "Fetching via Lake's cache from the Physlib R2 bucket ..."
-  if LAKE_CONFIG="$LAKE_CACHE_CONF" lake cache get --scope=physlib-master 2>&1; then
+  # `lake cache get` walks back up to 100 revisions looking for a hit and logs
+  # two lines per revision, so keep its output in a file and surface only the
+  # outcome. It exits non-zero when nothing is found, which is our cue to fall
+  # back to the release tarball.
+  lake_log="$(mktemp)"
+  if LAKE_CONFIG="$LAKE_CACHE_CONF" lake cache get --scope=physlib-master \
+       > "$lake_log" 2>&1; then
+    grep -E "^(info|warning): " "$lake_log" | grep -viE "downloading build outputs" | sed 's/^/  /'
+    rm -f "$lake_log"
     echo
     echo "Done. Now run: lake build"
     exit 0
   fi
-  echo "  Lake cache fetch did not succeed -- falling back to the release tarball."
+  grep -E "^error: " "$lake_log" | head -2 | sed 's/^/  /'
+  rm -f "$lake_log"
+  echo "  Falling back to the release tarball."
 fi
 
 mkdir -p "$DEST" "$CACHE_DIR"
