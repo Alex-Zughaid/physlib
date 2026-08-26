@@ -24,17 +24,26 @@ Storage is free to 10GB, which comfortably fits Physlib's artifacts, then
 $0.015/GB-month. R2 speaks the S3 API with SigV4, which is exactly what
 `lake cache put-staged` uses, so no adapter is needed.
 
-## 1. Create the bucket
+## 1. Create the bucket — done
 
-In the Cloudflare dashboard, R2 → Create bucket, named `physlib-cache`.
+`physlib-cache`, in Western Europe (WEUR). Its S3 API endpoint is already
+filled into `lake-cache.toml` as the write path.
 
-## 2. Allow anonymous reads
+## 2. Allow anonymous reads — outstanding
 
-Contributors fetch without credentials, so the bucket needs public reads:
-bucket → Settings → Public access. Either enable the `r2.dev` domain or attach
-a custom domain. Note the resulting hostname.
+Contributors fetch without credentials, so the bucket needs public reads. It
+currently has none: no custom domain, and the Public Development URL is
+disabled. Pick one, in bucket → Settings:
 
-Only reads are public. Writes stay behind the key from step 3.
+- **Custom Domains** (recommended). Cloudflare rate-limits the `r2.dev`
+  development URL and says it is not intended for production traffic — which
+  a cache served to every contributor is. A custom domain has no such limit.
+- **Public Development URL**. One toggle, and enough to trial the setup. Gives
+  a `https://pub-<hash>.r2.dev` hostname. Expect throttling under real load.
+
+Note the resulting hostname; it goes into `lake-cache.toml` at step 5.
+
+Only reads become public. Writes stay behind the key from step 3.
 
 ## 3. Create an API token for CI
 
@@ -55,15 +64,14 @@ secret, named `LAKE_CACHE_KEY`, set to the colon-joined pair above.
 The workflows check for this secret and skip the cache steps entirely when it
 is absent, so CI keeps working before this point and starts publishing after.
 
-## 5. Fill in the endpoints
+## 5. Fill in the read endpoint
 
-Edit `lake-cache.toml` in the repo root and replace:
-
-- `<R2_PUBLIC_HOST>` with the hostname from step 2
-- `<R2_ACCOUNT_ID>` with your Cloudflare account ID
+Edit `lake-cache.toml` in the repo root and replace `<R2_PUBLIC_HOST>` with the
+hostname from step 2 — hostname only, no scheme, no trailing slash. The write
+endpoint is already set.
 
 `scripts/get-cache.sh` treats the presence of `<R2_` as "not provisioned yet",
-so filling these in is what switches contributors onto the Lake cache path.
+so filling this in is what switches contributors onto the Lake cache path.
 
 ## 6. Verify
 

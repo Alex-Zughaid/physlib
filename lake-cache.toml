@@ -20,13 +20,23 @@
 # the cache, and mirrors how Mathlib separates its read and write paths.
 #
 # ---------------------------------------------------------------------------
-# SETUP (one-time, needs a Cloudflare account -- see docs/cache-setup.md)
+# SETUP -- one item outstanding. See docs/cache-setup.md.
 #
-# Replace the two placeholders below:
-#   <R2_PUBLIC_HOST>  the bucket's public hostname, either the r2.dev domain
-#                     Cloudflare assigns when you enable public access, or a
-#                     custom domain you attach to the bucket.
-#   <R2_ACCOUNT_ID>   your Cloudflare account ID, from the R2 dashboard.
+# The write endpoint below is filled in for the physlib-cache bucket.
+#
+# <R2_PUBLIC_HOST> still needs the bucket's public hostname. The bucket has
+# no public access yet, so anonymous reads -- the whole point for
+# contributors -- do not work until one of these is set up:
+#
+#   Custom domain (recommended). Cloudflare rate-limits the r2.dev
+#   development URL and states it is not for production traffic, which a
+#   cache serving every contributor plainly is.
+#
+#   Public Development URL. Faster to enable and fine for trying this out;
+#   gives a https://pub-<hash>.r2.dev hostname. Expect throttling if it ends
+#   up carrying real contributor load.
+#
+# Use the hostname only, no scheme and no trailing slash.
 # ---------------------------------------------------------------------------
 
 cache.defaultService = "physlib-r2"
@@ -43,5 +53,5 @@ revisionEndpoint = "https://<R2_PUBLIC_HOST>/revisions"
 [[cache.service]]
 name = "physlib-r2-upload"
 kind = "s3"
-artifactEndpoint = "https://<R2_ACCOUNT_ID>.r2.cloudflarestorage.com/physlib-cache/artifacts"
-revisionEndpoint = "https://<R2_ACCOUNT_ID>.r2.cloudflarestorage.com/physlib-cache/revisions"
+artifactEndpoint = "https://305f4708d1749d8e1873f7a629768540.r2.cloudflarestorage.com/physlib-cache/artifacts"
+revisionEndpoint = "https://305f4708d1749d8e1873f7a629768540.r2.cloudflarestorage.com/physlib-cache/revisions"
