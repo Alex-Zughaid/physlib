@@ -20,6 +20,7 @@ public import Physlib.ClassicalMechanics.Pendulum.MiscellaneousPendulumPivotMoti
 public import Physlib.ClassicalMechanics.Pendulum.SimplePendulum.Basic
 public import Physlib.ClassicalMechanics.Pendulum.SimplePendulum.Equilibria
 public import Physlib.ClassicalMechanics.Pendulum.SimplePendulum.Geometric.Basic
+public import Physlib.ClassicalMechanics.Pendulum.SimplePendulum.Hamiltonian
 public import Physlib.ClassicalMechanics.Pendulum.SimplePendulum.LiftInvariance
 public import Physlib.ClassicalMechanics.Pendulum.SlidingPendulum
 public import Physlib.ClassicalMechanics.RigidBody.AngularMomentum
