@@ -9,7 +9,7 @@ storage, with lots of people downloading it.
 
 Call it `physlib-cache`. Add its S3 API endpoint into `lake-cache.toml` as the write path.
 
-## 2. Allow anonymous reads — outstanding
+## 2. Allow anonymous reads — done
 
 Contributors fetch without credentials, so the bucket needs a Public Development URL.
 We can use the provided '.......r2.dev' domain for testing, but it is better to have a
@@ -34,16 +34,10 @@ Lake expects them as a single SigV4 credential, colon-separated:
 
 Add the keys as a GitHub secret called `LAKE_CACHE_KEY`, set to the colon-joined pair above.
 
-## 5. Fill in the read endpoint
+## 5. Fill in the read endpoint — done
 
-Edit `lake-cache.toml` in the repo root and replace `<R2_PUBLIC_HOST>` with the
-hostname from step 2 — hostname only, no scheme, no trailing slash. The write
-endpoint is already set.
-
-Filling this in is what makes `lake exe get_cache` actually reach the
-bucket -- with a placeholder still in place it points nowhere, the fetch
-fails, and the script falls back to its "could not fetch" message rather
-than compiling from source silently succeeding.
+Both endpoints in `lake-cache.toml` are set. To move to a custom domain, edit
+the `physlib-r2` service — hostname only, no scheme, no trailing slash.
 
 ## 6. Verify
 
@@ -58,3 +52,6 @@ lake build
 
 - Costs to watch as the project grows: storage past 10GB, and Class A
   (write) operations. Egress, the usual scaling problem, is free on R2.
+- Each half publishes under its own scope, `physlib-master/<toolchain>/physlib`
+  and `.../alpha`, so the two CI jobs do not overwrite each other's mappings.
+  The workflow and `scripts/get_cache.lean` must build the same strings.

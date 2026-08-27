@@ -15,7 +15,8 @@ not have to compile from source.
 Fetches both halves: Mathlib's prebuilt files (via Mathlib's own
 `lake exe cache get`) and Physlib's own (via Lake's built-in `lake cache`,
 backed by the project's R2 bucket -- see `lake-cache.toml` and
-`docs/cache-setup.md`). Pass `--no-mathlib` to skip getting Mathlib's cache.
+`docs/cache-setup.md`). Pass `--no-mathlib` to skip getting Mathlib's cache,
+and `--no-alpha` to skip PhyslibAlpha's.
 
 It can be run from the terminal using `lake exe get_cache`.
 
@@ -30,6 +31,7 @@ not have to compile from source.
 Usage:
   lake exe get_cache                fetch everything needed
   lake exe get_cache --no-mathlib   skip Mathlib, fetch only Physlib's
+  lake exe get_cache --no-alpha     skip PhyslibAlpha's cache
 "
 
 /-- `println`, then flush stdout immediately. Without this, messages printed
@@ -49,7 +51,23 @@ def runStreamed (cmd : String) (args : Array String)
 
 /-- The options this program understands. Anything else is rejected up
 front, rather than silently ignored and treated as "no flags given". -/
-def knownFlags : List String := ["--help", "-h", "--no-mathlib"]
+def knownFlags : List String := ["--help", "-h", "--no-mathlib", "--no-alpha"]
+
+/-- The current toolchain as a cache-scope path component: `/` and `:` become
+`-`, whitespace is dropped (matching the workflow's `tr -d '[:space:]'`). -/
+def toolchainTag : IO String := do
+  let raw ← IO.FS.readFile "lean-toolchain"
+  return raw.foldl (init := "") fun acc c =>
+    if c.isWhitespace then acc
+    else if c == '/' || c == ':' then acc.push '-'
+    else acc.push c
+
+/-- The cache scope for one half of the project. Each half gets its own so the
+two CI jobs do not overwrite each other's mappings; the toolchain is a path
+component because Lake ignores `--toolchain` for verbatim scopes.
+`.github/workflows/publish-cache.yml` builds the same strings. -/
+def scopeFor (tc : String) (half : String) : String :=
+  s!"physlib-master/{tc}/{half}"
 
 def main (args : List String) : IO UInt32 := do
   if let some bad := args.find? (!knownFlags.contains ·) then
@@ -65,6 +83,7 @@ def main (args : List String) : IO UInt32 := do
     return 0
 
   let skipMathlib := args.contains "--no-mathlib"
+  let skipAlpha := args.contains "--no-alpha"
 
   if !skipMathlib then
     say "Fetching Mathlib's prebuilt files ..."
@@ -73,11 +92,23 @@ def main (args : List String) : IO UInt32 := do
       say "  ('lake build' may then have to compile Mathlib, which is slow.)"
     say ""
 
-  say "Fetching Physlib's prebuilt files ..."
   let cwd ← IO.currentDir
   let configPath := (cwd / "lake-cache.toml").toString
-  let ok ← runStreamed "lake" #["cache", "get", "--scope=physlib-master"]
+  let tc ← toolchainTag
+
+  say "Fetching Physlib's prebuilt files ..."
+  let ok ← runStreamed "lake" #["cache", "get", s!"--scope={scopeFor tc "physlib"}"]
     #[("LAKE_CONFIG", some configPath)]
+
+  -- Published under its own scope, so it needs its own fetch.
+  unless skipAlpha do
+    say ""
+    say "Fetching PhyslibAlpha's prebuilt files ..."
+    unless ← runStreamed "lake" #["cache", "get", s!"--scope={scopeFor tc "alpha"}"]
+      #[("LAKE_CONFIG", some configPath)] do
+      say "  could not fetch PhyslibAlpha's cache -- continuing anyway."
+      say "  ('lake build PhyslibAlpha' would then compile it from source.)"
+
   if ok then
     say ""
     say "Done. Now run: lake build"
