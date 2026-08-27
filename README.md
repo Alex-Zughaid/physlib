@@ -83,17 +83,30 @@ or
 
 ### Installing Physlib
 
+Physlib publishes its compiled artifacts, so a first-time setup downloads them
+instead of compiling 685 files from source. That takes about **five minutes**
+rather than the hour-plus a full build costs.
+
 - Clone this repository (or download the repository as a Zip file)
 - Open a terminal at the top-level in the corresponding directory.
-- Run `lake exe cache get`. The command `lake` should have been installed when you installed Lean.
-  This downloads Mathlib's prebuilt files.
-- Run `./scripts/get-cache.sh`. This downloads Physlib's own prebuilt files, so that
-  your first build does not have to compile the library from scratch. It is optional —
-  if it fails for any reason you can carry on, the next step will just take longer.
-  Downloaded archives are kept in `~/.cache/physlib`, so coming back to a commit you
-  have already fetched costs nothing. `--clean` empties that directory.
-- Run `lake build`.
-- Open the directory (not a single file) in Visual Studio Code (or another Lean compatible code editor).
+- Run `lake exe get_cache`. This downloads the prebuilt files — both
+  Mathlib's and Physlib's. (~2-3 minutes; faster afterwards, as Mathlib's are
+  cached machine-wide and shared with any other Lean project.) It is optional:
+  if it fails you can carry on, and the next step will just take a lot longer.
+- Run `lake build`. With the cache in place this compiles nothing — it only
+  unpacks what was downloaded. (~1-2 minutes the first time, ~15 seconds after.)
+- Open the directory (not a single file) in Visual Studio Code (or another Lean
+  compatible code editor).
+
+You do not need an account, a login, or any credential for this — the cache is
+public to read.
+
+Once set up, `lake build` only recompiles files you have actually changed, plus
+anything importing them.
+
+If you want to check the cache is doing its job, `lake build` should report
+`Build completed successfully` with no `Built ...` lines. Any `Built` line means
+that module was compiled from source rather than restored.
 
 At the moment Physlib is divided into two essentially disjoint halves, `Physlib` and `QuantumInfo`.
 These were two repositories that merged in an effort to create a more cohesive ecosystem for physics

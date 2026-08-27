@@ -13,15 +13,6 @@ jobs:
   doc_lint:
     name: Lean based style linters
     runs-on: ubuntu-latest
-    permissions:
-      contents: write
-    env:
-      # Keep Lake's artifact cache inside the workspace rather than the
-      # toolchain directory, so it is scoped to this run and easy to stage.
-      LAKE_CACHE_DIR: .lake/cache
-      # Job-level so the cache steps can gate on it: a step's own `env:` block
-      # is not visible to that step's `if:` condition.
-      HAVE_CACHE_KEY: ${{ secrets.LAKE_CACHE_KEY != '' }}
     steps:
 
       - uses: actions/checkout@v4
@@ -48,96 +39,7 @@ jobs:
         with:
           linters: gcc
           run: |
-            bash -o pipefail -c "env LEAN_ABORT_ON_PANIC=1 LAKE_ARTIFACT_CACHE=true lake build -KCI | tee stdout.log"
-
-      # Publish to the R2 bucket via Lake's own content-addressed cache. Unlike
-      # the release tarball below, this stores artifacts per-file keyed by an
-      # input hash, so contributors on a branch that is not tip-of-master still
-      # get hits, and `lake cache get --max-revs` can backtrack to find them.
-      #
-      # Skipped entirely until LAKE_CACHE_KEY exists, so CI keeps working
-      # before the bucket is provisioned. See docs/cache-setup.md.
-      - name: stage build outputs for the cache
-        if: github.event_name == 'push' && env.HAVE_CACHE_KEY == 'true'
-        run: |
-          set -euo pipefail
-          # `--no-build` here does not build anything; it emits the
-          # input-to-output mappings for what was just built.
-          lake build --no-build -KCI -o .lake/outputs.jsonl
-          lake cache stage .lake/outputs.jsonl ../lake-cache-staging
-
-      - name: publish to R2 cache
-        if: github.event_name == 'push' && env.HAVE_CACHE_KEY == 'true'
-        env:
-          LAKE_CACHE_KEY_RAW: ${{ secrets.LAKE_CACHE_KEY }}
-          LAKE_CONFIG: ${{ github.workspace }}/lake-cache.toml
-        run: |
-          set -euo pipefail
-          # GitHub secrets commonly carry a trailing newline, which breaks the
-          # SigV4 signature. Trim it, and mask the value so it cannot surface
-          # in logs.
-          KEY="$(printf %s "$LAKE_CACHE_KEY_RAW" | sed -e 's/[[:space:]]*$//')"
-          echo "::add-mask::$KEY"
-          export LAKE_CACHE_KEY="$KEY"
-
-          lake cache put-staged ../lake-cache-staging \
-            --scope=physlib-master \
-            --rev="${{ github.sha }}" \
-            --toolchain="$(cat lean-toolchain)"
-
-      # Publish the freshly built artifacts so contributors can download them
-      # instead of compiling Physlib from source. Only on pushes to master --
-      # pull requests must not publish. See scripts/get-cache.sh for the
-      # consumer side.
-      - name: publish build cache
-        if: github.event_name == 'push'
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          set -euo pipefail
-
-          cd .lake/build/lib/lean
-          # Check both the module subtrees and the root-module artifacts. Without
-          # these guards an unmatched glob below fails tar with a cryptic
-          # "Cannot stat" rather than saying what is actually missing.
-          test -d Physlib || { echo "::error::Physlib build output missing"; exit 1; }
-          test -d QuantumInfo || { echo "::error::QuantumInfo build output missing"; exit 1; }
-          test -f Physlib.olean || { echo "::error::Physlib root module artifacts missing"; exit 1; }
-          test -f QuantumInfo.olean || { echo "::error::QuantumInfo root module artifacts missing"; exit 1; }
-
-          cat > .physlib-cache-info <<EOF
-          commit=${{ github.sha }}
-          built=$(date -u +%Y-%m-%dT%H:%M:%SZ)
-          toolchain=$(cat "$GITHUB_WORKSPACE/lean-toolchain")
-          EOF
-
-          # Archive whole subtrees: Lake writes 13 files per module and the set
-          # varies by toolchain, so an extension whitelist would silently drop
-          # the .trace files that make Lake skip rebuilding.
-          tar -czf "$GITHUB_WORKSPACE/physlib-cache.tar.gz" \
-            .physlib-cache-info Physlib Physlib.* QuantumInfo QuantumInfo.*
-
-          cd "$GITHUB_WORKSPACE"
-
-          # This workflow and alphaBuild.yml both run on the same push and race
-          # to create the release, so losing the race is not an error -- but a
-          # genuine failure (e.g. missing permissions) still has to surface.
-          if ! gh release view cache-master >/dev/null 2>&1; then
-            gh release create cache-master \
-              --prerelease \
-              --title "Build cache (master)" \
-              --notes "Prebuilt Lean artifacts for the tip of master, refreshed on every merge. Fetch with \`scripts/get-cache.sh\`. This is a build cache, not a Physlib release." \
-              || gh release view cache-master >/dev/null 2>&1 \
-              || { echo "::error::could not create or locate the cache-master release"; exit 1; }
-          fi
-
-          # A tiny marker asset naming the commit these artifacts were built
-          # from. scripts/get-cache.sh fetches this first (a few bytes) so it
-          # can check its local cache before pulling ~160MB it may already have.
-          # Same idea as the per-commit marker blobs in Mathlib's Cache/Marker.lean.
-          echo "${{ github.sha }}" > cache-commit.txt
-
-          gh release upload cache-master physlib-cache.tar.gz cache-commit.txt --clobber
+            bash -o pipefail -c "env LEAN_ABORT_ON_PANIC=1 lake build -KCI | tee stdout.log"
 
       - name: check file imports
         run: |
