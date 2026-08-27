@@ -1,19 +1,16 @@
 # Setting up the Physlib build cache bucket
 
 Physlib publishes its compiled artifacts so contributors do not have to build
-the library from source. There are two delivery paths:
+the library from source. Delivery is via Lake's own built-in cache (`lake
+cache`), backed by a Cloudflare R2 bucket. It is content-addressed and
+per-file, so a contributor on any branch gets hits for whatever they have not
+changed, and `lake cache get` can backtrack revisions to find them.
 
-1. **Lake's own cache**, backed by a Cloudflare R2 bucket. Content-addressed
-   and per-file, so a contributor on any branch gets hits for whatever they
-   have not changed. This is the path we want long term.
-2. **A release tarball** attached to the rolling `cache-master` prerelease.
-   A whole-snapshot fallback that needs no infrastructure, used automatically
-   whenever path 1 is unavailable.
+`scripts/get-cache.sh` is a thin wrapper: it fetches Mathlib's cache (via
+Mathlib's own tool) and Physlib's (via `lake cache get` against this bucket),
+so a contributor runs one command instead of two.
 
-`scripts/get-cache.sh` tries 1 and falls back to 2, so contributors need not
-care which is live.
-
-Path 1 is dormant until the bucket exists. These are the steps to enable it.
+Nothing works until the bucket is set up. These are the steps.
 
 ## Why R2
 
@@ -92,7 +89,7 @@ lake build               # should be close to a no-op
 - `lake-cache.toml` defines two services deliberately: `physlib-r2` for
   anonymous reads and `physlib-r2-upload` for authenticated writes. A
   contributor cannot write to the cache even by accident.
-- Lake's cache stores generated C alongside oleans, so the bucket will hold
-  more than the ~160MB release tarball. Still well inside the free tier.
+- Lake's cache stores generated C alongside oleans; a full upload is roughly
+  200-250MB. Still well inside the free tier.
 - Costs to watch as the project grows: storage past 10GB, and Class A
   (write) operations. Egress, the usual scaling problem, is free on R2.

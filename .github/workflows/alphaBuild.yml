@@ -13,8 +13,9 @@ jobs:
   alpha_build:
     name: Lean based style linters
     runs-on: ubuntu-latest
-    permissions:
-      contents: write
+    env:
+      LAKE_CACHE_DIR: .lake/cache
+      HAVE_CACHE_KEY: ${{ secrets.LAKE_CACHE_KEY != '' }}
     steps:
 
       - uses: actions/checkout@v4
@@ -43,47 +44,43 @@ jobs:
           run: |
             bash -o pipefail -c "env LEAN_ABORT_ON_PANIC=1 lake build -KCI PhyslibAlpha | tee stdout.log"
 
-      # PhyslibAlpha is not a default target, so build.yml never builds it.
-      # Publishing from here keeps both workflows free of extra build work.
-      # Uploads to the same rolling release as build.yml, as a separate asset.
-      - name: publish build cache
-        if: github.event_name == 'push'
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      # PhyslibAlpha is not a default target, so build.yml never builds or
+      # publishes it. Same R2 bucket and scope as build.yml -- artifacts are
+      # content-addressed by hash, so the two workflows' uploads coexist
+      # without needing separate scopes.
+      - name: stage build outputs for the cache
+        id: stage
+        if: github.event_name == 'push' && env.HAVE_CACHE_KEY == 'true'
+        continue-on-error: true
         run: |
           set -euo pipefail
+          mkdir -p ../lake-cache-staging
+          lake build --no-build -KCI PhyslibAlpha -o .lake/outputs.jsonl
+          echo "mappings: $(wc -l < .lake/outputs.jsonl) entries"
+          lake cache stage .lake/outputs.jsonl ../lake-cache-staging
+          echo "staged: $(find ../lake-cache-staging -name '*.ltar' | wc -l) ltar files"
 
-          cd .lake/build/lib/lean
-          # Check both the module subtree and the root-module artifacts. Without
-          # these guards an unmatched glob below fails tar with a cryptic
-          # "Cannot stat" rather than saying what is actually missing.
-          test -d PhyslibAlpha || { echo "::error::PhyslibAlpha build output missing"; exit 1; }
-          test -f PhyslibAlpha.olean || { echo "::error::PhyslibAlpha root module artifacts missing"; exit 1; }
+      - name: publish to R2 cache
+        id: publish
+        if: github.event_name == 'push' && env.HAVE_CACHE_KEY == 'true' && steps.stage.outcome == 'success'
+        continue-on-error: true
+        env:
+          LAKE_CACHE_KEY_RAW: ${{ secrets.LAKE_CACHE_KEY }}
+          LAKE_CONFIG: ${{ github.workspace }}/lake-cache.toml
+        run: |
+          set -euo pipefail
+          KEY="$(printf %s "$LAKE_CACHE_KEY_RAW" | sed -e 's/[[:space:]]*$//')"
+          echo "::add-mask::$KEY"
+          export LAKE_CACHE_KEY="$KEY"
 
-          cat > .physlibalpha-cache-info <<EOF
-          commit=${{ github.sha }}
-          built=$(date -u +%Y-%m-%dT%H:%M:%SZ)
-          toolchain=$(cat "$GITHUB_WORKSPACE/lean-toolchain")
-          EOF
+          lake cache put-staged ../lake-cache-staging \
+            --scope=physlib-master \
+            --rev="${{ github.sha }}" \
+            --toolchain="$(cat lean-toolchain)"
 
-          tar -czf "$GITHUB_WORKSPACE/physlibalpha-cache.tar.gz" \
-            .physlibalpha-cache-info PhyslibAlpha PhyslibAlpha.*
-
-          cd "$GITHUB_WORKSPACE"
-
-          # This workflow and build.yml both run on the same push and race to
-          # create the release, so losing the race is not an error -- but a
-          # genuine failure (e.g. missing permissions) still has to surface.
-          if ! gh release view cache-master >/dev/null 2>&1; then
-            gh release create cache-master \
-              --prerelease \
-              --title "Build cache (master)" \
-              --notes "Prebuilt Lean artifacts for the tip of master, refreshed on every merge. Fetch with \`scripts/get-cache.sh\`. This is a build cache, not a Physlib release." \
-              || gh release view cache-master >/dev/null 2>&1 \
-              || { echo "::error::could not create or locate the cache-master release"; exit 1; }
-          fi
-
-          gh release upload cache-master physlibalpha-cache.tar.gz --clobber
+      - name: warn if cache publish failed
+        if: github.event_name == 'push' && env.HAVE_CACHE_KEY == 'true' && (steps.stage.outcome == 'failure' || steps.publish.outcome == 'failure')
+        run: echo "::warning::PhyslibAlpha build cache was not published this run."
 
       - name: runLinter on PhyslibAlpha
         if: ${{ always() && steps.build.outcome == 'success' || steps.build.outcome == 'failure' }}
