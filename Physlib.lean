@@ -547,6 +547,7 @@ public import Physlib.Thermodynamics.Temperature.TemperatureUnits
 public import Physlib.Units.Basic
 public import Physlib.Units.Dimension
 public import Physlib.Units.Examples
+public import Physlib.Units.Exponent
 public import Physlib.Units.FDeriv
 public import Physlib.Units.ISQBridge
 public import Physlib.Units.ISQDimensionBase

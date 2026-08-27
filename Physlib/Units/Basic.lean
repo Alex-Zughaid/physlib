@@ -108,12 +108,10 @@ noncomputable def dimScale (u1 u2 : LTMCTUnitChoices) :Dimension LTMCTDimensionB
   map_one' := by
     simp
   map_mul' d1 d2 := by
-    simp only [Dimension.length_mul, Rat.cast_add, Dimension.time_mul, Dimension.mass_mul,
-      Dimension.charge_mul, Dimension.temperature_mul]
-    repeat rw [rpow_add]
+    simp only [Dimension.length_mul, Dimension.Exponent.coe_add, Rat.cast_add, Dimension.time_mul,
+      Dimension.mass_mul, Dimension.charge_mul, Dimension.temperature_mul]
+    repeat rw [NNReal.rpow_add (by simp)]
     ring
-    all_goals
-      simp
 
 lemma dimScale_apply (u1 u2 : LTMCTUnitChoices) (d : Dimension LTMCTDimensionBase) :
     dimScale u1 u2 d =

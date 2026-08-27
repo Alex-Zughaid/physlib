@@ -54,28 +54,30 @@ lemma ratio_ne_zero (u1 u2 : UnitScale B) (b : B) : u1.scale b / u2.scale b ≠ 
   dimension `d` rescales by `∏ b, (u1 b / u2 b) ^ d.exponent b` when changing the
   unit choice from `u1` to `u2`. This is the basis-generic form of
   `LTMCTUnitChoices.dimScale`. -/
-noncomputable def dimScale [Fintype B] (u1 u2 : UnitScale B) : Dimension B →* ℝ≥0 where
+noncomputable def dimScale [DimensionBasis B] [Fintype B]
+    (u1 u2 : UnitScale B) : Dimension B →* ℝ≥0 where
   toFun d := ∏ b, (u1.scale b / u2.scale b) ^ (d.exponent b : ℝ)
   map_one' := by simp
   map_mul' d1 d2 := by
-    simp only [Dimension.mul_exponent, Rat.cast_add]
+    simp only [Dimension.mul_exponent, Dimension.Exponent.coe_add, Rat.cast_add]
     rw [← Finset.prod_mul_distrib]
     exact Finset.prod_congr rfl fun b _ =>
       NNReal.rpow_add (u1.ratio_ne_zero u2 b) _ _
 
 @[simp]
-lemma dimScale_self [Fintype B] (u : UnitScale B) (d : Dimension B) :
+lemma dimScale_self [DimensionBasis B] [Fintype B] (u : UnitScale B) (d : Dimension B) :
     dimScale u u d = 1 := by
   simp only [dimScale, MonoidHom.coe_mk, OneHom.coe_mk]
   refine Finset.prod_eq_one fun b _ => ?_
   rw [div_self (u.scale_pos b).ne', NNReal.one_rpow]
 
 @[simp]
-lemma dimScale_one [Fintype B] (u1 u2 : UnitScale B) :
+lemma dimScale_one [DimensionBasis B] [Fintype B] (u1 u2 : UnitScale B) :
     dimScale u1 u2 1 = 1 := map_one _
 
 /-- The scaling is transitive (a cocycle in the unit choices). -/
-lemma dimScale_transitive [Fintype B] (u1 u2 u3 : UnitScale B) (d : Dimension B) :
+lemma dimScale_transitive [DimensionBasis B] [Fintype B]
+    (u1 u2 u3 : UnitScale B) (d : Dimension B) :
     dimScale u1 u2 d * dimScale u2 u3 d = dimScale u1 u3 d := by
   simp only [dimScale, MonoidHom.coe_mk, OneHom.coe_mk, ← Finset.prod_mul_distrib]
   refine Finset.prod_congr rfl fun b _ => ?_
