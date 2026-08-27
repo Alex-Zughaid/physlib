@@ -12,7 +12,8 @@
 # Two services are defined because reads and writes need different access:
 #
 #   physlib-r2         anonymous, public read endpoint. What contributors and
-#                      `lake cache get` use. No credential required.
+#                      `lake cache get` use. No credential required. The contents
+#                      of the bucket are public info
 #   physlib-r2-upload  authenticated S3 endpoint, used only by CI to publish.
 #                      Requires LAKE_CACHE_KEY.
 #

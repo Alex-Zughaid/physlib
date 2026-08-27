@@ -1,7 +1,9 @@
 /-
-Copyright (c) 2026 Physlib community. All rights reserved.
-Released under Apache 2.0 license.
+Copyright (c) 2026 Alex Zughaid. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: Alex Zughaid
 -/
+
 import Lean
 
 /-!
@@ -13,14 +15,12 @@ not have to compile from source.
 Fetches both halves: Mathlib's prebuilt files (via Mathlib's own
 `lake exe cache get`) and Physlib's own (via Lake's built-in `lake cache`,
 backed by the project's R2 bucket -- see `lake-cache.toml` and
-`docs/cache-setup.md`). Running one command rather than two is the only
-reason the Mathlib step lives here -- pass `--no-mathlib` to skip it.
-
-Safe to run at any time, and safe to skip: if anything goes wrong -- no
-network, an unreachable bucket -- this warns and exits 0, and `lake build`
-simply compiles from source as it always did.
+`docs/cache-setup.md`). Pass `--no-mathlib` to skip getting Mathlib's cache.
 
 It can be run from the terminal using `lake exe get_cache`.
+
+If you have no internet, `lake build` is just fine but will take much longer without this step
+first.
 -/
 
 def helpText : String :=
@@ -28,8 +28,8 @@ def helpText : String :=
 not have to compile from source.
 
 Usage:
-  lake exe get_cache              fetch everything needed
-  lake exe get_cache --no-mathlib skip Mathlib, fetch only Physlib's
+  lake exe get_cache                fetch everything needed
+  lake exe get_cache --no-mathlib   skip Mathlib, fetch only Physlib's
 "
 
 /-- `println`, then flush stdout immediately. Without this, messages printed
@@ -48,9 +48,7 @@ def runStreamed (cmd : String) (args : Array String)
   return (← child.wait) == 0
 
 /-- The options this program understands. Anything else is rejected up
-front, rather than silently ignored and treated as "no flags given" --
-which would otherwise run the full fetch when the user typed a typo'd flag
-expecting it to be validated. -/
+front, rather than silently ignored and treated as "no flags given". -/
 def knownFlags : List String := ["--help", "-h", "--no-mathlib"]
 
 def main (args : List String) : IO UInt32 := do
@@ -85,6 +83,6 @@ def main (args : List String) : IO UInt32 := do
     say "Done. Now run: lake build"
   else
     say ""
-    say "Could not fetch Physlib's cache. This is not fatal -- run 'lake build'"
-    say "as usual, it will just take longer, compiling from source."
+    say "Could not fetch Physlib's cache. This is not a fatal error -- run 'lake build'"
+    say "as usual, it will just take longer, compiling the whole project from source."
   return 0
