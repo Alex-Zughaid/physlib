@@ -39,6 +39,21 @@ jobs:
         run: |
           lake exe cache get
 
+      # Seed from the bucket this job is about to publish to. Without this,
+      # every run rebuilds Physlib from scratch even though the previous
+      # merge's artifacts are sitting right there; with it, only what
+      # actually changed since the last successful publish gets compiled --
+      # the same restoreAllArtifacts mechanism scripts/get_cache.lean uses
+      # for contributors, just applied to this job's own output.
+      # No LAKE_CACHE_KEY needed: this only reads the bucket's public
+      # endpoint. A cold bucket (first run ever) falls through to a full
+      # build, same as it does today.
+      - name: restore Physlib's own cache
+        env:
+          LAKE_CONFIG: ${{ github.workspace }}/lake-cache.toml
+        run: |
+          lake cache get --scope=physlib-master || echo "no existing cache to restore -- building from scratch"
+
       - name: build Physlib
         run: |
           bash -o pipefail -c "env LEAN_ABORT_ON_PANIC=1 lake build -KCI | tee stdout.log"
@@ -100,6 +115,14 @@ jobs:
       - name: build cache
         run: |
           lake exe cache get
+
+      # See the physlib job's "restore Physlib's own cache" step -- same
+      # idea, seeding from the same bucket before this job's own build.
+      - name: restore PhyslibAlpha's own cache
+        env:
+          LAKE_CONFIG: ${{ github.workspace }}/lake-cache.toml
+        run: |
+          lake cache get --scope=physlib-master || echo "no existing cache to restore -- building from scratch"
 
       - name: build PhyslibAlpha
         run: |
