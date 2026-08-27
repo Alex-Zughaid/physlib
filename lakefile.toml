@@ -35,6 +35,10 @@ name = "QuantumInfo"
 moreLeanArgs = ["-Dwarn.sorry=false", "-Dweak.says.verify=true"]
 
 [[lean_exe]]
+name = "get_cache"
+srcDir = "scripts"
+
+[[lean_exe]]
 name = "check_file_imports"
 srcDir = "scripts"
 
