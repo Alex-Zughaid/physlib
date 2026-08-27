@@ -1,4 +1,15 @@
 name = "Physlib"
+# Lake's artifact cache. `enableArtifactCache` makes a build populate the
+# cache, which is what CI uploads to R2 and what lets a local build be reused
+# after switching branches. `restoreAllArtifacts` is the other direction:
+# materialising cached artifacts back into .lake/build, which is how a
+# contributor benefits from `lake cache get`.
+#
+# These are package settings rather than environment variables -- an env var
+# does not enable the cache, and `lake build -o` warns that mappings it emits
+# will not be backed by cached artifacts without this.
+enableArtifactCache = true
+restoreAllArtifacts = true
 defaultTargets = ["Physlib", "QuantumInfo"]
 
 [[require]]
