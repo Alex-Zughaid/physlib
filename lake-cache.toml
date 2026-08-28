@@ -33,8 +33,8 @@ cache.defaultUploadService = "physlib-r2-upload"
 [[cache.service]]
 name = "physlib-r2"
 kind = "s3"
-artifactEndpoint = "lake-cache.physlib.io"
-revisionEndpoint = "lake-cache.physlib.io"
+artifactEndpoint = "https://lake-cache.physlib.io/artifacts"
+revisionEndpoint = "https://lake-cache.physlib.io/revisions"
 
 # Authenticated write path used by CI only. Same bucket, S3 API endpoint.
 [[cache.service]]

@@ -11,8 +11,9 @@ Call it `physlib-cache`. Add its S3 API endpoint into `lake-cache.toml` as the w
 
 ## 2. Allow anonymous reads — done
 
-Contributors fetch without credentials, so the bucket needs a Public Development URL.
-We can use the provided '.......r2.dev' domain for this.
+Contributors fetch without credentials, so the bucket needs a public URL. You can use the public
+development URL for testing, but it is better to deploy with a custom domain. We set up
+`lake-cache.physlib.io` for this purpose.
 
 Note the resulting hostname; it goes into `lake-cache.toml` at step 5.
 
@@ -36,7 +37,8 @@ Add the keys as a GitHub secret called `LAKE_CACHE_KEY`, set to the colon-joined
 ## 5. Fill in the read endpoint — done
 
 Both endpoints in `lake-cache.toml` are set. To move to a custom domain, edit
-the `physlib-r2` service — hostname only, no scheme, no trailing slash.
+the `physlib-r2` service — hostname only, no scheme, no trailing slash. `physlib-r2` is the name
+of the anonymous read service in cloudflare.
 
 ## 6. Verify
 
