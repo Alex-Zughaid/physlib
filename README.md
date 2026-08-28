@@ -85,9 +85,12 @@ or
 
 - Clone this repository (or download the repository as a Zip file)
 - Open a terminal at the top-level in the corresponding directory.
-- Run `lake exe cache get`. The command `lake` should have been installed when you installed Lean.
+- Run `lake exe get_cache` to download the cached artifacts from the internet. This will speed up the next step drastically. Do not worry if it fails, you can still run `lake build`, it will just be much slower.
 - Run `lake build`.
 - Open the directory (not a single file) in Visual Studio Code (or another Lean compatible code editor).
+
+Once set up, `lake build` only recompiles files you have actually changed, plus
+anything importing them.
 
 At the moment Physlib is divided into two essentially disjoint halves, `Physlib` and `QuantumInfo`.
 These were two repositories that merged in an effort to create a more cohesive ecosystem for physics
