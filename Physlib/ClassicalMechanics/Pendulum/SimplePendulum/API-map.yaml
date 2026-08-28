@@ -14,9 +14,11 @@ Overview: |
     the equivalence of that equation with the vanishing of the variational gradient of the
     action, the conservation of energy, the Hamiltonian formulation with the equivalence of
     the Newtonian, scalar, Hamiltonian and variational formulations, the equilibria with
-    the separatrix energy and the below/above-threshold energy bounds, and the invariance of
-    the lifted dynamics under shifting the angle by whole turns; the small-angle limit and
-    the period follow in later modules.
+    the separatrix energy and the below/above-threshold energy bounds, the invariance of
+    the lifted dynamics under shifting the angle by whole turns, the trajectories on the
+    configuration circle, and the identification of the lifted energies and Lagrangian with
+    those of the bob in physical space; the small-angle limit and the period follow in later
+    modules.
 
 ParentAPIs:
   - "Space (Physlib/SpaceAndTime/Space)"
@@ -46,9 +48,9 @@ Requirements:
     done: true
     location: Physlib/ClassicalMechanics/Pendulum/SimplePendulum/Geometric/Basic.lean (SimplePendulum.ConfigurationSpace.toSpace, SimplePendulum.ConfigurationSpace.toSpace_ofAngle, SimplePendulum.ConfigurationSpace.toSpace_norm)
 
-  - description: The API shall contain the definition of a trajectory based on the configuration space.
-    done: false
-    location: N/A
+  - description: The API contains the definition of a trajectory based on the configuration space.
+    done: true
+    location: Physlib/ClassicalMechanics/Pendulum/SimplePendulum/Geometric/Trajectory.lean (SimplePendulum.Trajectory, SimplePendulum.Trajectory.ofLift, SimplePendulum.Trajectory.contMDiff_ofLift)
 
   - description: The API contains the Lagrangian of the simple pendulum and its equation of motion.
     done: true
@@ -69,3 +71,7 @@ Requirements:
   - description: The API contains the invariance of the lifted dynamics under shifting the angle by whole turns.
     done: true
     location: Physlib/ClassicalMechanics/Pendulum/SimplePendulum/LiftInvariance.lean (SimplePendulum.equationOfMotion_add_int_mul_two_pi, SimplePendulum.energy_add_int_mul_two_pi, SimplePendulum.isSolution_add_int_mul_two_pi)
+
+  - description: The API contains the identification of the lifted energies and Lagrangian with those of the bob in physical space.
+    done: true
+    location: Physlib/ClassicalMechanics/Pendulum/SimplePendulum/Geometric/PhysicalSpace.lean (SimplePendulum.kineticEnergy_eq_space, SimplePendulum.potentialEnergy_eq_height, SimplePendulum.lagrangian_eq_space, SimplePendulum.energy_eq_space)

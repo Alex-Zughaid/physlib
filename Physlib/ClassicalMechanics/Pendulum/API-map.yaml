@@ -16,8 +16,8 @@ Overview: |
     configuration space is declared but not yet defined, and the miscellaneous pivot-motion problems
     have documentation only. The simple pendulum's Lagrangian and equation of motion on the
     Euclidean lift are recorded in its own API map; the trajectory based on the configuration
-    space, and the Lagrangian derived from it, remain open and are recorded below with location
-    N/A.
+    space, and the identification of the lifted Lagrangian with that of the bob in physical
+    space, are recorded below.
 
 ParentAPIs:
   - Classical mechanics Lagrangian (Physlib/ClassicalMechanics/Lagrangian)
@@ -43,10 +43,10 @@ Requirements:
     done: true
     location: Physlib/ClassicalMechanics/Pendulum/SimplePendulum/Geometric/Basic.lean (SimplePendulum.ConfigurationSpace.toSpace)
 
-  - description: The API shall contain the definition of a trajectory based on the configuration space.
-    done: false
-    location: "N/A"
+  - description: The API contains the definition of a trajectory based on the configuration space.
+    done: true
+    location: Physlib/ClassicalMechanics/Pendulum/SimplePendulum/Geometric/Trajectory.lean (SimplePendulum.Trajectory, SimplePendulum.Trajectory.ofLift)
 
-  - description: The API shall subsequently contain the definition of the lagrangian.
-    done: false
-    location: "N/A"
+  - description: The API subsequently contains the definition of the lagrangian.
+    done: true
+    location: Physlib/ClassicalMechanics/Pendulum/SimplePendulum/Basic.lean (SimplePendulum.lagrangian); Physlib/ClassicalMechanics/Pendulum/SimplePendulum/Geometric/PhysicalSpace.lean (SimplePendulum.lagrangian_eq_space)
