@@ -12,8 +12,7 @@ Call it `physlib-cache`. Add its S3 API endpoint into `lake-cache.toml` as the w
 ## 2. Allow anonymous reads — done
 
 Contributors fetch without credentials, so the bucket needs a Public Development URL.
-We can use the provided '.......r2.dev' domain for testing, but it is better to have a
-custom domain which is not rate limited.
+We can use the provided '.......r2.dev' domain for this.
 
 Note the resulting hostname; it goes into `lake-cache.toml` at step 5.
 
