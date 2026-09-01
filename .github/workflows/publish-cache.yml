@@ -40,7 +40,11 @@ jobs:
     env:
       LAKE_CACHE_DIR: .lake/cache
     steps:
+      # Full history so lake can look back for a commit with a cache,
+      # a shallow clone only has one so the restore below never finds anything
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       # Each job needs its own scope: Lake PUTs the revision mappings to
       # <revisionEndpoint>/<scope>/<sha>.jsonl, so a shared scope would have
@@ -121,7 +125,10 @@ jobs:
     env:
       LAKE_CACHE_DIR: .lake/cache
     steps:
+      # Full history, see the physlib job above
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       # Own scope, so this job does not overwrite the physlib job's mappings.
       - name: compute cache scope
