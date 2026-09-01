@@ -17,8 +17,9 @@ Overview: |
     the separatrix energy and the below/above-threshold energy bounds, the invariance of
     the lifted dynamics under shifting the angle by whole turns, and the small-angle limit —
     the linearized dynamics as a harmonic oscillator, its period 2π√(ℓ/g), and the cubic bound
-    on the linearization error; the classical amplitude-dependent period formula follows in
-    later modules; its identification with the nonlinear return time remains open.
+    on the linearization error — and the classical amplitude-dependent period formula
+    4√(ℓ/g) K(sin²(θ₀/2)), with its small-angle limit and its monotonicity and bounds in the
+    amplitude; its identification with the nonlinear return time remains open.
 
 ParentAPIs:
   - "Space (Physlib/SpaceAndTime/Space)"
@@ -26,7 +27,7 @@ ParentAPIs:
 
 References:
   - Landau & Lifshitz, Mechanics, 3rd Edition, Chapter 1 (The Equations of motion), Section 5 (The Lagrangian for a system of particles).
-  - Landau & Lifshitz, Mechanics, 3rd Edition, Chapter 3 (Integration of the equations of motion), Section 11 (Motion in one dimension).
+  - Landau & Lifshitz, Mechanics, 3rd Edition, Chapter 3 (Integration of the equations of motion), Section 11 (Motion in one dimension), Problem 1 (the period of the pendulum as a complete elliptic integral).
   - Landau & Lifshitz, Mechanics, 3rd Edition, Chapter 5 (Small oscillations), Section 21 (Free oscillations in one dimension).
   - Landau & Lifshitz, Mechanics, 3rd Edition, Chapter 7 (The canonical equations), Section 40 (Hamilton's equations).
 
@@ -79,3 +80,11 @@ Requirements:
   - description: The API contains the relation between the full and the linearized dynamics, with the cubic bound m g ℓ |θ|³/6 on the linearization error of the torque and the identification of the difference of the variational gradients of the two actions with the difference of torque and linearized force.
     done: true
     location: Physlib/ClassicalMechanics/Pendulum/SimplePendulum/SmallAngle.lean (SimplePendulum.abs_torque_add_linear_le, SimplePendulum.gradLagrangian_sub_toHarmonicOscillator)
+
+  - description: The API contains the classical formula 4√(ℓ/g) K(sin²(θ₀/2)) for the period of libration with amplitude θ₀, with its value 2π√(ℓ/g) at zero amplitude, its small-angle limit, monotonicity and bounds in the amplitude.
+    done: true
+    location: Physlib/ClassicalMechanics/Pendulum/SimplePendulum/PeriodFormula.lean (SimplePendulum.periodFormula, SimplePendulum.periodFormula_neg, SimplePendulum.periodFormula_zero, SimplePendulum.continuousOn_periodFormula, SimplePendulum.continuousAt_periodFormula_zero, SimplePendulum.periodFormula_tendsto_smallAnglePeriod, SimplePendulum.periodFormula_mono, SimplePendulum.periodFormula_strictMono, SimplePendulum.monotoneOn_periodFormula, SimplePendulum.strictMonoOn_periodFormula, SimplePendulum.smallAnglePeriod_le_periodFormula, SimplePendulum.periodFormula_pos, SimplePendulum.periodFormula_le, SimplePendulum.periodFormula_le')
+
+  - description: The API contains the theorem that the period formula is the period of the solution of the equation of motion released from rest at the amplitude θ₀, for 0 < θ₀ < π.
+    done: false
+    location: N/A

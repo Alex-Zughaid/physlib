@@ -24,6 +24,7 @@ public import Physlib.ClassicalMechanics.Pendulum.SimplePendulum.Geometric.Physi
 public import Physlib.ClassicalMechanics.Pendulum.SimplePendulum.Geometric.Trajectory
 public import Physlib.ClassicalMechanics.Pendulum.SimplePendulum.Hamiltonian
 public import Physlib.ClassicalMechanics.Pendulum.SimplePendulum.LiftInvariance
+public import Physlib.ClassicalMechanics.Pendulum.SimplePendulum.PeriodFormula
 public import Physlib.ClassicalMechanics.Pendulum.SimplePendulum.SmallAngle
 public import Physlib.ClassicalMechanics.Pendulum.SlidingPendulum
 public import Physlib.ClassicalMechanics.RigidBody.AngularMomentum
