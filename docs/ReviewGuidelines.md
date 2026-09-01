@@ -84,3 +84,38 @@ understand where in the process PRs are.
   post [here](https://leanprover.zulipchat.com/#narrow/channel/479953-Physlib/topic/PR.20reviews/with/577663418).
 - Once a PR is marked with a `ready-to-merge` the author does not need to do anything else,
   the maintainers will make sure it gets merged into the project.
+
+## Claiming a PR for review
+
+To avoid two reviewers (human or AI) reviewing the same PR, say what you intend to review
+and claim it. This is powered by the review claim workflows in `.github/workflows` and the
+`review-claimed` label.
+
+1. **Claim it.** Comment `claim` on the PR. The bot requests a review from you, assigns
+   you, applies the `review-claimed` label and leaves a status comment recording the
+   deadline. For a custom window, comment `claim 5 days` (hours, days and weeks all work)
+   or `claim 2026-08-01`; bare `claim` uses the default of 2 days. Claiming needs no
+   repository permissions, so the review request is best-effort -- GitHub does not let
+   non-collaborators be requested as reviewers.
+2. **You are reminded.** The bot @-mentions you 48 hours and then 24 hours before the
+   deadline. A reminder that is not shorter than the window you asked for is skipped, so a
+   one-day claim is never warned about a day in advance.
+3. **It expires.** Claims carry a time to live (2 days by default, 14 days max) and are
+   released automatically if they go stale, so nothing stays blocked forever. Comment
+   `claim` again to extend, or `disclaim` to release early. Submitting a review completes
+   the claim and clears the label.
+4. **A missed claim is announced.** If the deadline passes with no review, you are removed
+   as reviewer and assignee, and a message goes to the `PR reviews` topic on Zulip saying
+   the PR needs somebody else. Only failures are announced -- a claim you honour, extend or
+   `disclaim` is nobody else's business.
+
+A claim is cooperative, not a hard lock: it signals intent so that others can steer around
+you, and anyone remains free to review a claimed PR. What the bot will not do is silently
+overwrite someone else's live claim -- a second `claim` is answered with who holds it and
+until when. The claimant can always `disclaim`, and maintainers can release a claim held by
+someone else without waiting for it to time out.
+
+The Zulip announcement uses the `ZULIP_SITE`, `ZULIP_BOT_EMAIL`, `ZULIP_BOT_API_KEY` and
+`ZULIP_STREAM` repository secrets, the same bot credentials as the workers in
+[PhysLibBots](https://github.com/Alex-Zughaid/PhysLibBots). If they are missing the claim
+still expires on GitHub and only the announcement is skipped.
