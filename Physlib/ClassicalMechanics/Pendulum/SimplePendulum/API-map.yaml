@@ -15,7 +15,11 @@ Overview: |
     action, the conservation of energy, the Hamiltonian formulation with the equivalence of
     the Newtonian, scalar, Hamiltonian and variational formulations, the equilibria with
     the separatrix energy and the below/above-threshold energy bounds, the invariance of
-    the lifted dynamics under shifting the angle by whole turns, and the small-angle limit —
+    the lifted dynamics under shifting the angle by whole turns,
+    the uniqueness of the solutions with given initial angle and
+    angular velocity together with their time-reversal symmetry, and, for any initial data, a
+    curve with that initial data satisfying the equation of motion within ε of the initial
+    instant, and the small-angle limit —
     the linearized dynamics as a harmonic oscillator, its period 2π√(ℓ/g), and the cubic bound
     on the linearization error — and the classical amplitude-dependent period formula
     4√(ℓ/g) K(sin²(θ₀/2)), with its small-angle limit and its monotonicity and bounds in the
@@ -72,6 +76,12 @@ Requirements:
   - description: The API contains the invariance of the lifted dynamics under shifting the angle by whole turns.
     done: true
     location: Physlib/ClassicalMechanics/Pendulum/SimplePendulum/LiftInvariance.lean (SimplePendulum.equationOfMotion_add_int_mul_two_pi, SimplePendulum.energy_add_int_mul_two_pi, SimplePendulum.isSolution_add_int_mul_two_pi)
+  - description: The API contains the uniqueness of the solutions with given initial angle and angular velocity, and the time-reversal symmetry of the solutions.
+    done: true
+    location: Physlib/ClassicalMechanics/Pendulum/SimplePendulum/Solution.lean (SimplePendulum.phaseVectorField, SimplePendulum.equationOfMotion_unique, SimplePendulum.IsSolution.eq_of_initial, SimplePendulum.isSolution_comp_neg, SimplePendulum.releasedFromRest_even)
+  - description: The API contains, for any initial angle and angular velocity, a curve with that initial data satisfying the equation of motion within ε of the initial instant.
+    done: true
+    location: Physlib/ClassicalMechanics/Pendulum/SimplePendulum/Solution.lean (SimplePendulum.exists_local_solution)
 
   - description: The API contains the small-angle limit, in which the pendulum is a harmonic oscillator of mass m ℓ² and spring constant m g ℓ, with the equivalence of the linearized equation of motion with the oscillator's, the existence and uniqueness of the small-angle motions, and the small-angle period 2π√(ℓ/g).
     done: true
