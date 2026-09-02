@@ -19,6 +19,8 @@
 # As in `labels_from_comment.yml`, a command is a whole line of the comment, so
 # that a comment merely discussing claims does not trigger one.  Commands need
 # no repository permissions -- anyone can claim a review.
+#
+# The work itself is in `scripts/review_claim.py`.
 
 name: Review claims
 
@@ -31,8 +33,8 @@ on:
 # Limit permissions for GITHUB_TOKEN for the entire workflow
 permissions:
   contents: read
-  issues: write # Only allow issue/PR comments, labels and reactions
-  pull-requests: write # Only allow PR comments/labels/assignees
+  issues: write         # Only allow issue/PR comments, labels and reactions
+  pull-requests: write  # Only allow PR comments/labels/assignees
   # All other permissions are implicitly 'none'
 
 jobs:
@@ -43,6 +45,7 @@ jobs:
     # at all, reach the checkout below.  `disclaim` contains `claim`, so one test
     # covers both; the capitalised variant is here because expressions have no
     # case-insensitive compare, while the parser itself accepts any casing.
+    #
     # Don't run on forks, where we wouldn't have permission to act on the PR anyway.
     if: >-
       github.repository == 'leanprover-community/physlib' &&
@@ -52,115 +55,16 @@ jobs:
       (contains(github.event.comment.body, 'claim') ||
        contains(github.event.comment.body, 'Claim'))
     steps:
-      - name: Check out the claim helpers
+      - name: Check out the claim script
         uses: actions/checkout@v7.0.0
         with:
-          sparse-checkout: .github/scripts
+          sparse-checkout: scripts/review_claim.py
+          sparse-checkout-cone-mode: false
           persist-credentials: false
       - name: Claim or disclaim
-        uses: actions/github-script@v7
-        with:
-          script: |
-            const claims = require(`${process.env.GITHUB_WORKSPACE}/.github/scripts/review-claim.js`);
-            const { owner, repo } = context.repo;
-            const issue_number = context.payload.issue.number;
-            const target = { owner, repo, issue_number };
-            const actor = context.payload.comment.user.login;
-            const commentId = context.payload.comment.id;
-            const now = Date.now();
-
-            const command = claims.parseCommand(context.payload.comment.body);
-            if (!command) {
-              core.info('No claim command in this comment.');
-              return;
-            }
-
-            const react = content => github.rest.reactions.createForIssueComment({
-              owner, repo, comment_id: commentId, content,
-            }).catch(error => core.warning(`Could not react: ${error.message}`));
-
-            const reject = async message => {
-              await react('confused');
-              await github.rest.issues.createComment({
-                owner, repo, issue_number, body: `@${actor} ${message}`,
-              });
-            };
-
-            const statusComment = await claims.findStatusComment(github, target);
-            const current = claims.readClaim(statusComment);
-            const active = current && current.state === 'active' ? current : null;
-
-            if (command.name === 'disclaim') {
-              if (!active) {
-                core.info(`#${issue_number}: nothing to disclaim.`);
-                await react('confused');
-                return;
-              }
-              // The claimant can always let go; a maintainer can release someone
-              // else's claim without waiting for it to time out.
-              let permitted = active.claimant === actor;
-              if (!permitted) {
-                const { data: access } = await github.rest.repos.getCollaboratorPermissionLevel({
-                  owner, repo, username: actor,
-                }).catch(() => ({ data: { permission: 'none' } }));
-                permitted = ['admin', 'maintain', 'write'].includes(access.permission);
-              }
-              if (!permitted) {
-                await reject(
-                  `this PR is claimed by @${active.claimant} until ${claims.formatUTC(active.until)}, ` +
-                  'and only they (or a maintainer) can release it. It will be released ' +
-                  'automatically if no review arrives by then.');
-                return;
-              }
-
-              core.info(`#${issue_number}: ${actor} released the claim held by ${active.claimant}.`);
-              await claims.releaseClaim(github, core, target, active.claimant);
-              await claims.writeStatus(github, target,
-                { ...active, state: 'released', releasedBy: actor }, statusComment);
-              await react('+1');
-              return;
-            }
-
-            // Someone else's live claim is not silently overwritten: the point of
-            // the whole mechanism is that a second reviewer finds out before
-            // duplicating the work.
-            if (active && active.claimant !== actor) {
-              await reject(
-                `this PR is already claimed by @${active.claimant} until ` +
-                `${claims.formatUTC(active.until)}. It will be released automatically if no ` +
-                'review arrives by then, and you are still free to review it in the meantime ' +
-                '— a claim signals intent rather than locking anyone out.');
-              return;
-            }
-
-            const window = claims.parseWindow(command.argument, now);
-            if (window.error) {
-              await reject(window.error);
-              return;
-            }
-
-            const claim = {
-              state: 'active',
-              claimant: actor,
-              // Extending keeps the original claim time, so the status comment
-              // keeps describing the window the claimant actually asked for.
-              claimedAt: now,
-              until: window.until,
-            };
-
-            await claims.takeClaim(github, core, target, actor);
-            await claims.writeStatus(github, target, claim, statusComment);
-            await react('+1');
-
-            if (window.clamped) {
-              await github.rest.issues.createComment({
-                owner, repo, issue_number,
-                body: `@${actor} that window was longer than the ` +
-                  `${claims.describeWindow(claims.MAX_WINDOW_MS)} maximum, so I shortened it to ` +
-                  `${claims.formatUTC(window.until)}. Comment \`claim\` again to extend it later.`,
-              });
-            }
-            core.info(`#${issue_number}: ${actor} claimed until ${new Date(window.until).toISOString()}.`);
+        run: python3 scripts/review_claim.py comment
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
   complete:
     name: Complete claim on review
@@ -170,31 +74,13 @@ jobs:
       github.repository == 'leanprover-community/physlib' &&
       github.event_name == 'pull_request_review'
     steps:
-      - name: Check out the claim helpers
+      - name: Check out the claim script
         uses: actions/checkout@v7.0.0
         with:
-          sparse-checkout: .github/scripts
+          sparse-checkout: scripts/review_claim.py
+          sparse-checkout-cone-mode: false
           persist-credentials: false
       - name: Clear the claim once its claimant has reviewed
-        uses: actions/github-script@v7
-        with:
-          script: |
-            const claims = require(`${process.env.GITHUB_WORKSPACE}/.github/scripts/review-claim.js`);
-            const { owner, repo } = context.repo;
-            const issue_number = context.payload.pull_request.number;
-            const target = { owner, repo, issue_number };
-            const reviewer = context.payload.review.user.login;
-
-            const statusComment = await claims.findStatusComment(github, target);
-            const current = claims.readClaim(statusComment);
-            if (!current || current.state !== 'active' || current.claimant !== reviewer) {
-              core.info(`#${issue_number}: review by ${reviewer} does not close an active claim.`);
-              return;
-            }
-
-            core.info(`#${issue_number}: ${reviewer} reviewed, completing their claim.`);
-            // The label goes, but the assignee stays: they are engaged with this
-            // PR now, which is the opposite of the case the expiry job handles.
-            await claims.releaseClaim(github, core, target, null);
-            await claims.writeStatus(github, target,
-              { ...current, state: 'completed' }, statusComment);
+        run: python3 scripts/review_claim.py review
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

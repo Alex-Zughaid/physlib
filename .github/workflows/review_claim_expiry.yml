@@ -6,25 +6,28 @@
 #   * @-mentions the claimant 48h and then 24h before the deadline, skipping a
 #     reminder that is not shorter than the window they asked for;
 #   * once the deadline passes, completes the claim quietly if they did review
-#     in time, and otherwise releases it -- dropping the label and the assignee
-#     and saying so -- putting the PR back into the general review queue.
+#     in time, and otherwise releases it -- dropping the label and taking the
+#     claimant off the PR as reviewer and assignee -- announcing the release on
+#     Zulip so that somebody else picks the PR up.
 #
 # The deadline is read back out of the claim's status comment, so extending a
 # claim (`claim` again) moves the deadline and resets its reminders with it.
+#
+# The work itself is in `scripts/review_claim.py`.
 
 name: Expire review claims
 
 on:
   schedule:
     # hourly, so a deadline or a reminder is never overshot by more than an hour
-    - cron: "0 * * * *"
+    - cron: '0 * * * *'
   workflow_dispatch:
 
 # Limit permissions for GITHUB_TOKEN for the entire workflow
 permissions:
   contents: read
-  issues: write # Only allow reading/labelling issues
-  pull-requests: write # Only allow PR comments/labels/assignees
+  issues: write         # Only allow reading/labelling issues
+  pull-requests: write  # Only allow PR comments/labels/assignees
   # All other permissions are implicitly 'none'
 
 jobs:
@@ -34,125 +37,21 @@ jobs:
     # Don't run on forks, where we wouldn't have permission to act on the PR anyway.
     if: github.repository == 'leanprover-community/physlib'
     steps:
-      - name: Check out the claim helpers
+      - name: Check out the claim script
         uses: actions/checkout@v7.0.0
         with:
-          sparse-checkout: .github/scripts
+          sparse-checkout: scripts/review_claim.py
+          sparse-checkout-cone-mode: false
           persist-credentials: false
       - name: Remind and expire
-        uses: actions/github-script@v7
+        run: python3 scripts/review_claim.py expire
         env:
-          # Same bot credentials as the workers in Alex-Zughaid/PhysLibBots.
-          # Missing secrets downgrade to a warning rather than failing the job:
-          # releasing the claim on GitHub matters more than announcing it.
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          # Same bot credentials as the Physlib Zulip bots.  Missing secrets
+          # downgrade to a warning rather than failing the job: releasing the
+          # claim on GitHub matters more than announcing it.
           ZULIP_SITE: ${{ secrets.ZULIP_SITE }}
           ZULIP_BOT_EMAIL: ${{ secrets.ZULIP_BOT_EMAIL }}
           ZULIP_BOT_API_KEY: ${{ secrets.ZULIP_BOT_API_KEY }}
           ZULIP_STREAM: ${{ secrets.ZULIP_STREAM }}
           ZULIP_TOPIC: PR reviews
-        with:
-          script: |
-            const claims = require(`${process.env.GITHUB_WORKSPACE}/.github/scripts/review-claim.js`);
-            const { owner, repo } = context.repo;
-            const now = Date.now();
-
-            const issues = await github.paginate(github.rest.issues.listForRepo, {
-              owner, repo, state: 'open', labels: claims.CLAIM_LABEL, per_page: 100,
-            });
-
-            for (const issue of issues) {
-              // `listForRepo` returns issues and PRs alike; we only want PRs.
-              if (!issue.pull_request) continue;
-              const issue_number = issue.number;
-              const target = { owner, repo, issue_number };
-
-              // One fetch serves both the claim record and the reminder markers.
-              const comments = await github.paginate(github.rest.issues.listComments, {
-                owner, repo, issue_number, per_page: 100,
-              });
-              const statusComment = claims.pickStatusComment(comments);
-              const claim = claims.readClaim(statusComment);
-              if (!claim || claim.state !== 'active') {
-                core.warning(`#${issue_number}: labelled '${claims.CLAIM_LABEL}' with no active claim; clearing the label.`);
-                await claims.releaseClaim(github, core, target, null);
-                continue;
-              }
-
-              const hoursLeft = (claim.until - now) / claims.HOUR_MS;
-
-              if (now < claim.until) {
-                // Smallest reminder that is both due and shorter than the window:
-                // if a scheduled run is skipped and we come back with 20h left,
-                // that sends the 24h reminder rather than a stale 48h one.
-                const due = claims.REMINDERS_HOURS.find(hours =>
-                  hours * claims.HOUR_MS < claim.until - claim.claimedAt && hoursLeft <= hours);
-                if (due === undefined) {
-                  core.info(`#${issue_number}: ${claim.claimant} has ${hoursLeft.toFixed(1)}h left, no reminder due.`);
-                  continue;
-                }
-                if (await claims.hasReviewedSince(github, target, claim.claimant, claim.claimedAt)) {
-                  core.info(`#${issue_number}: ${claim.claimant} has already reviewed, skipping the ${due}h reminder.`);
-                  continue;
-                }
-
-                // Keyed to the deadline, so the hourly runs in between do not
-                // repeat a reminder and an extension earns a fresh set.
-                const marker = `<!-- review-claim-reminder:${claim.until}:${due}h -->`;
-                if (comments.some(comment => comment.body && comment.body.includes(marker))) {
-                  core.info(`#${issue_number}: ${due}h reminder for ${claim.claimant} already posted.`);
-                  continue;
-                }
-
-                core.info(`#${issue_number}: posting the ${due}h reminder for ${claim.claimant}.`);
-                await github.rest.issues.createComment({
-                  owner, repo, issue_number,
-                  body: [
-                    marker,
-                    `@${claim.claimant} about ${due} hours are left on your review claim for this PR,` +
-                      ` which runs out at ${claims.formatUTC(claim.until)}.`,
-                    '',
-                    'Reviewing it before then completes the claim. Comment `claim` to give yourself',
-                    'more time, or `disclaim` to hand it back to the review queue.',
-                  ].join('\n'),
-                });
-                continue;
-              }
-
-              const reviewed = await claims.hasReviewedSince(github, target, claim.claimant, claim.claimedAt);
-              core.info(`#${issue_number}: claim by ${claim.claimant} ran out; reviewed=${reviewed}.`);
-
-              if (reviewed) {
-                // The label goes, but the assignee stays: they did the work.
-                await claims.releaseClaim(github, core, target, null);
-                await claims.writeStatus(github, target, { ...claim, state: 'completed' }, statusComment);
-                continue;
-              }
-
-              await claims.releaseClaim(github, core, target, claim.claimant);
-              await claims.writeStatus(github, target, { ...claim, state: 'expired' }, statusComment);
-              // The status comment is edited rather than reposted, which notifies
-              // nobody, so the release itself gets its own @-mention.
-              await github.rest.issues.createComment({
-                owner, repo, issue_number,
-                body: [
-                  `@${claim.claimant} your review claim on this PR ran out at ` +
-                    `${claims.formatUTC(claim.until)} without a review, so I have removed you as a`,
-                  'reviewer and assignee.',
-                  '',
-                  'This PR is back in the general review queue. Comment `claim` if you would still',
-                  'like to take it.',
-                ].join('\n'),
-              });
-
-              // Zulip only hears about the failures: a claim that was honoured is
-              // not news, and the point of announcing this one is that the PR now
-              // needs somebody else.  GitHub logins are not Zulip names, so the
-              // claimant is named rather than @-mentioned.
-              await claims.notifyZulip(core, [
-                `**Review claim expired** on [${repo}#${issue_number}](${issue.html_url}): ${issue.title}`,
-                '',
-                `\`${claim.claimant}\` claimed this review until ${claims.formatUTC(claim.until)}, but no`,
-                'review arrived, so they have been removed as a reviewer and the PR is back in the',
-                'review queue. It is open for anyone to `claim`.',
-              ].join('\n'));
-            }
