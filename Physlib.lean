@@ -20,8 +20,13 @@ public import Physlib.ClassicalMechanics.Pendulum.MiscellaneousPendulumPivotMoti
 public import Physlib.ClassicalMechanics.Pendulum.SimplePendulum.Basic
 public import Physlib.ClassicalMechanics.Pendulum.SimplePendulum.Equilibria
 public import Physlib.ClassicalMechanics.Pendulum.SimplePendulum.Geometric.Basic
+public import Physlib.ClassicalMechanics.Pendulum.SimplePendulum.Geometric.PhysicalSpace
+public import Physlib.ClassicalMechanics.Pendulum.SimplePendulum.Geometric.Trajectory
 public import Physlib.ClassicalMechanics.Pendulum.SimplePendulum.Hamiltonian
 public import Physlib.ClassicalMechanics.Pendulum.SimplePendulum.LiftInvariance
+public import Physlib.ClassicalMechanics.Pendulum.SimplePendulum.PeriodFormula
+public import Physlib.ClassicalMechanics.Pendulum.SimplePendulum.SmallAngle
+public import Physlib.ClassicalMechanics.Pendulum.SimplePendulum.Solution
 public import Physlib.ClassicalMechanics.Pendulum.SlidingPendulum
 public import Physlib.ClassicalMechanics.RigidBody.AngularMomentum
 public import Physlib.ClassicalMechanics.RigidBody.AngularVelocity
@@ -102,6 +107,7 @@ public import Physlib.FluidDynamics.FluidFlow.Newtonian
 public import Physlib.FluidDynamics.ThermodynamicCauchyFlow.Basic
 public import Physlib.FluidDynamics.ThermodynamicCauchyFlow.Bernoulli
 public import Physlib.FluidDynamics.ThermodynamicCauchyFlow.Isentropic
+public import Physlib.LatticeQFT.Basic
 public import Physlib.Mathematics.Calculus.AdjFDeriv
 public import Physlib.Mathematics.Calculus.Divergence
 public import Physlib.Mathematics.Calculus.Gradient
@@ -507,6 +513,7 @@ public import Physlib.SpaceAndTime.Space.Norm.IteratedLaplacian
 public import Physlib.SpaceAndTime.Space.Norm.Regularized
 public import Physlib.SpaceAndTime.Space.Origin
 public import Physlib.SpaceAndTime.Space.Slice
+public import Physlib.SpaceAndTime.Space.SmoothFunctions
 public import Physlib.SpaceAndTime.Space.Translations
 public import Physlib.SpaceAndTime.SpaceTime.Basic
 public import Physlib.SpaceAndTime.SpaceTime.Boosts
