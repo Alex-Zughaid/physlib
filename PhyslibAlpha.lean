@@ -47,6 +47,7 @@ public import PhyslibAlpha.QuantumMechanics.OperatorAlgebra.States.Statistics
 public import PhyslibAlpha.QuantumMechanics.OperatorAlgebra.States.Uncertainty
 public import PhyslibAlpha.QuantumMechanics.OperatorAlgebra.Measurement.SpectralMeasure
 public import PhyslibAlpha.QuantumMechanics.OperatorAlgebra.Dynamics.Automorphism
+public import PhyslibAlpha.QuantumMechanics.OperatorAlgebra.Dynamics.Hamiltonian
 public import PhyslibAlpha.Mathematics.PartialDerivativeTest
 public import PhyslibAlpha.Mathematics.LadderSystem.Basic
 public import PhyslibAlpha.Mathematics.LadderSystem.Vacuum
