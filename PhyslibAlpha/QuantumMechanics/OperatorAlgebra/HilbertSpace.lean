@@ -5,15 +5,15 @@ Authors: Tom Ole Diem
 -/
 module
 
-public import Physlib.QuantumMechanics.OperatorAlgebra.Basic
+public import PhyslibAlpha.QuantumMechanics.OperatorAlgebra.Basic
 public import Mathlib.Analysis.InnerProductSpace.StarOrder
 
 /-!
 # Bounded operators on Hilbert space
 
 This file connects the abstract operator-algebraic quantum-mechanics API with the concrete
-C⋆-algebra of bounded operators on a complex Hilbert space. The C⋆-algebra, Loewner order, and
-ordered-star-ring instances for bounded operators are supplied by Mathlib.
+C⋆-algebra of bounded operators on a complex Hilbert space. Mathlib supplies its C⋆-algebra
+structure and the usual positive-operator order, where `A ≤ B` means that `B - A` is positive.
 -/
 
 @[expose] public section

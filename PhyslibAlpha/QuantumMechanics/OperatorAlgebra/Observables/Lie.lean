@@ -5,7 +5,7 @@ Authors: Tom Ole Diem
 -/
 module
 
-public import Physlib.QuantumMechanics.OperatorAlgebra.Basic
+public import PhyslibAlpha.QuantumMechanics.OperatorAlgebra.Observables.Jordan
 public import Mathlib.Algebra.Lie.OfAssociative
 public import Mathlib.LinearAlgebra.Complex.Module
 
@@ -52,6 +52,20 @@ lemma coe_bracket (a b : Observable A) :
   rw [imaginaryPart_apply_coe, star_mul, a.property.star_eq, b.property.star_eq]
   module
 
+/-- The product of two observables is observable exactly when they commute. -/
+lemma isSelfAdjoint_mul_iff_commute (a b : Observable A) :
+    IsSelfAdjoint ((a : A) * (b : A)) ↔ Commute (a : A) (b : A) := by
+  rw [isSelfAdjoint_iff, star_mul, a.property.star_eq, b.property.star_eq,
+    commute_iff_eq, eq_comm]
+
+/-- The ambient product of two observables splits into its Jordan and Lie parts. -/
+lemma mul_decomposition (a b : Observable A) :
+    (a : A) * b = (a ⊙ b : A) + Complex.I • ((⁅a, b⁆ : Observable A) : A) := by
+  change (a : A) * b =
+    ↑(realPart ((a : A) * (b : A))) +
+      Complex.I • ↑(imaginaryPart ((a : A) * (b : A)))
+  exact (realPart_add_I_smul_imaginaryPart ((a : A) * (b : A))).symm
+
 /-! ## Lie ring -/
 
 lemma add_bracket (a b c : Observable A) :
@@ -75,45 +89,19 @@ lemma bracket_self (a : Observable A) :
   apply Subtype.ext
   simp [coe_bracket]
 
-private lemma lie_smul (r : ℂ) (x y : A) :
-    ⁅x, r • y⁆ = r • ⁅x, y⁆ := by
-  simp only [Ring.lie_def, mul_smul_comm, smul_mul_assoc, smul_sub]
-
-private lemma smul_lie (r : ℂ) (x y : A) :
-    ⁅r • x, y⁆ = r • ⁅x, y⁆ := by
-  simp only [Ring.lie_def, mul_smul_comm, smul_mul_assoc, smul_sub]
-
 lemma leibniz_bracket (a b c : Observable A) :
     ⁅a, ⁅b, c⁆⁆ = ⁅⁅a, b⁆, c⁆ + ⁅b, ⁅a, c⁆⁆ := by
+  let _ : LieRing A := LieRing.ofAssociativeRing
   apply Subtype.ext
   rw [AddSubgroup.coe_add]
   let s : ℂ := -(Complex.I / 2)
-  have hL :
-      ((⁅a, ⁅b, c⁆⁆ : Observable A) : A) =
-        (s * s) • ⁅(a : A), ⁅(b : A), (c : A)⁆⁆ := by
-    rw [coe_bracket, coe_bracket]
-    change
-      s • ⁅(a : A), s • ⁅(b : A), (c : A)⁆⁆ =
-        (s * s) • ⁅(a : A), ⁅(b : A), (c : A)⁆⁆
-    rw [lie_smul, smul_smul]
-  have hR :
-      ((⁅⁅a, b⁆, c⁆ : Observable A) : A) +
-          ((⁅b, ⁅a, c⁆⁆ : Observable A) : A) =
-        (s * s) •
-          (⁅⁅(a : A), (b : A)⁆, (c : A)⁆ +
-            ⁅(b : A), ⁅(a : A), (c : A)⁆⁆) := by
-    rw [coe_bracket, coe_bracket, coe_bracket, coe_bracket]
-    change
+  simp only [coe_bracket]
+  change
+    s • ⁅(a : A), s • ⁅(b : A), (c : A)⁆⁆ =
       s • ⁅s • ⁅(a : A), (b : A)⁆, (c : A)⁆ +
-          s • ⁅(b : A), s • ⁅(a : A), (c : A)⁆⁆ =
-        (s * s) •
-          (⁅⁅(a : A), (b : A)⁆, (c : A)⁆ +
-            ⁅(b : A), ⁅(a : A), (c : A)⁆⁆)
-    rw [smul_lie, lie_smul, smul_smul, smul_smul, ← smul_add]
-  rw [hL, hR]
-  congr 1
-  simp only [Ring.lie_def]
-  noncomm_ring
+        s • ⁅(b : A), s • ⁅(a : A), (c : A)⁆⁆
+  rw [lie_smul, smul_lie, lie_smul, smul_smul, smul_smul, smul_smul,
+    ← smul_add, leibniz_lie]
 
 noncomputable instance instLieRing :
     LieRing (Observable A) where

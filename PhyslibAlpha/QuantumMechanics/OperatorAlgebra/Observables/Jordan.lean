@@ -5,7 +5,7 @@ Authors: Tom Ole Diem
 -/
 module
 
-public import Physlib.QuantumMechanics.OperatorAlgebra.Basic
+public import PhyslibAlpha.QuantumMechanics.OperatorAlgebra.Observables.Basic
 public import Physlib.Meta.TODO.Basic
 public import Mathlib.Algebra.Jordan.Basic
 public import Mathlib.LinearAlgebra.Complex.Module
@@ -90,15 +90,11 @@ end Observable
 
 /-! ## Jordan observables
 
-`JordanObservable A` is the same underlying real vector space equipped with the
-symmetrized product as multiplication.
+`JordanObservable A` is a separate copy of `Observable A` whose multiplication is the Jordan
+product.
 -/
 
-/-- Observables equipped with their Jordan multiplication.
-
-This is a type synonym for `Observable A`, kept a `def` (rather than an `abbrev`) so that the
-`NonUnitalNonAssocCommRing` structure defined below on `JordanObservable A` is not silently
-inherited by `Observable A` itself, which has no canonical multiplication of its own. -/
+/-- An observable regarded as an element of the Jordan algebra. -/
 noncomputable def JordanObservable (A : Type*) [OperatorAlgebra A] :=
   Observable A
 
