@@ -17,20 +17,22 @@ name: Expire review claims
 on:
   schedule:
     # hourly, so a deadline or a reminder is never overshot by more than an hour
-    - cron: '0 * * * *'
+    - cron: "0 * * * *"
   workflow_dispatch:
 
 # Limit permissions for GITHUB_TOKEN for the entire workflow
 permissions:
   contents: read
-  issues: write         # Only allow reading/labelling issues
-  pull-requests: write  # Only allow PR comments/labels/assignees
+  issues: write # Only allow reading/labelling issues
+  pull-requests: write # Only allow PR comments/labels/assignees
   # All other permissions are implicitly 'none'
 
 jobs:
   expire:
     name: Expire review claims
     runs-on: ubuntu-latest
+    # Don't run on forks, where we wouldn't have permission to act on the PR anyway.
+    if: github.repository == 'leanprover-community/physlib'
     steps:
       - name: Check out the claim helpers
         uses: actions/checkout@v7.0.0

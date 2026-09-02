@@ -17,6 +17,16 @@ public import Physlib.ClassicalMechanics.Mass.MassUnit
 public import Physlib.ClassicalMechanics.OrbitalMechanics.VisViva
 public import Physlib.ClassicalMechanics.Pendulum.CoplanarDoublePendulum
 public import Physlib.ClassicalMechanics.Pendulum.MiscellaneousPendulumPivotMotions
+public import Physlib.ClassicalMechanics.Pendulum.SimplePendulum.Basic
+public import Physlib.ClassicalMechanics.Pendulum.SimplePendulum.Equilibria
+public import Physlib.ClassicalMechanics.Pendulum.SimplePendulum.Geometric.Basic
+public import Physlib.ClassicalMechanics.Pendulum.SimplePendulum.Geometric.PhysicalSpace
+public import Physlib.ClassicalMechanics.Pendulum.SimplePendulum.Geometric.Trajectory
+public import Physlib.ClassicalMechanics.Pendulum.SimplePendulum.Hamiltonian
+public import Physlib.ClassicalMechanics.Pendulum.SimplePendulum.LiftInvariance
+public import Physlib.ClassicalMechanics.Pendulum.SimplePendulum.PeriodFormula
+public import Physlib.ClassicalMechanics.Pendulum.SimplePendulum.SmallAngle
+public import Physlib.ClassicalMechanics.Pendulum.SimplePendulum.Solution
 public import Physlib.ClassicalMechanics.Pendulum.SlidingPendulum
 public import Physlib.ClassicalMechanics.RigidBody.AngularMomentum
 public import Physlib.ClassicalMechanics.RigidBody.AngularVelocity
@@ -97,8 +107,10 @@ public import Physlib.FluidDynamics.FluidFlow.Newtonian
 public import Physlib.FluidDynamics.ThermodynamicCauchyFlow.Basic
 public import Physlib.FluidDynamics.ThermodynamicCauchyFlow.Bernoulli
 public import Physlib.FluidDynamics.ThermodynamicCauchyFlow.Isentropic
+public import Physlib.LatticeQFT.Basic
 public import Physlib.Mathematics.Calculus.AdjFDeriv
 public import Physlib.Mathematics.Calculus.Divergence
+public import Physlib.Mathematics.Calculus.Gradient
 public import Physlib.Mathematics.Calculus.ParametricIntegration
 public import Physlib.Mathematics.Calculus.Wirtinger.Basic
 public import Physlib.Mathematics.Calculus.Wirtinger.Coordinate
@@ -137,7 +149,9 @@ public import Physlib.Mathematics.RatComplexNum
 public import Physlib.Mathematics.Resolvent
 public import Physlib.Mathematics.SO3.Basic
 public import Physlib.Mathematics.SchurTriangulation
+public import Physlib.Mathematics.SpecialFunctions.EllipticIntegral
 public import Physlib.Mathematics.SpecialFunctions.PhysHermite
+public import Physlib.Mathematics.Trigonometry.SinSq
 public import Physlib.Mathematics.Trigonometry.Tanh
 public import Physlib.Mathematics.VariationalCalculus.Basic
 public import Physlib.Mathematics.VariationalCalculus.HasVarAdjDeriv
@@ -336,6 +350,10 @@ public import Physlib.QuantumMechanics.Hydrogen.Basic
 public import Physlib.QuantumMechanics.Hydrogen.LaplaceRungeLenzVector
 public import Physlib.QuantumMechanics.InfiniteSquareWell.Basic
 public import Physlib.QuantumMechanics.OperatorAlgebra.Basic
+public import Physlib.QuantumMechanics.OperatorAlgebra.Dynamics.Automorphism
+public import Physlib.QuantumMechanics.OperatorAlgebra.HilbertSpace
+public import Physlib.QuantumMechanics.OperatorAlgebra.Observables.Jordan
+public import Physlib.QuantumMechanics.OperatorAlgebra.Observables.Lie
 public import Physlib.QuantumMechanics.Operators.AngularMomentum
 public import Physlib.QuantumMechanics.Operators.Commutation
 public import Physlib.QuantumMechanics.Operators.Covariance
@@ -433,6 +451,7 @@ public import Physlib.Relativity.Tensors.Dual
 public import Physlib.Relativity.Tensors.Elab
 public import Physlib.Relativity.Tensors.Evaluation
 public import Physlib.Relativity.Tensors.LeviCivita.Basic
+public import Physlib.Relativity.Tensors.LeviCivita.Complex
 public import Physlib.Relativity.Tensors.LeviCivita.Contractions
 public import Physlib.Relativity.Tensors.MetricTensor
 public import Physlib.Relativity.Tensors.OfInt
@@ -441,11 +460,13 @@ public import Physlib.Relativity.Tensors.RealTensor.Basic
 public import Physlib.Relativity.Tensors.RealTensor.CoVector.Basic
 public import Physlib.Relativity.Tensors.RealTensor.CoVector.Representation
 public import Physlib.Relativity.Tensors.RealTensor.CoVector.Tensorial
+public import Physlib.Relativity.Tensors.RealTensor.Contraction.CrossToEnd
 public import Physlib.Relativity.Tensors.RealTensor.Matrix.Pre
 public import Physlib.Relativity.Tensors.RealTensor.Metrics.Basic
 public import Physlib.Relativity.Tensors.RealTensor.Metrics.Pre
 public import Physlib.Relativity.Tensors.RealTensor.Representation.Contraction
 public import Physlib.Relativity.Tensors.RealTensor.ToComplex
+public import Physlib.Relativity.Tensors.RealTensor.Units.Basic
 public import Physlib.Relativity.Tensors.RealTensor.Units.Pre
 public import Physlib.Relativity.Tensors.RealTensor.Vector.Basic
 public import Physlib.Relativity.Tensors.RealTensor.Vector.Causality.Basic
@@ -492,6 +513,7 @@ public import Physlib.SpaceAndTime.Space.Norm.IteratedLaplacian
 public import Physlib.SpaceAndTime.Space.Norm.Regularized
 public import Physlib.SpaceAndTime.Space.Origin
 public import Physlib.SpaceAndTime.Space.Slice
+public import Physlib.SpaceAndTime.Space.SmoothFunctions
 public import Physlib.SpaceAndTime.Space.Translations
 public import Physlib.SpaceAndTime.SpaceTime.Basic
 public import Physlib.SpaceAndTime.SpaceTime.Boosts
@@ -536,6 +558,7 @@ public import Physlib.Thermodynamics.Temperature.TemperatureUnits
 public import Physlib.Units.Basic
 public import Physlib.Units.Dimension
 public import Physlib.Units.Examples
+public import Physlib.Units.Exponent
 public import Physlib.Units.FDeriv
 public import Physlib.Units.ISQBridge
 public import Physlib.Units.ISQDimensionBase

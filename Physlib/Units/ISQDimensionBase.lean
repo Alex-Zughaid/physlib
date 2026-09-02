@@ -62,6 +62,8 @@ instance : Fintype ISQDimensionBase where
   elems := {.length, .mass, .time, .current, .temperature, .amount, .luminousIntensity}
   complete := fun x => by cases x <;> decide
 
+instance : DimensionBasis ISQDimensionBase := DimensionBasis.pi _
+
 namespace ISQDimensionBase
 
 /-- The ISQ has seven base quantities. -/

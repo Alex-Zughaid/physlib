@@ -229,6 +229,7 @@ lemma dimScale_eq_toScale_dimScale (u1 u2 : LTMCTUnitChoices) (d : Dimension LTM
   rw [dimScale_apply, length_ratio, time_ratio, mass_ratio, charge_ratio, temperature_ratio,
     UnitScale.dimScale, MonoidHom.coe_mk, OneHom.coe_mk, prod_univ_LTMCTDimensionBase]
   simp only [Dimension.length, Dimension.time, Dimension.mass, Dimension.charge,
-    Dimension.temperature]
+    Dimension.temperature, Dimension.exponent_length, Dimension.exponent_time,
+    Dimension.exponent_mass, Dimension.exponent_charge, Dimension.exponent_temperature]
 
 end LTMCTUnitChoices

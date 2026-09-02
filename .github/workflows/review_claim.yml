@@ -31,8 +31,8 @@ on:
 # Limit permissions for GITHUB_TOKEN for the entire workflow
 permissions:
   contents: read
-  issues: write         # Only allow issue/PR comments, labels and reactions
-  pull-requests: write  # Only allow PR comments/labels/assignees
+  issues: write # Only allow issue/PR comments, labels and reactions
+  pull-requests: write # Only allow PR comments/labels/assignees
   # All other permissions are implicitly 'none'
 
 jobs:
@@ -43,7 +43,9 @@ jobs:
     # at all, reach the checkout below.  `disclaim` contains `claim`, so one test
     # covers both; the capitalised variant is here because expressions have no
     # case-insensitive compare, while the parser itself accepts any casing.
+    # Don't run on forks, where we wouldn't have permission to act on the PR anyway.
     if: >-
+      github.repository == 'leanprover-community/physlib' &&
       github.event_name == 'issue_comment' &&
       github.event.issue.pull_request &&
       github.event.comment.user.type != 'Bot' &&
@@ -163,7 +165,10 @@ jobs:
   complete:
     name: Complete claim on review
     runs-on: ubuntu-latest
-    if: github.event_name == 'pull_request_review'
+    # Don't run on forks, where we wouldn't have permission to act on the PR anyway.
+    if: >-
+      github.repository == 'leanprover-community/physlib' &&
+      github.event_name == 'pull_request_review'
     steps:
       - name: Check out the claim helpers
         uses: actions/checkout@v7.0.0
