@@ -20,6 +20,7 @@ The combinations `PTPMap` (positive trace-preserving), `CPTPMap`, and `CPUMap`
 
 The majority of quantum theory revolves around `CPTPMap`s, so those are explored more
 thoroughly in their file CPTP.lean.
+TEST
 -/
 
 @[expose] public section
