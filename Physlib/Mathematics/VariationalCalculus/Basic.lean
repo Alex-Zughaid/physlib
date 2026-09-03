@@ -71,8 +71,8 @@ configuration space, or a local chart thereof.
 
 ## References
 
-- https://leanprover.zulipchat.com/#narrow/channel/479953-Physlib/topic/Variational.20Calculus/with/529022834
-
+* https://leanprover.zulipchat.com/#narrow/channel/479953-Physlib/topic/Variational.20Calculus/with/529022834.
+  [ref: zulip_variational_calculus]
 -/
 
 @[expose] public section

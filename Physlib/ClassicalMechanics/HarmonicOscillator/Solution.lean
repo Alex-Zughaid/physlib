@@ -63,9 +63,7 @@ prove that they satisfy the equation of motion, and prove some properties of the
 
 ## iv. References
 
-References for the classical harmonic oscillator include:
-- Landau & Lifshitz, Mechanics, page 58, section 21.
-
+* Landau & Lifshitz, Mechanics, page 58, section 21. [ref: landau_mechanics]
 -/
 
 TODO "Split this file into smaller modules, keeping `Solution.lean` as an umbrella import.

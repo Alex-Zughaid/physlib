@@ -84,9 +84,7 @@ In the `Solution` module:
 
 ## iv. References
 
-References for the classical harmonic oscillator include:
-- Landau & Lifshitz, Mechanics, page 58, section 21.
-
+* Landau & Lifshitz, Mechanics, page 58, section 21. [ref: landau_mechanics]
 -/
 
 @[expose] public section
