@@ -13,7 +13,7 @@ import re
 import sys
 
 ROOT = pathlib.Path(__file__).resolve().parent.parent
-HEAD_RE = re.compile(r'^#{1,4}\s*(?:i{1,3}v?\.\s*)?References:?\s*$')
+HEAD_RE = re.compile(r'^#{1,4}\s*(?:(?:i{1,3}v?|\d+)\.\s*)?References?:?\s*$')
 REF_TAG_RE = re.compile(r'\[ref:\s*([^\]]+?)\]')
 BIB_KEY_RE = re.compile(r'^@\w+\{\s*([^,\s]+)\s*,', re.MULTILINE)
 
@@ -63,7 +63,7 @@ def main():
                     key = m.group(1).strip()
                     if key not in keys:
                         problems.append(f"{rel}:{line_no}: unknown reference key "
-                                         f"'{key}' (not in docs/references.yaml)")
+                                         f"'{key}' (not in docs/references.bib)")
 
     if problems:
         for p in problems:
