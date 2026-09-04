@@ -84,8 +84,13 @@ In the `Solution` module:
 
 ## iv. References
 
+References for the classical harmonic oscillator include:
+
 * Landau & Lifshitz, Mechanics, page 58, section 21. [ref: landau_mechanics]
-* A reference for the geometric model of position/velocity discussed in a TODO below.
+
+A reference for the geometric model of position/velocity discussed in a TODO below:
+
+* https://web.williams.edu/Mathematics/it3/texts/var_noether.pdf.
   [ref: williams_variational_noether_notes]
 -/
 

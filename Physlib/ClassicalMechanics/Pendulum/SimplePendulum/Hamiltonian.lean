@@ -59,6 +59,8 @@ lift of the angle they are equivalent to the equation of motion of `SimplePendul
 
 ## iv. References
 
+References for the Hamiltonian formulation of the simple pendulum include:
+
 * Landau & Lifshitz, Mechanics, 3rd ed., §40, for the canonical momentum, the Hamiltonian as the
   Legendre transform of the Lagrangian, and Hamilton's equations. [ref: landau_mechanics]
 * The module `Physlib.ClassicalMechanics.Pendulum.SimplePendulum.Basic`, whose Lagrangian, energy

@@ -21,7 +21,6 @@ license), with modifications made to the original content here.
 * https://github.com/lean-dojo/LeanDojo/blob/main/src/lean_dojo/data_extraction/ExtractData.lean.
   [ref: github_leandojo_extractdata]
 * See also: https://leanprover.zulipchat.com/#narrow/stream/270676-lean4/topic/Memory.20increase.20in.20loops.2E.
-  [ref: zulip_lean4_memory_increase]
 -/
 open Lean Elab System
 

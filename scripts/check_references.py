@@ -4,6 +4,9 @@
 Checks, for every module docstring References section:
   * the body is not empty
   * every "[ref: <key>]" tag resolves to an entry in docs/references.bib
+  * docs/references.bib contains no Zulip entries (Zulip links clutter the
+    bibliography and aren't useful indexed as formal references -- they should
+    be left as plain, untagged URLs in the docstring instead)
 
 Usage: ./scripts/check_references.py
 Exits non-zero (and prints one message per problem) if any check fails.
@@ -15,12 +18,15 @@ import sys
 ROOT = pathlib.Path(__file__).resolve().parent.parent
 HEAD_RE = re.compile(r'^#{1,4}\s*(?:(?:i{1,3}v?|\d+)\.\s*)?References?:?\s*$')
 REF_TAG_RE = re.compile(r'\[ref:\s*([^\]]+?)\]')
-BIB_KEY_RE = re.compile(r'^@\w+\{\s*([^,\s]+)\s*,', re.MULTILINE)
+BIB_ENTRY_RE = re.compile(r'^@(\w+)\{\s*([^,\s]+)\s*,(.*?)^\}', re.MULTILINE | re.DOTALL)
 
 
-def load_registry_keys():
+def load_registry():
     text = (ROOT / 'docs' / 'references.bib').read_text(encoding='utf-8')
-    return set(BIB_KEY_RE.findall(text))
+    entries = {}
+    for m in BIB_ENTRY_RE.finditer(text):
+        entries[m.group(2)] = m.group(3)
+    return entries
 
 
 def find_blocks(lines):
@@ -44,8 +50,15 @@ def find_blocks(lines):
 
 
 def main():
-    keys = load_registry_keys()
+    registry = load_registry()
+    keys = set(registry)
     problems = []
+
+    for key, fields in registry.items():
+        if 'zulip' in key.lower() or 'zulipchat.com' in fields:
+            problems.append(f"docs/references.bib: entry '{key}' is a Zulip link "
+                             f"-- Zulip links should not be added to the bibliography")
+
     for path in sorted(ROOT.rglob('*.lean')):
         if '.lake' in path.parts:
             continue

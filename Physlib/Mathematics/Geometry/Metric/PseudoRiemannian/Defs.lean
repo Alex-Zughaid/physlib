@@ -48,7 +48,8 @@ sections of a tensor bundle (e.g., `Hom(TM ⊗ TM, ℝ)` or `TM →L[ℝ] TM →
 
 * Barrett O'Neill, Semi-Riemannian Geometry With Applications to Relativity, Academic Press, 1983.
   [ref: oneill_1983_semi_riemannian]
-* Discussion on Zulip about (Pseudo) Riemannian metrics. [ref: zulip_pseudo_riemannian_metric]
+* Discussion on Zulip about (Pseudo) Riemannian metrics:
+  https://leanprover.zulipchat.com/#narrow/channel/113488-general/topic/.28Pseudo.29.20Riemannian.20metric
 -/
 
 @[expose] public section

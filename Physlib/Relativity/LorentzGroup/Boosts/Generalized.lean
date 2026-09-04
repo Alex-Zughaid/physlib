@@ -24,7 +24,6 @@ A boost is the special case of a generalised boost when `u = basis 0`.
 * The main argument follows: Guillem Cobos, The Lorentz Group, 2015:
   https://diposit.ub.edu/dspace/bitstream/2445/68763/2/memoria.pdf. [ref: cobos_2015_lorentz_group]
 * A Zulip proof of the time component of a generalised boost, used below.
-  [ref: zulip_lorentz_group_boost_proof]
 -/
 
 @[expose] public section
@@ -389,7 +388,6 @@ lemma generalizedBoost_inv (u v : Velocity d) :
 
 A proof of this result can be found at the below link:
 https://leanprover.zulipchat.com/#narrow/channel/479953-Physlib/topic/Lorentz.20group/near/523249684
-[ref: zulip_lorentz_group_boost_proof]
 -/
 lemma generalizedBoost_timeComponent_eq (u v : Velocity d) :
     (generalizedBoost u v).1 (Sum.inl 0) (Sum.inl 0) = 1 +

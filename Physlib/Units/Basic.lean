@@ -50,9 +50,7 @@ Units within Physlib are implemented with the following convention:
 ## References
 
 * https://leanprover.zulipchat.com/#narrow/channel/479953-Physlib/topic/physical.20units.
-  [ref: zulip_physlib_physical_units]
 * https://leanprover.zulipchat.com/#narrow/channel/116395-maths/topic/Dimensional.20Analysis.20Revisited/with/530238303.
-  [ref: zulip_dimensional_analysis_revisited]
 ## Note
 
 A lot of the results around units is still experimental and should be adapted based on needs.
