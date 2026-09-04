@@ -49,8 +49,11 @@ Units within Physlib are implemented with the following convention:
 
 ## References
 
+Zulip chats discussing units:
+
 * https://leanprover.zulipchat.com/#narrow/channel/479953-Physlib/topic/physical.20units.
 * https://leanprover.zulipchat.com/#narrow/channel/116395-maths/topic/Dimensional.20Analysis.20Revisited/with/530238303.
+
 ## Note
 
 A lot of the results around units is still experimental and should be adapted based on needs.
