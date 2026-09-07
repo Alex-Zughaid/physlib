@@ -91,7 +91,7 @@ References for the classical harmonic oscillator include:
 A reference for the geometric model of position/velocity discussed in a TODO below:
 
 * https://web.williams.edu/Mathematics/it3/texts/var_noether.pdf.
-  [ref: williams_variational_noether_notes]
+  [ref: terek_variational_manifolds]
 -/
 
 @[expose] public section
@@ -105,7 +105,7 @@ TODO "Create a new file for the geometric model which properly models the positi
     configuration space and velocity as its tangent space, then show explicitly how this
     coordinate model is a simplification of the geometric model.
     A nice reference for such an analysis is:
-    https://web.williams.edu/Mathematics/it3/texts/var_noether.pdf [ref: williams_variational_noether_notes]"
+    https://web.williams.edu/Mathematics/it3/texts/var_noether.pdf [ref: terek_variational_manifolds]"
 
 /-!
 

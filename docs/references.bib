@@ -100,16 +100,22 @@
 }
 
 @book{arnold_mechanics,
-  author  = {Arnold, V. I.},
-  title   = {Mathematical Methods of Classical Mechanics},
-  edition = {2nd},
-  note    = {year/publisher not stated in any citing module; commonly Springer 1989}
+  author    = {Arnold, V. I.},
+  title     = {Mathematical Methods of Classical Mechanics},
+  series    = {Graduate Texts in Mathematics},
+  volume    = {60},
+  edition   = {2nd},
+  publisher = {Springer},
+  year      = {1989}
 }
 
 @book{arnold_ode,
   author = {Arnold, V. I.},
   title  = {Ordinary Differential Equations},
-  note   = {edition/year/publisher not stated in the citing module}
+  note   = {citing module gives no edition, and there are two distinct English
+           translations with different chapter numbering (MIT Press, transl.
+           R. A. Silverman, 1973; Springer, transl. R. Cooke, 3rd ed., 1992)
+           -- not filled in to avoid citing the wrong one for "Chapter 4"}
 }
 
 @article{arxiv_0912_0853,
@@ -229,12 +235,17 @@
   note          = {one citing module notes that a step of this paper's argument is not valid}
 }
 
-@misc{baez_guts_notes,
-  author       = {Baez, John},
-  title        = {Grand Unified Theories notes},
-  howpublished = {},
-  url          = {https://math.ucr.edu/home/baez/guts.pdf},
-  note         = {author inferred from the URL path (~baez); title not stated in the citing modules}
+@article{baez_guts_notes,
+  author  = {Baez, John C. and Huerta, John},
+  title   = {The Algebra of Grand Unified Theories},
+  eprint  = {0904.1556},
+  archiveprefix = {arXiv},
+  primaryclass  = {hep-th},
+  journal = {Bull. Amer. Math. Soc.},
+  volume  = {47},
+  pages   = {483-552},
+  year    = {2010},
+  url     = {https://math.ucr.edu/home/baez/guts.pdf}
 }
 
 @book{barenblatt_1996_scaling,
@@ -263,10 +274,12 @@
 }
 
 @article{bilal_2008_anomalies,
-  author = {Bilal, A.},
-  title  = {Lectures on Anomalies},
-  year   = {2008},
-  note   = {arXiv preprint; id not stated in the citing module}
+  author        = {Bilal, A.},
+  title         = {Lectures on Anomalies},
+  eprint        = {0802.0634},
+  archiveprefix = {arXiv},
+  primaryclass  = {hep-th},
+  year          = {2008}
 }
 
 @misc{bipm_si_brochure_2019,
@@ -335,7 +348,10 @@
 @book{goldstein_classicalmechanics,
   author = {Goldstein, Herbert},
   title  = {Classical Mechanics},
-  note   = {edition/year/publisher not stated in the citing module}
+  note   = {citing module gives no edition, and the book has three substantially
+           different editions with different chapter numbering (Addison-Wesley,
+           1st ed. 1950, 2nd ed. 1980; with Poole and Safko, 3rd ed. 2002) --
+           not filled in to avoid citing the wrong one for "Chapter 2"}
 }
 
 @book{hall2013quantum,
@@ -414,37 +430,47 @@
 }
 
 @book{landau_fluidmechanics,
-  author  = {Landau, L. D. and Lifshitz, E. M.},
-  title   = {Fluid Mechanics},
-  series  = {Course of Theoretical Physics},
-  volume  = {6},
-  edition = {2nd},
-  note    = {year/publisher not stated in any citing module}
+  author    = {Landau, L. D. and Lifshitz, E. M.},
+  title     = {Fluid Mechanics},
+  series    = {Course of Theoretical Physics},
+  volume    = {6},
+  edition   = {2nd},
+  publisher = {Pergamon Press},
+  year      = {1987}
 }
 
 @book{landau_mechanics,
-  author  = {Landau, L. D. and Lifshitz, E. M.},
-  title   = {Mechanics},
-  series  = {Course of Theoretical Physics},
-  volume  = {1},
-  edition = {3rd},
-  note    = {year/publisher not stated in any citing module; commonly Pergamon 1976}
+  author    = {Landau, L. D. and Lifshitz, E. M.},
+  title     = {Mechanics},
+  series    = {Course of Theoretical Physics},
+  volume    = {1},
+  edition   = {3rd},
+  publisher = {Butterworth-Heinemann},
+  year      = {1976}
 }
 
 @book{landau_statphys1,
-  author = {Landau, L. D. and Lifshitz, E. M.},
-  title  = {Statistical Physics, Part 1},
-  series = {Course of Theoretical Physics},
-  volume = {5},
-  note   = {edition/year/publisher not stated in any citing module}
+  author    = {Landau, L. D. and Lifshitz, E. M.},
+  title     = {Statistical Physics, Part 1},
+  series    = {Course of Theoretical Physics},
+  volume    = {5},
+  edition   = {3rd},
+  publisher = {Butterworth-Heinemann},
+  year      = {1980}
 }
 
 @article{lawrie_schafer_nameki_wong_2015,
-  author        = {Lawrie and Schafer-Nameki and Wong},
+  author        = {Lawrie, Craig and Schafer-Nameki, Sakura and Wong, Jin-Mann},
   title         = {F-theory and All Things Rational: Surveying U(1) Symmetries with Rational Sections},
   eprint        = {1504.05593},
   archiveprefix = {arXiv},
-  note          = {full first names not stated in the citing module; page 6 is cited there}
+  primaryclass  = {hep-th},
+  doi           = {10.1007/JHEP09(2015)144},
+  journal       = {JHEP},
+  volume        = {09},
+  pages         = {144},
+  year          = {2015},
+  note          = {page 6 is cited in the citing module}
 }
 
 @misc{mdpi_khinchin_fourth_axiom,
@@ -475,14 +501,18 @@
 }
 
 @book{nielsen_chuang_qci,
-  author = {Nielsen, M. A. and Chuang, I. L.},
-  title  = {Quantum Computation and Quantum Information},
-  note   = {edition/year/publisher not stated in the citing module; commonly 10th anniversary ed., Cambridge University Press, 2010}
+  author    = {Nielsen, M. A. and Chuang, I. L.},
+  title     = {Quantum Computation and Quantum Information},
+  edition   = {10th Anniversary},
+  publisher = {Cambridge University Press},
+  year      = {2010}
 }
 
 @misc{nist_dlmf,
-  title = {NIST Digital Library of Mathematical Functions},
-  note  = {URL not stated in the citing module (dlmf.nist.gov); section 19.7(ii) is cited}
+  title        = {NIST Digital Library of Mathematical Functions},
+  howpublished = {},
+  url          = {https://dlmf.nist.gov/},
+  note         = {section 19.7(ii) is cited in the citing module}
 }
 
 @misc{nist_hb44_2023,
@@ -490,10 +520,16 @@
   doi   = {10.6028/NIST.HB.44-2023}
 }
 
-@misc{nominal_solar_mass_article,
-  howpublished = {},
-  url          = {https://iopscience.iop.org/article/10.3847/0004-6256/152/2/41},
-  note         = {title/author not stated in the citing module}
+@article{nominal_solar_mass_article,
+  author  = {Prsa, Andrej and others},
+  title   = {Nominal values for selected solar and planetary quantities: IAU 2015
+            Resolution B3},
+  doi     = {10.3847/0004-6256/152/2/41},
+  journal = {Astron. J.},
+  volume  = {152},
+  number  = {2},
+  pages   = {41},
+  year    = {2016}
 }
 
 @book{oneill_1983_semi_riemannian,
@@ -513,9 +549,10 @@
 }
 
 @book{peskin_schroeder_qft,
-  author = {Peskin, Michael E. and Schroeder, Daniel V.},
-  title  = {An Introduction to Quantum Field Theory},
-  note   = {year/publisher not stated in the citing module; commonly Westview Press 1995}
+  author    = {Peskin, Michael E. and Schroeder, Daniel V.},
+  title     = {An Introduction to Quantum Field Theory},
+  publisher = {Westview Press},
+  year      = {1995}
 }
 
 @misc{qmul_emt10_notes,
@@ -577,16 +614,21 @@
 }
 
 @book{sussman_wisdom_sicm,
-  author = {Sussman, Gerald Jay and Wisdom, Jack},
-  title  = {Structure and Interpretation of Classical Mechanics},
-  url    = {https://groups.csail.mit.edu/mac/users/gjs/6946/sicm-html/book-Z-H-36.html#%_sec_3.1.2},
-  note   = {edition/year not stated in the citing module}
+  author    = {Sussman, Gerald Jay and Wisdom, Jack},
+  title     = {Structure and Interpretation of Classical Mechanics},
+  edition   = {1st},
+  publisher = {MIT Press},
+  year      = {2001},
+  url       = {https://groups.csail.mit.edu/mac/users/gjs/6946/sicm-html/book-Z-H-36.html#%_sec_3.1.2},
+  note      = {edition inferred from the free online HTML edition cited (matches the 1st ed.)}
 }
 
 @misc{terek_variational_manifolds,
-  author = {Terek, Ivo},
-  title  = {Introductory Variational Calculus on Manifolds},
-  note   = {lecture notes; year/URL not stated in the citing module}
+  author       = {Terek, Ivo},
+  title        = {Introductory Variational Calculus on Manifolds},
+  howpublished = {},
+  url          = {https://web.williams.edu/Mathematics/it3/texts/var_noether.pdf},
+  note         = {lecture notes; no publication year given in the document}
 }
 
 @misc{tomamichel_relative_entropy_masterclass,
@@ -667,9 +709,10 @@
 }
 
 @book{weinberg_qft1,
-  author = {Weinberg, Steven},
-  title  = {The Quantum Theory of Fields, Vol. 1},
-  note   = {year/publisher not stated in the citing module; commonly Cambridge University Press 1995}
+  author    = {Weinberg, Steven},
+  title     = {The Quantum Theory of Fields, Volume 1: Foundations},
+  publisher = {Cambridge University Press},
+  year      = {1995}
 }
 
 @misc{wiki_classical_em_and_sr,
@@ -706,11 +749,4 @@
   title        = {Rigged Hilbert space},
   howpublished = {},
   url          = {https://en.wikipedia.org/wiki/Rigged_Hilbert_space}
-}
-
-@misc{williams_variational_noether_notes,
-  title        = {Variational calculus and Noether's theorem (lecture notes)},
-  howpublished = {},
-  url          = {https://web.williams.edu/Mathematics/it3/texts/var_noether.pdf},
-  note         = {author not stated in the citing module}
 }
