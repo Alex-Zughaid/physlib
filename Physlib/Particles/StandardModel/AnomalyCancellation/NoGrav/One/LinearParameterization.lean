@@ -14,8 +14,10 @@ In this file we give two parameterizations
 - `linearParameters` of solutions to the linear ACCs for 1 family
 - `linearParametersQENeqZero` of solutions to the linear ACCs for 1 family with Q and E non-zero
 
-These parameterizations are based on:
-https://arxiv.org/abs/1907.00514
+## References
+
+* These parameterizations are based on https://arxiv.org/abs/1907.00514.
+  [ref: Lohitsiri:2019fuu]
 -/
 
 @[expose] public section

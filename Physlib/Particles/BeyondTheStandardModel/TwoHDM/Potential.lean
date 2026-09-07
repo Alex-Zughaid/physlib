@@ -61,16 +61,16 @@ open StandardModel
 
 We define a type for the parameters of the Higgs potential in the 2HDM.
 
-We follow the convention of `1605.03237`, which is highlighted in the explicit construction
-of the potential itself.
+We follow the convention of `1605.03237` [ref: arxiv_1605_03237], which is highlighted in the
+explicit construction of the potential itself.
 
 We relate these parameters to the `ξ` and `η` parameters used in the gram vector formalism
-given in arXiv:hep-ph/0605184.
+given in arXiv:hep-ph/0605184 [ref: arxiv_hep_ph_0605184].
 
 -/
 
 /-- The parameters of the Two Higgs doublet model potential.
-  Following the convention of https://arxiv.org/pdf/1605.03237. -/
+  Following the convention of https://arxiv.org/pdf/1605.03237 [ref: arxiv_1605_03237]. -/
 structure PotentialParameters where
   /-- The parameter corresponding to `m₁₁²` in the 2HDM potential. -/
   m₁₁2 : ℝ
@@ -142,7 +142,7 @@ instance : Zero PotentialParameters where
 ### A.2. Gram parameters
 
 A reparameterization of the potential parameters corresponding to `ξ` and `η` in
-arXiv:hep-ph/0605184.
+arXiv:hep-ph/0605184 [ref: arxiv_hep_ph_0605184].
 
 -/
 
@@ -196,7 +196,7 @@ lemma η_zero : (0 : PotentialParameters).η = 0 := by
 -/
 
 /-- An example of potential parameters that serve as a counterexample to the stability
-  condition given in arXiv:hep-ph/0605184.
+  condition given in arXiv:hep-ph/0605184 [ref: arxiv_hep_ph_0605184].
   This corresponds to the potential:
   `2 * (⟪H.Φ1, H.Φ2⟫_ℂ).im + ‖H.Φ1 - H.Φ2‖ ^ 4`
   which has the property that the quartic term is non-negative and only zero if
@@ -529,13 +529,13 @@ lemma stabilityCounterExample_not_potentialIsStable :
 ### E.3. The reduced mass term
 
 The reduced mass term is a function that helps express the stability condition.
-It is the function `J2` in https://arxiv.org/abs/hep-ph/0605184.
+It is the function `J2` in https://arxiv.org/abs/hep-ph/0605184 [ref: arxiv_hep_ph_0605184].
 
 -/
 
 /-- A function related to the mass term of the potential, used in the stableness
   condition and equivalent to the term `J2` in
-  https://arxiv.org/abs/hep-ph/0605184. -/
+  https://arxiv.org/abs/hep-ph/0605184 [ref: arxiv_hep_ph_0605184]. -/
 noncomputable def massTermReduced (P : PotentialParameters) (k : EuclideanSpace ℝ (Fin 3)) : ℝ :=
   P.ξ (Sum.inl 0) + ∑ μ, P.ξ (Sum.inr μ) * k μ
 
@@ -575,13 +575,13 @@ lemma massTermReduced_stabilityCounterExample (k : EuclideanSpace ℝ (Fin 3)) :
 ### E.4. The reduced quartic term
 
 The reduced quartic term is a function that helps express the stability condition.
-It is the function `J4` in https://arxiv.org/abs/hep-ph/0605184.
+It is the function `J4` in https://arxiv.org/abs/hep-ph/0605184 [ref: arxiv_hep_ph_0605184].
 
 -/
 
 /-- A function related to the quartic term of the potential, used in the stableness
   condition and equivalent to the term `J4` in
-  https://arxiv.org/abs/hep-ph/0605184. -/
+  https://arxiv.org/abs/hep-ph/0605184 [ref: arxiv_hep_ph_0605184]. -/
 noncomputable def quarticTermReduced (P : PotentialParameters) (k : EuclideanSpace ℝ (Fin 3)) : ℝ :=
   P.η (Sum.inl 0) (Sum.inl 0) + 2 * ∑ b, k b * P.η (Sum.inl 0) (Sum.inr b) +
   ∑ a, ∑ b, k a * k b * P.η (Sum.inr a) (Sum.inr b)
@@ -609,7 +609,7 @@ lemma quarticTermReduced_stabilityCounterExample_nonneg (k : EuclideanSpace ℝ 
 We give some necessary and sufficient conditions for the potential to be stable
 in terms of the gram vectors.
 
-This follows the analysis in https://arxiv.org/abs/hep-ph/0605184.
+This follows the analysis in https://arxiv.org/abs/hep-ph/0605184 [ref: arxiv_hep_ph_0605184].
 
 We also give some necessary conditions.
 
@@ -882,8 +882,8 @@ lemma potentialIsStable_of_strong (P : PotentialParameters)
 
 -/
 
-/-- A lemma invalidating the step in https://arxiv.org/pdf/hep-ph/0605184 leading to
-  equation (4.4). -/
+/-- A lemma invalidating the step in https://arxiv.org/pdf/hep-ph/0605184
+  [ref: arxiv_hep_ph_0605184] leading to equation (4.4). -/
 lemma forall_reduced_exists_not_potentialIsStable :
     ∃ P, ¬ PotentialIsStable P ∧ (∀ k : EuclideanSpace ℝ (Fin 3), ‖k‖ ^ 2 ≤ 1 →
     0 ≤ quarticTermReduced P k ∧ (quarticTermReduced P k = 0 → 0 ≤ massTermReduced P k)) := by

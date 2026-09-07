@@ -909,9 +909,9 @@ variable [CommRing 𝓩]
   The anomaly coefficient of a `FiveQuanta` is given by the pair of integers:
   `(∑ᵢ qᵢ Nᵢ, ∑ᵢ qᵢ² Nᵢ)`.
 
-  The first components is for the mixed U(1)-MSSM, see equation (22) of arXiv:1401.5084.
-  The second component is for the mixed U(1)Y-U(1)-U(1) gauge anomaly,
-  see equation (23) of arXiv:1401.5084.
+  The first components is for the mixed U(1)-MSSM, see equation (22) of arXiv:1401.5084
+  [ref: arxiv_1401_5084]. The second component is for the mixed U(1)Y-U(1)-U(1) gauge anomaly,
+  see equation (23) of arXiv:1401.5084 [ref: arxiv_1401_5084].
 -/
 def anomalyCoefficient (F : FiveQuanta 𝓩) : 𝓩 × 𝓩 :=
   ((F.map fun x => x.2.2 • x.1).sum, (F.map fun x => x.2.2 • (x.1 * x.1)).sum)

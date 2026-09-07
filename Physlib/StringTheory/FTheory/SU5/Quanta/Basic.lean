@@ -207,8 +207,8 @@ There are two anomaly cancellation conditions in the SU(5)×U(1) model which inv
 - `∑ᵢ qᵢ² Nᵢ + 3 * ∑ₐ qₐ² Nₐ = 0` where the first sum is over all 5-bar representations and the
   second is over all 10d representations.
 
-According to arXiv:1401.5084 it is unclear whether this second condition should necessarily be
-imposed.
+According to arXiv:1401.5084 [ref: arxiv_1401_5084] it is unclear whether this second condition
+should necessarily be imposed.
 
 -/
 

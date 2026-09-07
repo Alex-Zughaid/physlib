@@ -43,7 +43,8 @@ There are a number of important propositions in the theory.
 
 The charges are additionally constrained by the configuration `CodimensionOneConfig`,
 of the zero-section (`σ₀`) and the additional rational section (`σ₁`).
-This is detailed in the paper `arxiv:1504.05593`. In implemented here using
+This is detailed in the paper `arxiv:1504.05593` [ref: lawrie_schafer_nameki_wong_2015]. In
+implemented here using
 - `Charges.ofFinset S5 S10`: which gives the finite set of charges where the 5-bar charges
   must live in the set `S5` and the 10-bar charges must live in the set `S10`.
 

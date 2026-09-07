@@ -30,7 +30,8 @@ electromagnetic potentials and fields around a circular coil.
 @[expose] public section
 
 TODO "Prove that the magnetic field around a circular current loop is as given
-  in the reference https://ntrs.nasa.gov/api/citations/20140002333/downloads/20140002333.pdf."
+  in the reference https://ntrs.nasa.gov/api/citations/20140002333/downloads/20140002333.pdf
+  [ref: nasa_ntrs_20140002333]."
 
 namespace Electromagnetism
 namespace DistElectromagneticPotential

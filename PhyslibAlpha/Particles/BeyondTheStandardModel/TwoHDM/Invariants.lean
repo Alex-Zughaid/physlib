@@ -20,9 +20,10 @@ public import Mathlib.Analysis.Real.Pi.Irrational
 
 ## i. Overview
 
-In the *bilinear formalism* of the two Higgs doublet model (hep-ph/0605184) the four
-gauge-invariant bilinears — the Gram vector `gramVector` — describe the gauge orbits of the
-configuration space. This file proves the corresponding statement for the potential: every
+In the *bilinear formalism* of the two Higgs doublet model (hep-ph/0605184
+[ref: arxiv_hep_ph_0605184]) the four gauge-invariant bilinears — the Gram vector `gramVector`
+— describe the gauge orbits of the configuration space. This file proves the corresponding
+statement for the potential: every
 gauge-invariant polynomial effective potential is a polynomial in these four gauge-invariant
 bilinears.
 

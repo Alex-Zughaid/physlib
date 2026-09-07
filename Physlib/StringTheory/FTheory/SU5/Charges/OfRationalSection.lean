@@ -15,12 +15,13 @@ public import Mathlib.Data.Fintype.Sets
 
 Within SU(5) F-theory with 10d and 5-bar matter fields there are constraints on the
 allowed U(1) charges the fields can have.
-These constraints are determined in arXiv:1504.05593. They are related to the
+These constraints are determined in arXiv:1504.05593 [ref: lawrie_schafer_nameki_wong_2015].
+They are related to the
 distinct configurations of the zero-section (`σ₀`) relativity to the
 additional rational section (`σ₁`s) in codimension one fiber.
 For our purposes here, we currently just state the constraints found
-in arXiv:1504.05593, and leave the proof and derivation of these constraints to future
-work.
+in arXiv:1504.05593 [ref: lawrie_schafer_nameki_wong_2015], and leave the proof and derivation
+of these constraints to future work.
 
 ## ii. Key results
 
@@ -54,7 +55,8 @@ work.
 @[expose] public section
 
 TODO "The results in this file are currently stated, but not proved.
-  They should should be proved following e.g. https://arxiv.org/pdf/1504.05593.
+  They should should be proved following e.g. https://arxiv.org/pdf/1504.05593
+  [ref: lawrie_schafer_nameki_wong_2015].
   This is a large project."
 
 namespace FTheory

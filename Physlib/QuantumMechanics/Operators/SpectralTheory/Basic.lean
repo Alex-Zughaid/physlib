@@ -18,8 +18,8 @@ which are of central importance in quantum mechanics.
 
 Definitions for subsets of ℂ associated to an operator `T : H →ₗ.[ℂ] H` vary by author.
 Here we adopt those used in
-[Konrad Schmüdgen, *Unbounded Self-Adjoint Operators on Hilbert Space*][Schmudgen2012],
-summarized in the following table:
+[Konrad Schmüdgen, *Unbounded Self-Adjoint Operators on Hilbert Space*][Schmudgen2012]
+[ref: Schmudgen2012], summarized in the following table:
 
 | Subset of ℂ | abbrev. | `D(T - z)` | `R(T - z)` | `(T - z)⁻¹` |
 | :---------- | :-----: | :--------: | :--------: | :---------: |
