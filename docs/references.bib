@@ -110,12 +110,15 @@
 }
 
 @book{arnold_ode,
-  author = {Arnold, V. I.},
-  title  = {Ordinary Differential Equations},
-  note   = {citing module gives no edition, and there are two distinct English
-           translations with different chapter numbering (MIT Press, transl.
-           R. A. Silverman, 1973; Springer, transl. R. Cooke, 3rd ed., 1992)
-           -- not filled in to avoid citing the wrong one for "Chapter 4"}
+  author    = {Arnold, V. I.},
+  title     = {Ordinary Differential Equations},
+  publisher = {MIT Press},
+  year      = {1973},
+  note      = {translated from the Russian by Richard A. Silverman; this
+             translation's Chapter 4, "Proofs of the Main Theorems," matches
+             the citing module's chapter title and content (Picard iteration)
+             -- confirmed against the table of contents, which distinguishes
+             it from the differently-organized Springer 1992 translation}
 }
 
 @article{arxiv_0912_0853,
@@ -346,12 +349,20 @@
 }
 
 @book{goldstein_classicalmechanics,
-  author = {Goldstein, Herbert},
-  title  = {Classical Mechanics},
-  note   = {citing module gives no edition, and the book has three substantially
-           different editions with different chapter numbering (Addison-Wesley,
-           1st ed. 1950, 2nd ed. 1980; with Poole and Safko, 3rd ed. 2002) --
-           not filled in to avoid citing the wrong one for "Chapter 2"}
+  author    = {Goldstein, Herbert and Poole, Charles P. and Safko, John L.},
+  title     = {Classical Mechanics},
+  edition   = {3rd},
+  publisher = {Addison-Wesley},
+  year      = {2002},
+  note      = {the citing modules' "Chapter 2" is wrong: Chapter 2 ("Variational
+             Principles and Lagrange's Equations") has no damping content in
+             any edition -- verified against the table of contents and full
+             text, chapters 1-6 are numbered identically across all three
+             editions (1951, 1980, 2002). Damping is covered in Sec. 1.5
+             (Rayleigh's dissipation function, general formalism) and Chapter
+             6, Sec. 6.5, "Forced Vibrations and the Effect of Dissipative
+             Forces" (the closer match); the citing modules have been updated
+             to point to Chapter 6 accordingly}
 }
 
 @book{hall2013quantum,
