@@ -67,7 +67,8 @@ The following results exist for both `prodP` and `prodT` :
 
 ## iv. References
 
-* arXiv:2411.07667. [ref: arxiv_2411_07667]
+* Tooby-Smith, Formalization of physics index notation in Lean 4, arXiv:2411.07667.
+  [ref: tooby_smith_2024_index_notation]
 -/
 
 @[expose] public section
