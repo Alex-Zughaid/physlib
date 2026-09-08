@@ -22,7 +22,7 @@ and we consider them to have down indices `ψ_α` with `α = 1,2`.
 ### References
 
 * A good reference for the material in this file, although it uses a different
-  index convention. [ref: ucdavis_spinorfeynrules]
+  index convention: https://particle.physics.ucdavis.edu/modernsusy/slides/slideimages/spinorfeynrules.pdf. [ref: ucdavis_spinorfeynrules]
 -/
 
 @[expose] public section
