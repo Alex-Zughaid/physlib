@@ -46,7 +46,7 @@ properties thereof.
 
 ## iv. References
 
-* Anomaly cancellation conditions, equation 22. [ref: arxiv_1401_5084]
+* Rational F-Theory GUTs without exotics (arXiv:1401.5084), Anomaly cancellation conditions, equation 22. [ref: arxiv_1401_5084]
 -/
 
 @[expose] public section
