@@ -388,7 +388,7 @@ lemma generalizedBoost_inv (u v : Velocity d) :
 
 A proof of this result can be found at the below link:
 https://leanprover.zulipchat.com/#narrow/channel/479953-Physlib/topic/Lorentz.20group/near/523249684
--/
+/-- The time component of a generalised boost. -/
 lemma generalizedBoost_timeComponent_eq (u v : Velocity d) :
     (generalizedBoost u v).1 (Sum.inl 0) (Sum.inl 0) = 1 +
     ‖u.1.timeComponent • v.1.spatialPart -
