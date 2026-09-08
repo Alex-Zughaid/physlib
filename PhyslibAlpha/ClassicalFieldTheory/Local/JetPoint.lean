@@ -41,7 +41,7 @@ coordinate.
 
 ## iv. References
 
-* J. Cortés and A. Haupt, *Lecture Notes on Mathematical Methods of Classical Physics*,
+* J. Cortés and A. Haupt, Lecture Notes on Mathematical Methods of Classical Physics,
   arXiv:1612.03100v2, Chapter 5, Section 5.1. [ref: cortes_haupt_2016]
 -/
 

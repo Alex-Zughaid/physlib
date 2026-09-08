@@ -30,9 +30,9 @@ geodesic triangle in projective Hilbert space.
 
 ## References
 
-* V. Bargmann, *Note on Wigner's theorem on symmetry operations*, J. Math. Phys. 5, 862–868 (1964).
+* V. Bargmann, Note on Wigner's theorem on symmetry operations, J. Math. Phys. 5, 862–868 (1964).
   [ref: bargmann1964]
-* S. Pancharatnam, *Generalized theory of interference, and its applications*, Proc. Indian Acad.
+* S. Pancharatnam, Generalized theory of interference, and its applications, Proc. Indian Acad.
   Sci. A 44, 247–262 (1956). [ref: pancharatnam1956]
 -/
 

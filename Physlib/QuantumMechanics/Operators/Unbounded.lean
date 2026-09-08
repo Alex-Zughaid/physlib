@@ -82,9 +82,9 @@ Results
 
 ## iv. References
 
-* Reed and Simon, *Methods of Modern Mathematical Physics, Vol. I: Functional Analysis*.
+* Reed and Simon, Methods of Modern Mathematical Physics, Vol. I: Functional Analysis.
   [ref: Reed1972]
-* Konrad Schmüdgen, *Unbounded Self-Adjoint Operators on Hilbert Space*. [ref: Schmudgen2012]
+* Konrad Schmüdgen, Unbounded Self-Adjoint Operators on Hilbert Space. [ref: Schmudgen2012]
 -/
 
 TODO "Prove that `IsStarNormal (T : H →ₗ.[ℂ] H)` is equivalent

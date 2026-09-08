@@ -95,7 +95,7 @@ And other important theorems like superdense coding, nonadditivity, superactivat
 
 ## iv. References
 
-* Watrous's notes, Chapter 8 of *The Theory of Quantum Information*. [ref: watrous_tqi_ch8]
+* Watrous's notes, Chapter 8 of The Theory of Quantum Information. [ref: watrous_tqi_ch8]
 -/
 
 @[expose] public section

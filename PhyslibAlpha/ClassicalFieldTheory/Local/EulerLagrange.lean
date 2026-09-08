@@ -32,7 +32,7 @@ close to the one in the book while avoiding a premature smooth structure on `Jet
 
 ## iv. References
 
-* J. Cortés and A. Haupt, *Lecture Notes on Mathematical Methods of Classical Physics*, Chapter 5.
+* J. Cortés and A. Haupt, Lecture Notes on Mathematical Methods of Classical Physics, Chapter 5.
   [ref: cortes_haupt_2016]
 -/
 

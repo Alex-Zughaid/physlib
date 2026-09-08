@@ -31,7 +31,7 @@ surface-level statements of the local Euler-Lagrange criterion.
 
 ## iv. References
 
-* J. Cortés and A. Haupt, *Lecture Notes on Mathematical Methods of Classical Physics*, Chapter 5,
+* J. Cortés and A. Haupt, Lecture Notes on Mathematical Methods of Classical Physics, Chapter 5,
   Theorem 5.2. [ref: cortes_haupt_2016]
 -/
 
